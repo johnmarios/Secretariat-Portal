@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σύστημα Διαχείρισης Αιτημάτων Γραμματείας</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar portal-navbar sticky-top navbar-expand-lg">
+        <div class="container-fluid">
+
+            <!-- Brand -->
+            <a class="navbar-brand gap-2" href="#opening-section">
+                <img src="images/University_hat_icon.svg">
+                <span>Secretariat Portal</span>
+            </a>
+
+            <!-- collapsed menu -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <!-- Left links -->
+                <!--navbar-nav is flex container-->
+                <ul class="navbar-nav me-auto"> <!-- me-auto pushes the following links to the left -->
+                    <li class="nav-item left active">
+                        <a class="nav-link" href="#opening-section">Αρχική</a>
+                    </li>
+                    <li class="nav-item left not-active">
+                        <a class="nav-link" href="#info">Πληροφορίες</a>
+                    </li>
+                    <li class="nav-item left not-active">
+                        <a class="nav-link" href="#team">Ομάδα</a>
+                    </li>
+                </ul>
+
+                <!-- Right side (icon) -->
+                <ul class="navbar-nav avatar-icon">
+                    <li class="nav-item">
+                        <a class="nav-link align-items-center justify-content-center rounded-circle" href="#">
+                            <img src="images/avatar-person.svg">
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex flex-column min-vh-100">
+
+        <main class="flex-grow-1 overflow-auto">
+
+            <section id="opening-section" class="d-flex flex-column"> <!--puts navbar and caption in column-->
+                <div class="flex-grow-1 d-flex align-items-end">
+                    <div class="container pb-5">
+                        <div class="opening-caption text-light">
+                            <p class="mb-2">ΓΡΑΜΜΑΤΕΙΑ ΠΑΝΕΠΙΣΤΗΜΙΑΚΟΥ ΤΜΗΜΑΤΟΣ</p>
+
+                            <h1 class="mb-4">Διαχείριση <br> Αιτημάτων</h1>
+
+                            <span>Κάνε scroll για είσοδο στην εφαρμογή</span>
+
+                            <div class="scroll-arrow"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="info" class="py-5">
+                <div class="container"> <!-- Bootstrap grid -->
+                    <div class="row mb-4 col-12">
+                        <div class="col-12">
+                            <h1 class="custom-info mb-1 px-4">Πληροφορίες</h1>
+                            <hr class="custom-hr w-75">
+                        </div>
+                    </div>
+
+                    <!--entering div to add space between cards and info-->
+                    <div class="row mb-4"></div>
+                    <div class="row mb-4"></div>
+                    <div class="row mb-4"></div>
+                    <div class="row mb-4"></div>
+                    <div class="row mb-4"></div>
+                    <div class="row mb-4"></div>
+
+
+                    <div class="row row-cols-1 row-cols-md-3 g-4"><!-- col/row for each size  -->
+
+                        <div class="col">
+                            <div class="card text-center h-100 p-3 phone ">
+                                <!-- h-100 makes all cards the same height with parent col / padding top-right-bottom-left-->
+                                <div class="icon-slot">
+                                    <img src="images/Ανώνυμο-σχέδιο.svg" class="card-img-top" alt="phone-icon">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Τηλέφωνο</h5>
+                                    <p class="card-text">+30 210 1234567 <br> +30 6978403742</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-body-secondary">Last updated 5 months ago</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="card text-center h-100 p-3 email">
+                                <div class="icon-slot">
+                                    <img src="images/2124ac0db949622e8b42892a5df9989b4f00f223.svg" class="card-img-top"
+                                        alt="mail-icon">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Email</h5>
+                                    <p class="card-text">secretariat@university.edu.gr <br> info@university.edu.gr</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-body-secondary ">Last updated 3 years ago</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="card text-center h-100 p-3 hours">
+                                <div class="icon-slot">
+                                    <img src="images/8fb34c687b85d23d0971f138df5282589d9d02a5.svg" class="card-img-top"
+                                        alt="hours-icon">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Ωράριο Γραφείου</h5>
+                                    <p class="card-text">Δευτέρα - Παρασκευή: 11:00 - 13:00</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-body-secondary">Last updated 1 year ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="team" class="py-5">
+                <div class="container">
+                    <div class="row mb-4 col-12">
+                        <div class="col-12">
+                            <h1 class="custom-info mb-1 px-4">Ομάδα</h1>
+                            <hr class="custom-hr w-75">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 col-lg-10 member1">
+                            <div class="d-flex flex-column flex-md-row align-items-start">
+                                <!--image div and info div side by side for medium size and large-->
+
+                                <!-- Photo -->
+                                <div class="team-img me-3">
+                                    <img src="images/IMG_2343.jpg" class="team-member-img" alt="giannis-icon">
+                                </div>
+
+                                <!-- Info -->
+                                <div class="team-info">
+                                    <h2 class="team-name">Γιάννης Παπαδόπουλος</h2>
+                                    <p class="team-role">Electrical and Computer Engineer</p>
+
+                                    <p><strong>Email:</strong>
+                                        <a href="mailto:jnmrs03@gmail.com">jnmrs03@gmail.com</a>
+                                    </p>
+
+                                    <p><strong>GitHub:</strong>
+                                        <a href="https://github.com/johnmarios"
+                                            target="_blank">github.com/johnmarios</a>
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row mb-4"></div>
+                    <div class="row mb-4"></div>
+
+                    <div class="row">
+                        <div class="col-12 col-lg-10 member2">
+                            <div class="d-flex flex-column flex-md-row align-items-start">
+                                <!--image div and info div side by side for medium size and large-->
+
+                                <!-- Photo -->
+                                <div class="team-img me-3">
+                                    <img src="images/20251126_182827.jpg" class="team-member-img" alt="giannis-icon">
+                                </div>
+
+                                <!-- Info -->
+                                <div class="team-info">
+                                    <h2 class="team-name">Αλέξης Λωρίδας</h2>
+                                    <p class="team-role">Electrical and Computer Engineer</p>
+
+                                    <p><strong>Email:</strong>
+                                        <a href="mailto:alexisloridas@gmail.com">alexisloridas@gmail.com</a>
+                                    </p>
+
+                                    <p><strong>GitHub:</strong>
+                                        <a href="https://github.com/iLuvPuns" target="_blank">github.com/iLuvPuns</a>
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                <div class="footer-links d-flex gap-3">
+                    <a href="#opening-section">Αρχική</a>
+                    <a href="#info">Πληροφορίες</a>
+                    <a href="#team">Ομάδα</a>
+                </div>
+                <p class="mb-0">© 2026 Secretariat Portal. All Rights Reserved.</p>
+            </div>
+        </footer>
+
+        <script src="js/navbar.js"></script>
+    </div>
+</body>
+
+</html>
