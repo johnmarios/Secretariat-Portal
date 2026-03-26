@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout Task</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secretariat Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="../css/style1.css" rel="stylesheet">
+  <script src="../js/script.js" defer></script>
+</head>
+
+<body>
+  <div class="container">
+  <nav>
+    <div class="logo"><a href="../index.html"><img src="../images/logo.svg" alt="" class="logo-icon"><strong>Secretariat Portal</strong></a></div>
+    <ul>
+      <li class="rec"><a href="user_viewtickets.html"><img src="../images/ticket_icon.svg" alt="" class="nav-icon"><strong>Αιτήματα</strong></a></li>
+      <li class="profile-wrapper">
+        <div class="circle profile-trigger">ΑΛ</div>
+        <div class="profile-dropdown" >
+          <a href="#" class="dropdown-link"><img src="../images/user.svg" alt="" class="nav-icon"><strong>Προφίλ</strong></a>
+          <div class="dropdown-divider"></div>
+          <a href="login_screen.html" class="logout-btn"><img src="../images/exit.svg" alt="" class="nav-icon"><strong>Αποσύνδεση</strong></a>
+        </div>
+        
+
+      </li>
+    </ul>
+  </nav>
+  </div>
+
+  <main>
+  <article class="form-card">
+    <div class="card-header">
+      <h1>Δημιουργία Αιτήματος</h1>
+    </div>
+
+    <form action="#" class="form-grid">
+      
+      <div class="left-column">
+        <label for="firstName">Θέμα<span class="required">*</span>:</label>
+        <input type="text" name="name" id="firstName" required>
+
+        <label for="onomateponumo">Ονοματεπώνυμο<span class="required">*</span>:</label>
+        <input type="text" name="onomateponumo" id="onomateponumo" required>
+
+        <label for="email">Email<span class="required">*</span>:</label> 
+        <input type="email" name="email" id="email" required>
+
+        <label for="fileUpload">Επισύναψη Αρχείου:</label>
+        <input type="file" id="fileUpload" name="fileUpload">
+      </div>
+
+      <div class="right-column">
+        <label for="description">Περιγραφή Αιτήματος<span class="required">*</span>:</label>
+        <textarea id="description" name="description" placeholder="Περιγράψτε αναλυτικά το αίτημά σας..." required></textarea>
+        
+        <button type="submit" class="submit-btn">Υποβολή</button>
+      </div>
+
+    </form>
+  </article>
+</main>
+</body>
+
+</html>

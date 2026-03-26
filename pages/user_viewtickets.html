@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Αιτήματα - Secretariat Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="../css/style1.css" rel="stylesheet">
+  <script src="../js/script.js" defer></script>
+</head>
+
+<body>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <a href="../index.html"><img src="../images/logo.svg" alt="" class="logo-icon"><strong>Secretariat Portal</strong></a>
+      </div>
+      
+      <div class="search-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0A0A0" stroke-width="2"> <!--/*ftiaxnei to search icon*/-->
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg> 
+        <input type="text" placeholder="Αναζήτηση...">
+      </div>
+
+      <ul>
+        <li class="rec"><a href="user_submit.html"><img src="../images/ticket_icon.svg" alt="" class="nav-icon"><strong>Νέο Αίτημα</strong></a></li>
+        <li class="profile-wrapper">
+        <div class="circle profile-trigger">ΑΛ</div>
+        <div class="profile-dropdown"><a href="login_screen.html"><img src="../images/exit.svg" alt="" class="nav-icon"><strong>Αποσύνδεση</strong></a>
+        </div>
+      </li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="dashboard-main">
+    <div class="table-card">
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Θέμα</th>
+            <th class="col3">Ημερομηνία Υποβολής</th>
+            <th class="col4">Ημερομηνία Ολοκλήρωσης</th>
+            <th>Κατάσταση</th>
+            <th></th> </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>6</td>
+            <td>Βεβαίωση Σπουδών</td>
+            <td class="col3">20/11/23</td>
+            <td class="col4">-</td>
+            <td><span class="status status-green"><span class="dot"></span>Σε εξέλιξη</span></td>
+            <td><div class="action-icon disabled">✎</div></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Εκπρόθεσμη Δήλωση Μαθ...</td>
+            <td class="col3">20/11/22</td>
+            <td class="col4">-</td>
+            <td><span class="status status-orange"><span class="dot"></span>Σε αναμονή</span></td>
+            <td><div class="action-icon active">✎</div></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Αναβαθμολόγηση</td>
+            <td class="col3">20/11/21</td>
+            <td class="col4">28/11/21</td>
+            <td><span class="status status-red"><span class="dot"></span>Κλειστό</span></td>
+            <td><div class="action-icon disabled">✎</div></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Έκδοση Πάσου</td>
+            <td class="col3">20/11/20</td>
+            <td class="col4">-</td>
+            <td><span class="status status-orange"><span class="dot"></span>Σε αναμονή</span></td>
+            <td><div class="action-icon active">✎</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

@@ -94,6 +94,62 @@ img {
     border: var(--dark) solid 1px;
 }
 
+/*login modal---------------------------------------------------------------*/
+.modal-content {
+    border: 1px solid rgba(54, 59, 102, 0.2);
+    border-radius: 0.5rem;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(54, 59, 102, 0.15);
+}
+
+.modal-title {
+    color: var(--main-color);
+    font-weight: 700;
+}
+
+.login-form .form-label {
+    color: var(--main-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.login-form .form-control {
+    border: 1px solid rgba(54, 59, 102, 0.3);
+    border-radius: 0.35rem;
+}
+
+.login-form .form-control:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 0.2rem rgba(54, 59, 102, 0.15);
+}
+
+.login-form .btn-primary {
+    background-color: var(--main-color);
+    border: none;
+    font-weight: 600;
+}
+
+.login-form .btn-primary:hover {
+    background-color: #2a2f4e;
+}
+
+.login-form .form-check-label {
+    color: var(--main-color);
+    font-size: 0.95rem;
+}
+
+.login-form a {
+    color: var(--main-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-form a:hover {
+    text-decoration: underline;
+}
+
 
 /* opening caption---------------------------------------- */
 .opening-caption p {
@@ -254,63 +310,20 @@ section {
 }
 /*footer---------------------------------------------------------------*/
 .site-footer {
-    background-color: #f7f8fc;
+    background-color: var(--light);
     color: var(--main-color);
-    border-top: 1px solid rgba(54, 59, 102, 0.2);
-    margin-top: 1.5rem;
-}
-
-.footer-content {
-    padding: 1.1rem 0;
-}
-
-.footer-top,
-.footer-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.footer-top {
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(54, 59, 102, 0.15);
-    margin-bottom: 0.75rem;
-}
-
-.footer-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--main-color);
-}
-
-.footer-subtitle,
-.footer-bottom p {
-    font-size: 0.9rem;
-    opacity: 0.85;
+    padding: 1.2rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border: var(--main-color) solid 1px ;
 }
 
 .site-footer a {
     color: var(--main-color);
     text-decoration: none;
-    font-weight: 500;
-}
-
-.footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
 }
 
 .site-footer a:hover {
-    text-decoration: underline;
-}
 
-@media (max-width: 768px) {
-    .footer-top,
-    .footer-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    text-decoration: underline;
 }
 

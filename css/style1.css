@@ -1,0 +1,777 @@
+html {
+  font-size: 10px;
+  /* color: 363B66; */
+  /* min-width: min-content; */
+}
+
+/* When the screen is 600px or smaller (Phone sizes)... */
+
+
+body {
+  background-color: #F5F5F5;
+  /* --- New Background Gradient --- */
+  background: linear-gradient(270deg, #C6D8F2 0%, #F4F4F4 53%);
+  color: #363B66;
+  margin: 0;
+  /* min-width: min-content; */
+  /* ορίζει font-size 1.8em και line-height 1.8 (άρα θα είναι 1.8 x {ό,τι είναι το font-size})*/
+  /* sets font-size to 1.8em and line-height to 1.8 (so it will be 1.8 x {whatever the font-size is})*/
+  font: 1.8em / 1.8 'Manrope', sans-serif;
+  /* font-family: 'Manrope', sans-serif; */
+}
+
+.container {
+  width: 100%;          
+  background-color: #FFFFFF;
+  display: flex;
+  margin: 0;  
+  margin-bottom: 5px;  
+  padding: 0.1em 0em;
+  min-width: 320px; /*elaxiso viewport gia na min spasei to layout */
+  /* min-width: min-content; */
+}
+
+
+nav{
+  text-align: center;
+  position: sticky;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;          
+  max-width: 1800px;    
+  margin: 0 auto; 
+  /* flex-wrap: wrap; */
+}
+
+ul {
+  display: flex;
+  align-items: center; 
+  padding-left: 0px;
+  margin-right: 10px;
+}
+
+ul li{
+  margin-left: 5px;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.logo a{
+  display: flex;
+  font-size: 200%;
+  padding-left: 10px ;
+  margin-right: 1px ;
+  width:max-content;
+  /* padding-bottom: 1px;
+  padding-bottom: 1px; */
+  line-height: 1.1; 
+  margin: 0;
+  /* max-width: 980px;*//* de thumamai */
+}
+
+@media (max-width: 703px) {
+  
+  /* ...apply these specific rules! */
+  .logo a{
+    font-size: 130%; /* Shrinks the logo so "Secretariat" fits inside its padding */
+    width:fit-content;
+
+  }
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+  
+}
+@media (max-width: 460px) {
+
+  html {
+  font-size: 10px;
+  min-width: min-content;
+}
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 540;
+  font-size: 20px;
+  line-height: 1.1; 
+
+}
+
+.rec a{
+  display: flex;        
+  align-items: center; 
+  gap: 3px;           
+  text-decoration: none;
+  color: #363B66;       
+}
+
+
+.circle{
+  /* 1. Make it a perfect square */
+  align-items: center;
+  margin-left: 6px;
+  padding:0px;
+  width: 40px;
+  height: 40px;  
+  border: 1px solid #363B66;
+  border-radius: 50%;
+  /* --- Bonus: Center the text inside the circle perfectly --- */
+  display: flex;
+  justify-content:center;
+
+  /* align-items: center; */
+  background:#F5F5F5;
+}
+
+.left-column input {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box; 
+  max-width: 300px;
+  background: #ecebeb;
+  /* --- New Styles for Rounded Corners --- */
+  border-radius: 8px;     /* This creates the rounded corners! */
+  padding: 13px;          /* Adds space inside the box so text isn't touching the edges */
+  border: 1px  #ccc; /* Gives it a clean, light-grey border */
+}
+
+.login-body input {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 300px;
+  background: #ecebeb;
+  /* --- New Styles for Rounded Corners --- */
+  border-radius: 8px;     /* This creates the rounded corners! */
+  padding: 13px;          /* Adds space inside the box so text isn't touching the edges */
+  border: 1px  #ccc; /* Gives it a clean, light-grey border */
+}
+
+fieldset{
+  border-radius: 8px; 
+}
+
+
+a{
+  /* margin-left: 20px;
+  margin-right: 20px; */
+  text-decoration-line: none;
+  align-items: center;
+  color: #363B66; 
+}
+
+/* select:hover{
+  background: orangered;
+} */
+
+li{
+  display: flex;
+  /* background-color: #F5F5F5; */
+  /* padding-right: 10px ; */
+  color: #363B66;
+
+}
+
+.rec{
+  /* padding-left: 0%; */
+  /* flex-direction: row; */
+  /* background-color: #F5F5F5; */
+  color: #363B66;
+  width:max-content;
+  height: 40px;  
+  padding: 0 5px;
+  line-height: 1;
+  /* border: 1px  #363B66; */
+  border-radius: 8px;
+  justify-content: center;
+  /* --- Bonus: Center the text inside the circle perfectly --- */
+  /* align-items: center; */
+  background:#F5F5F5;
+}
+
+.selected a{
+  color: red;
+}
+
+
+a:hover {  /* na valo klasi mesa sto a gia na allazoun xroma mono ta hover stin mpara */
+    /* background-color: #F5F5F5; */
+    color: rgb(91, 134, 209);
+    /* align-items: center; */
+}
+
+
+/* ----- Center the whole card on the page ------------------------------------------ */
+
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 105px);
+  /* margin-top: 30px; */
+}
+
+/* --- The Main White Card --- */
+.form-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 900px; /* Controls how wide the form gets */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow like in the image */
+  border: 1px solid #dcdcdc;
+  border-radius: 20px;
+}
+
+.card-header {
+  text-align: center;
+  padding:3px;
+  border-bottom: 1px solid #dcdcdc; /* Line under the title */
+  color: #363B66;
+  font-size: 15px;
+  /* border-top-right-radius: 20px;
+  border-top-left-radius: 20px; */
+}
+
+/* --- THE GRID MAGIC --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Creates 2 columns of equal width (1 fraction each) */
+}
+
+/* --- Columns Styling --- */
+.left-column {
+  padding: 30px;
+  padding-top: 35px;
+
+  background-color: #ffffff;
+  border-bottom-left-radius: 20px;
+}
+
+.right-column {
+  padding: 30px;
+  padding-top: 35px;
+  background-color: #EBEBEB; /* The light gray background from the image */
+  display: flex;
+  flex-direction: column; /* Stacks the textarea and button vertically */
+  border-bottom-right-radius: 20px;
+
+}
+
+/* --- Text Area Styling --- */
+textarea {
+  margin-top: 5px;
+
+  flex-grow: 1; /* Makes the textarea fill available height */
+  border-radius: 8px;
+  
+  /* --- THE FIX --- */
+  width: 100%;              /* Tells it to fill the card */
+  box-sizing: border-box;   /* Forces the padding to stay inside that 100%! */
+  
+  padding: 10px;
+  border: none;
+  resize: none; /* Stops users from dragging to resize it */
+  margin-bottom: 20px;
+  font-family: 'Manrope', sans-serif; 
+}
+
+/* --- Submit Button Styling --- */
+.submit-btn {
+  font: 1em 'Manrope', sans-serif;
+  font-weight: bold;
+  background-color: #363B66; /* Dark blue */
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 20px;
+  font-size: 1em;
+  cursor: pointer;
+  align-self: flex-end; /* Pushes the button to the right side */
+}
+
+/* Little red star for required fields */
+.required {
+  color: red;
+}
+
+
+/* gia to mellon */
+
+/* #fileUpload{
+  width: 20px;
+  displa: none;
+}
+input[type="file"]::file-selector-button {
+  display: none; 
+} */
+
+
+/* ========================================= */
+/* --- LOGIN PAGE SPECIFIC STYLES --- */
+/* ========================================= */
+
+.login-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 450px; /* Makes it much narrower than your 900px form */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
+  border-radius: 20px; /* Slightly sharper corners for this specific card */
+  overflow: hidden; /* Keeps the gray background inside the rounded corners */
+}
+
+.login-body {
+  background-color: #EBEBEB; /* Your light gray color */
+  padding: 10px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers everything perfectly */
+}
+
+/* White inputs for the login form */
+.login-body input {
+  margin-bottom:10px;
+  background-color: #FFFFFF;
+  height:34px;
+  border: none;
+  width: 100%;
+  max-width: 350px; /* Let inputs stretch slightly wider */
+  border-radius: 8px;     /* This creates the rounded corners! */
+  padding: 13px;
+}
+
+h3{
+  font-weight: 600;
+  font-size: 23px;
+}
+/* Make the text links small and centered */
+.small-link {
+  font-size: 0.7em;
+}
+p.small-link {
+  margin:2px;
+}
+
+/* Center the pill button */
+.login-btn {
+  align-self: center; /* Overrides the 'flex-end' from your main form */
+  width: 100%;
+  max-width: 250px;
+  margin: 10px;
+}
+
+::placeholder{
+  font: 14px 'Manrope', sans-serif;
+  color:#BEBEBE
+}
+
+
+/* ========================================= */
+/* --- DASHBOARD / TABLE PAGE STYLES --- */
+/* ========================================= */
+
+/* --- Top Nav Search Bar --- */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #F5F5F5;
+  /* justify-content: center ; */
+  /* box-sizing: border-box;  */
+  border-radius: 8px;
+  padding: 0px 10px;
+  flex-grow: 1;
+  max-width: 400px;
+  min-width: 96px;
+  margin-left:20px; /* Keeps it separated from logo and buttons */
+  margin-right: auto; /* Keeps it separated from logo and buttons */
+}
+
+.search-bar input {
+  font: 1em 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 200;
+  color:#363B66;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  width:100%;
+  /* flex-grow: 1; */
+  box-shadow: none;
+  
+}
+.search-bar svg {
+  /* This tells the browser: "NEVER shrink this item, keep its original size!" */
+  flex-shrink: 0; 
+}
+
+.search-bar input::placeholder {
+  font-size: 18px;
+}
+
+.search-bar input:focus {
+  outline: none; /* Removes the yellow glow when typing */
+}
+
+
+/* --- Dashboard Layout --- */
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- The Table Card --- */
+
+.table-card {
+  background: #ffffff;
+  width: 100%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05); 
+  border-radius: 8px;
+overflow-x: auto; /* Swapped from 'hidden' */}
+
+/* --- Table Styling --- */
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse; /* Removes weird gaps between table cells */
+  /* min-width: 700px; */
+  text-align: left;
+  color: #363B66;
+}
+
+.requests-table thead th {
+    padding: 25px 20px; 
+    line-height: 1.2; 
+    font-weight: 600;
+    border-bottom: 2px solid #EBEBEB;
+}
+.requests-table tbody td{
+  padding: 20px 20px;
+  line-height: 1.2; 
+}
+
+.col3,.col4{
+  text-align: center;
+}
+
+
+/* THE MAGIC: Zebra Striping! */
+/* This automatically makes every odd-numbered row a light gray! */
+.requests-table tbody tr:nth-child(odd) {
+  background-color: #F9F9F9;
+}
+
+/* --- Status Badges (Dots + Text) --- */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  line-height: 1; 
+}
+
+.status .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Specific Status Colors */
+.status-green { color: #27AE60; }
+.status-green .dot { background-color: #27AE60; }
+
+.status-orange { color: #F2994A; }
+.status-orange .dot { background-color: #F2994A; }
+
+.status-red { color: #EB5757; }
+.status-red .dot { background-color: #EB5757; }
+
+/* --- Edit Icons --- */
+.action-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.action-icon.active { background-color: #363B66; }
+.action-icon.disabled { background-color: #D3D3D3; cursor: not-allowed; }
+
+
+
+.table-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Pushes refresh button to the right */
+  align-items: center; /* Keeps them vertically aligned */
+  margin-bottom: 10px;
+}
+
+.refresh-btn {
+  display: flex;
+  gap:7px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9em;
+  font-weight: 600;
+  padding: 10px 10px;
+  border-radius: 8px; /* Slightly less rounded than the submit button */
+}
+
+/* --- αμα θέλουμε να παίξουμε κάτι με τα κουμπιά select των φίλτρων--- */
+/* .filter-group {
+  display: flex;
+  gap: 2px; 
+} */
+
+.filter-select {
+  background-color: #363B66; 
+  color: white;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9em;
+  font-weight: 600;
+  
+  /* Extra padding on the right (35px) to leave room for the arrow */
+  padding: 10px 35px 10px 10px; 
+  
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  
+  /* --- THE "PRO" TRICK FOR CUSTOM ARROWS --- */
+  appearance: none; 
+  
+  /* Point this to wherever you saved the file! */
+  background-image: url("images/arrow.svg"); 
+  
+  background-repeat: no-repeat;
+  background-position: center right 12px ; 
+  background-size: 18px auto;
+}
+
+.filter-select:focus {
+  outline: none; /* Removes the annoying browser glow when clicked */
+}
+
+option{
+    font-family: 'Manrope', sans-serif;
+    border-radius: 8px;
+}
+
+
+
+/* HIDE SHIT FOR JS */
+
+/* --- PROFILE DROPDOWN MENU --- */
+
+.profile-wrapper {
+  position: relative; /* Acts as the anchor for the dropdown menu */
+  list-style: none;
+}
+
+.profile-trigger {
+  cursor: pointer; 
+  user-select: none; /* Stops the "ΑΛ" text from turning blue if they double-click it */
+}
+
+/* The Hidden Menu Box */
+.profile-dropdown {
+  display: block;
+  position: absolute;
+  text-align: center;
+  top: 120%; /* Pushes it just below the circle */
+  right: 0;  /* Aligns it perfectly to the right edge of the circle */
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15); /* A slightly heavier shadow to make it pop */
+  min-width: 150px;
+  overflow: hidden;
+  z-index: 200; /* Makes sure it floats above your dashboard table */
+  line-height: 1.1;
+  /* Hides the menu by default with a smooth animation setup */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.profile-dropdown a{
+  transition: background 0.2s;
+  display: flex;
+  justify-content: column;
+  padding: 10px 20px;
+  gap:8px;
+  color: #363B66; 
+  text-decoration: none;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+}
+
+/* The magic class JavaScript will add to reveal the menu */
+.profile-wrapper.open .profile-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* The Logout Button Styling */
+
+
+.profile-dropdown a:hover {
+  background-color: #F9F9F9; /* A soft gray hover effect */
+  color:#494f8a;
+
+}
+
+/* --- The Divider Line --- */
+.dropdown-divider {
+  height: 1px;
+  background-color: #E0E0E0; /* A very light gray line */
+  margin: 0; /* Adds a tiny bit of breathing room above and below the line */
+}
+
+
+
+
+
+
+
+
+/* --- LEPTOMERIES TWN TICKETS ADMIN --- */
+
+
+
+
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #dadadac0; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* z-index: 1000;  */
+  
+  /* Hide it by default */
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+/* The class JS will add to show it */
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+/* ---------------- POP UP CARD ---------------- */
+
+
+.modal-content{
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex; /* Creates the 3 columns */
+  width: 850px;
+  max-width: 95%;
+  min-height: 400px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden; /* Keeps the gray column from spilling out of the rounded corners */
+}
+
+/* The Columns */
+.modal-col {
+  flex: 1; /* Makes all 3 columns exactly equal width */
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Spacing between rows */
+}
+
+.col-white { background: #ffffff; }
+.col-gray { background: #EBEBEB; } /* The light gray background */
+
+/* Typography inside the modal */
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: 'Manrope', sans-serif;
+}
+
+.label {
+  font-weight: 600;
+  color: #363B66;
+}
+
+.value {
+  color: #6C7293;
+  font-size: 0.95em;
+}
+
+/* Buttons and Inputs */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #363B66;
+  cursor: pointer;
+  align-self: flex-start;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.status-select {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #10B981; /* Green border */
+  color: #10B981;
+  font-weight: 700;
+  background: transparent;
+  width: max-content;
+  cursor: pointer;
+}
+
+.description-box {
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  height: 250px;
+  background: #ffffff;
+}
+
+/* Make table rows look clickable */
+.requests-table tbody tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.requests-table tbody tr:hover {
+  background-color: #2131411e; /* Slight highlight when mouse is over a row */
+}
