@@ -355,6 +355,9 @@ p a {
   color:#BEBEBE
 }
 
+.login-body ::placeholder{
+  padding-left: 15px;
+}
 
 /* ------------ viewtickets pages----------- */
 
