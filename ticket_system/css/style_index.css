@@ -12,13 +12,13 @@
 body {
     margin: 0;
     padding: 0;
-    
+    font: 1em / 1 'Manrope', sans-serif;
 }
 
 /*navbar-------------------------*/
 nav img{
-    width: 2rem;
-    height: 2rem;
+    width: 36px !important;
+    height: 36px !important;
 }
 nav .avatar-icon img{
     width: 1.8rem;
@@ -32,15 +32,17 @@ nav .avatar-icon a{
 nav .avatar-icon .nav-item{
         display: flex;
         align-items: center;
+        /* margin-right:20px; */
+        /* margin: 12px 0px; */
 }
 .navbar {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 .portal-navbar {
     /* --bs-navbar-padding-y: 0; */
     padding: 0;
-    font: 1em sans-serif;
+    font: 1em / 1 'Manrope', sans-serif;
     background-color: var(--light);
 }
 .collapse{
@@ -49,8 +51,10 @@ nav .avatar-icon .nav-item{
 .portal-navbar .container-fluid {
     /*space between items*/
     gap: 1rem;
-    padding: 0 1rem;
+    padding: 0 0rem;
     align-items: stretch;
+    margin-right: 10px;
+    /* max-height: 80px;  */
 }
 
 .portal-navbar a {
@@ -75,10 +79,11 @@ nav .avatar-icon .nav-item{
 
 .portal-navbar .not-active:hover {
     background-color: var(--navbar-selected-color);
-    font-weight: 550;
+    /* font-weight: 550; */
 }
-.portal-navbar .active:hover {
-    font-weight: 550;
+ .portal-navbar .active:hover {
+    /* font-weight: 550; */
+    color: rgb(91, 134, 209); 
 }
 
 img {
@@ -90,8 +95,8 @@ img {
 
 
 .avatar-icon img:hover {
-    box-shadow:0 1px 12px var(--main-color);
-    border: var(--dark) solid 1px;
+    box-shadow:0 0px 7px #7d7d7d; /*allagi*/
+    /* border: var(--dark) solid 1px; */
 }
 
 /*login modal---------------------------------------------------------------*/
@@ -161,15 +166,18 @@ img {
 .opening-caption h1 {
     font-size: clamp(2.5rem, 8vw, 4.5rem);
     opacity: 0.9;
-    line-height: 4.5rem;
+    line-height: 5rem;
 }
 
 .opening-caption {
-    font-family: 'Space Grotesk', sans-serif;
-    /* position: absolute; 
-    bottom: 7vh;
-    left: 7vw; */
+    
+    text-shadow: 0px 2px 15px rgba(42, 39, 39, 0.9);
+    font-family: 'Manrope', sans-serif;
+    position: absolute; 
+    bottom: calc(1vh + 105px); /* 10vh for the gap from the bottom, 105px for the navbar height */
 }
+
+
 #opening-section {
     position: relative;
     height: 100vh;
@@ -188,7 +196,7 @@ img {
     border-left: 0.1875rem solid var(--light);
     border-bottom: 0.1875rem solid var(--light);
     position: absolute;
-    bottom: 1.875rem;
+    bottom: 6rem;
     left: 50%;
     transform: translateX(-50%) rotate(-45deg);
     animation: scrollArrow 1.5s infinite;
@@ -327,3 +335,66 @@ section {
     text-decoration: underline;
 }
 
+
+
+/* alexis pragmata */
+.card-text{
+    line-height: 1.5; /* gia na exoun pio polu keno ta email stis karteles */
+}
+
+@media (max-width: 460px) {
+
+  html {
+  min-width: min-content;
+}
+}
+
+/* .navbar-toggler, .navbar-toggler.collapsed {
+    border: none;
+} */
+
+.container-fluid{
+    min-width: 320px;
+    min-height:60.8px;
+    max-width: 1800px;   
+    align-items: center;
+
+}
+
+.nav-item{
+    font-weight: 600;
+    padding:0 !important;
+}
+.logo:hover{
+  /* color: #363B66; */
+  color: rgb(91, 134, 209);
+}
+
+.nav-link:hover, .navbar-brand.gap-1:hover{
+    color: var(--main-color);
+}
+.navbar-brand.gap-1{
+    display:flex;
+    align-items: center;
+    padding-left:10px;
+    letter-spacing: normal; /*xriste mou*/
+}
+
+.nav-link{
+    padding: 15px 25px !important;
+}
+
+
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    outline: none;
+    box-shadow: none;
+    border: none; 
+}
+
+.avatar-icon .nav-item .nav-link{
+    padding: 0px !important;
+    margin: 10px 0px;
+    margin-left: 25px;
+}
