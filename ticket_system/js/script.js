@@ -1,5 +1,5 @@
   const profileWrapper = document.querySelector('.profile-wrapper');
-  const profileTrigger = document.querySelector('.profile-trigger');
+  const profileTrigger = document.querySelector('#avatar');
 
   profileTrigger.addEventListener('click', (e) => {
     e.stopPropagation(); 

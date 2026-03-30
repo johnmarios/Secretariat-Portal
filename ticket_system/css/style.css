@@ -1,22 +1,233 @@
+:root {
+    --main-color:#363B66;
+    --navbar-selected-color:#dcdada80;
+    --light: #fff;
+    --dark: #000;
+    /* --line-color:#F1F1F1CC */
+    --theme-color:#F4F4F4;
+    --member-color: #E8E8E8;
+    --light-gray: #EBEBEB;
+    --dark-gray: #D1D5DB;
+    --placeholder-color: #BEBEBE;
+    --searchbar-color: #F5F5F5;
+    --searchbar-hover: #f8f8f8;
+    
+}
 html {
-  font-size: 10px;
+  /* font-size: 10px; */
+  scroll-behavior: smooth;
   /* color: 363B66; */
   /* min-width: min-content; */
+}
+/* ==================== homepage========================= */
+section {
+    scroll-margin-top: 80px;
+    min-height: 100vh; 
+    /* every section has the same height (100vh) */
+}
+
+/* opening caption---------------------------------------- */
+#opening-section .opening-caption p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* only h1 changes due to responsiveness */
+#opening-section .opening-caption h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    opacity: 0.9;
+    line-height: 5rem;
+}
+
+#opening-section .opening-caption {
+    text-shadow: 0px 2px 15px rgba(42, 39, 39, 0.9);
+    font-family: 'Manrope', sans-serif;
+    position: absolute; 
+    bottom: calc(1vh + 105px); /* 10vh for the gap from the bottom, 105px for the navbar height */
+}
+
+
+#opening-section {
+    position: relative;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
+    url('../images/dom-fou-YRMWVcdyhmI-unsplash.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+/*hanlder for scroll arrow animation-------------------------*/
+#opening-section .scroll-arrow {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-left: 0.1875rem solid var(--light);
+    border-bottom: 0.1875rem solid var(--light);
+    position: absolute;
+    bottom: 6rem;
+    left: 50%;
+    transform: translateX(-50%) rotate(-45deg);
+    animation: scrollArrow 1.5s infinite;
+}
+
+@keyframes scrollArrow {
+    0% {
+        transform: rotate(-45deg) translateY(0);
+        opacity: 0;
+    }
+    
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(-45deg) translateY(0.625rem);
+        opacity: 0;
+    }
+}
+#info  {
+    background-color: var(--theme-color);
+}
+/*info section---------------------------------------------------------------*/
+#info .custom-hr {
+    border: var(--dark) solid 1px; /* boostrap has default opacity -> grey */
+    background-color: var(--dark);
+    height: 0.2rem;
+    margin: 0.5rem 0;
+    border-radius: 0.05rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+#info .custom-info{
+    font-size: 1.4rem;
+    color: var(--main-color);
+}
+/*cards---------------------------------------------------------*/
+#info .icon-slot /*card header*/{
+    position: relative;
+    height: 4rem;
+}
+
+#info .card-img-top {
+    position: absolute; /* position absolute to icon-slot*/
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#info .phone .card-img-top {
+    width: 27rem;
+    height: 27rem;
+    padding-left: 4rem;
+    padding-top: 3.5rem;
+}
+#info .email .card-img-top {
+    width: 4.5rem;
+    height: 4.5rem;
+    padding-top: 0.1em;
+
+}
+
+#info .hours .card-img-top {
+    width: 3rem;
+    height: 3rem;
+}
+
+#info .card-footer{
+    margin: 0 -1rem -1rem -1rem; /*top right bottom left*/
+    padding: 1rem;
+    border-top: none;
+}
+#info .card{
+    border: var(--main-color) solid 1px;
+    border-radius: 0.5rem;
+    box-shadow: 6px 6px 2px rgba(0, 0, 0, 0.16); /*args: horizontal offset, vertical offset, blur radius, color*/
+}
+#info .card {
+    transition: transform 0.2s ease;
+}
+
+#info .card:hover {
+    transform: translateY(-0.3rem); /* σηκώνεται ελάχιστα προς τα πάνω */
+}
+
+/*team section---------------------------------------------------------------*/
+#team {
+    background-color: var(--theme-color);
+}
+#team .team-img img{
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    transition: box-shadow 0.5s ease, border 0.5s ease;
+}
+#team .member1{
+    background-color: var(--navbar-selected-color);
+    box-shadow: 0 0 0 100vmax var(--navbar-selected-color);
+    clip-path: inset(0 -100vmax);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+#team .member2{
+    background-color: var(--navbar-selected-color);
+    box-shadow: 0 0 0 100vmax var(--navbar-selected-color); 
+    /* blur-radius:0 spread-radius: 100vmax */
+    clip-path: inset(0 -100vmax);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+/*footer---------------------------------------------------------------*/
+.site-footer {
+    background-color: var(--light);
+    color: var(--main-color);
+    padding: 1.2rem 0;
+    /* border-top: 1px solid rgba(255, 255, 255, 0.2); */
+    border-top: var(--main-color) solid 1px ;
+}
+
+.site-footer a {
+    color: var(--main-color);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+
+    text-decoration: underline;
 }
 
 
 
-body {
+/* alexis pragmata */
+#info .card-text{
+    line-height: 1.5; /* gia na exoun pio polu keno ta email stis karteles */
+}
+
+/* ============= for zoom========================= */
+@media (max-width: 460px) {
+
+    html {
+        min-width: min-content;
+    }
+}
+
+
+/* details for most of the pages */
+body:not(.index-page) {
   background-color: #F5F5F5;
   background: linear-gradient(270deg, #C6D8F2 0%, #F4F4F4 53%);
   color: #363B66;
   margin: 0;
+  padding: 0;
   /* min-width: min-content; */
-  font: 1.8em / 1.8 'Manrope', sans-serif;
+  font: 1rem / 1 'Manrope', sans-serif;
+  /* font-size/line-height */
   /* font-family: 'Manrope', sans-serif; */
 }
 
-.container {
+
+/* ====================== LOGIN PAGE ====================== */
+
+body.login-page .container {
   width: 100%;          
   background-color: #FFFFFF;
   display: flex;
@@ -29,110 +240,88 @@ body {
 }
 
 
-nav{
-  text-align: center;
-  position: sticky;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;          
-  max-width: 1800px;   
-  margin: 0 auto; 
-  /* flex-wrap: wrap; */
-}
 
-ul {
-  display: flex;
-  align-items: center; 
-  padding-left: 0px;
-  margin-right: 10px;
-}
 
-ul li{
-  margin-left: 5px;
-}
-
-.nav-icon{
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-.user-icon{
-  width: 2em;
-  height: 2em;
-  object-fit: contain;
-}
-
-.logo-icon {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.logo a{
-  display: flex;
-  font-size: 20px;
-  padding-left: 10px ;
-  margin-right: 1px ;
-  width:max-content;
-  gap: 4px;
-  /* padding-bottom: 1px;
-  padding-bottom: 1px; */
-  line-height: 1; 
-  margin: 0;
-  /* max-width: 980px;*//* de thumamai */
-}
-
-@media (max-width: 703px) {
-  .logo a{
-    width:fit-content;
-
-  }
-  .logo-icon {
-    object-fit: contain;
-  }
-}
-
-@media (max-width: 499px) {
-  html {
-  min-width: min-content;
-}
-
-}
-
-label {
+/* label {
   display: block;
   margin-bottom: 5px;
   font-weight: 540;
   font-size: 20px;
   line-height: 1.1; 
 
+} */
+
+.login-page .login-card {
+  background: var(--light);
+  width: 100%;
+  max-width: 450px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
+  border-radius: 20px; 
+  overflow: hidden; /*gia mi fainontai oi gonies exw apo ta rounderd corners */
 }
 
-.rec a{
-  display: flex;        
-  align-items: center; 
-  gap: 3px;           
-  text-decoration: none;
-  color: #363B66;       
-  font-weight:600;
-}
-
-
-.circle{
-  align-items: center;
-  margin-left: 6px;
-  padding:0px;
-  width: 40px;
-  height: 40px;  
-  border: 1px solid #363B66;
-  border-radius: 50%;
+.login-page .login-body {
+  background-color: var(--light-gray); 
+  padding: 1rem 5rem;
   display: flex;
-  justify-content:center;
-  background:#F5F5F5;
+  flex-direction: column;
+  align-items: center; 
 }
 
-.left-column input {
+.login-page .login-body input {
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 350px;
+  height: 34px;
+  background-color: var(--light);
+  border: none;
+  border-radius: 50px;     
+  padding: 1rem;
+  font-size:large;
+}
+
+.login-page .login-card h3{
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.login-page .login-body .small-link {
+  font-size: 0.8rem;
+}
+.login-page .login-body p.small-link {
+  margin: 0.3rem;
+}
+.login-page .login-body p.small-link a,
+.login-page .login-body p.small-link a:visited {
+  display: inline;
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.login-page .login-body p.small-link a:hover {
+  color: #0a58ca;
+  text-decoration: underline;
+}
+
+.login-page .login-btn {
+  align-self: center; 
+  width: 100%;
+  max-width: 250px;
+  margin: 1.2rem;
+}
+
+.login-page .login-body ::placeholder{
+  font: 14px 'Manrope', sans-serif;
+  color:var(--placeholder-color);
+  padding-left: 1.5rem;
+}
+
+
+
+/* =================== SUBMIT ==================*/
+
+.ticket-submit .left-column input {
   margin-top: 5px;
   margin-bottom: 20px;
   width: 100%;
@@ -144,65 +333,10 @@ label {
   border: 1px  #ccc; 
 }
 
-
-fieldset{
-  border-radius: 8px; 
-}
-
-
-a{
-  display: flex;
-  /* margin-left: 20px;
-  margin-right: 20px; */
-  text-decoration-line: none;
-  align-items: center;
-  color: #363B66; 
-}
-
-/* select:hover{
-  background: orangered;
-} */
-
-li{
-  display: flex;
-  /* background-color: #F5F5F5; */
-  /* padding-right: 10px ; */
-  color: #363B66;
-
-}
-
-.rec{
-  /* padding-left: 0%; */
-  /* flex-direction: row; */
-  /* background-color: #F5F5F5; */
-  color: #363B66;
-  width:max-content;
-  height: 40px;  
-  padding: 0 5px;
-  line-height: 1;
-  /* border: 1px  #363B66; */
-  border-radius: 8px;
-  justify-content: center;
-  /* align-items: center; */
-  background:#F5F5F5;
-}
-
-.selected a{
-  color: red;
-}
-
-
-a:hover {  /* na valo klasi mesa sto a gia na allazoun xroma mono ta hover stin mpara */
-    /* background-color: #F5F5F5; */
-    color: rgb(91, 134, 209);
-    /* align-items: center; */
-}
-
-
 /* ----- Karta upovolis ------------------------------------------ */
 
 
-main {
+body:not(.index-page) main {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -210,7 +344,7 @@ main {
   /* margin-top: 30px; */
 }
 
-.form-card {
+.ticket-submit .form-card {
   background: #ffffff;
   width: 100%;
   max-width: 900px; 
@@ -219,7 +353,7 @@ main {
   border-radius: 20px;
 }
 
-.card-header {
+.ticket-submit .card-header {
   text-align: center;
   padding:3px;
   border-bottom: 1px solid #dcdcdc; 
@@ -230,12 +364,12 @@ main {
 }
 
 /* --- grid --- *//*mporousame kai me flex...*/
-.form-grid {
+.ticket-submit .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr; /* ftiaxnei duo columns me to idio width */
 }
 
-.left-column {
+.ticket-submit .left-column {
   padding: 30px;
   padding-top: 35px;
 
@@ -243,7 +377,7 @@ main {
   border-bottom-left-radius: 20px;
 }
 
-.right-column {
+.ticket-submit .right-column {
   padding: 30px;
   padding-top: 35px;
   background-color: #EBEBEB; 
@@ -253,7 +387,7 @@ main {
 
 }
 
-textarea {
+.ticket-submit textarea {
   margin-top: 5px;
   flex-grow: 1; /* pianei to available height available height */
   border-radius: 8px;
@@ -266,7 +400,7 @@ textarea {
   font-family: 'Manrope', sans-serif; 
 }
 
-.submit-btn {
+.ticket-submit .submit-btn {
   font: 1em 'Manrope', sans-serif;
   font-weight: bold;
   background-color: #363B66; 
@@ -296,112 +430,8 @@ input[type="file"]::file-selector-button {
 
 
 
-/* ------------ LOGIN PAGE ------------- */
-
-
-.login-card {
-  background: #ffffff;
-  width: 100%;
-  max-width: 450px; 
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
-  border-radius: 20px; 
-  overflow: hidden; /*gia mi fainontai oi gonies exw apo ta rounderd corners */
-}
-
-.login-body {
-  background-color: #EBEBEB; 
-  padding: 1px 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-}
-
-.login-body input {
-  margin-top: 5px;
-  margin-bottom: 10px;
-  width: 100%;
-  max-width: 350px;
-  height: 34px;
-  background-color: #FFFFFF;
-  border: none;
-  border-radius: 50px;     
-  padding: 13px;
-}
-
-h3{
-  font-weight: 600;
-  font-size: 23px;
-}
-
-.small-link {
-  font-size: 0.7em;
-}
-p.small-link {
-  margin:2px;
-}
-p a {
-  display: inline; 
-}
-
-.login-btn {
-  align-self: center; 
-  width: 100%;
-  max-width: 250px;
-  margin: 10px;
-}
-
-::placeholder{
-  font: 14px 'Manrope', sans-serif;
-  color:#BEBEBE
-}
-
-.login-body ::placeholder{
-  padding-left: 15px;
-}
-
 /* ------------ viewtickets pages----------- */
 
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: #F5F5F5;
-  /* justify-content: center ; */
-  /* box-sizing: border-box;  */
-  border-radius: 8px;
-  padding: 0px 10px;
-  flex-grow: 1;
-  max-width: 400px;
-  min-width: 96px;
-  margin-left:20px; /* apostasi apo to logo*/
-  margin-right: auto; 
-}
-
-.search-bar input {
-  font: 1em 'Manrope', sans-serif;
-  font-size: 18px;
-  font-weight: 200;
-  color:#363B66;
-  background: transparent;
-  border: none;
-  padding: 10px;
-  width:100%;
-  /* flex-grow: 1; */
-  box-shadow: none;
-  
-}
-.search-bar svg {
-  /* apagoreuei to browser na mikrenei to svg auto */
-  flex-shrink: 0; 
-}
-
-.search-bar input::placeholder {
-  font-size: 18px;
-}
-
-.search-bar input:focus {
-  outline: none; /* afairei to glow me to type */
-}
 
 
 
@@ -425,7 +455,9 @@ p a {
   border-radius: 8px;
   overflow-x: auto;}
 
-.requests-table {
+  /* ================ ΔΗΜΙΟΥΡΓΙΑ ΑΙΤΗΜΑΤΟΣ=============== */
+
+.form-card .requests-table {
   width: 100%;
   border-collapse: collapse; /* bgazei kati perierga gaps metaksi twn cells tou table */
   /* min-width: 700px; */
@@ -439,12 +471,12 @@ p a {
     font-weight: 600;
     border-bottom: 2px solid #EBEBEB;
 }
-.requests-table tbody td{
+.form-card .requests-table tbody td{
   padding: 20px 20px;
   line-height: 1.2; 
 }
 
-.col3,.col4{
+ .col3,.col4{
   text-align: center;
 }
 
@@ -546,77 +578,6 @@ option{
     font-family: 'Manrope', sans-serif;
     border-radius: 8px;
 }
-
-
-
-/* HIDE SHIT FOR JS */
-
-/* --- PROFILE DROPDOWN MENU --- */
-
-.profile-wrapper {
-  position: relative; /* anchor */
-  list-style: none;
-}
-
-.profile-trigger {
-  cursor: pointer; 
-  user-select: none; /* apagoreuei to ΣΡ na mporei na ginei selected ws text */
-}
-
-.profile-dropdown {
-  display: block;
-  position: absolute;
-  text-align: center;
-  top: 120%; /* to vazei kato apo ton kuklo*/
-  right: 0;  /* terma deksia */
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15); 
-  min-width: 150px;
-  overflow: hidden;
-  z-index: 200; 
-  line-height: 1.1;
-  /* krufo by default */
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
-
-.profile-dropdown a{
-  transition: background 0.2s;
-  display: flex;
-  justify-content: column;
-  padding: 10px 20px;
-  gap:8px;
-  color: #363B66; 
-  text-decoration: none;
-  font-family: 'Manrope', sans-serif;
-  font-weight: 600;
-}
-
-.profile-wrapper.open .profile-dropdown {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-
-.profile-dropdown a:hover {
-  background-color: #F9F9F9; 
-  color:#494f8a;
-
-}
-
-.dropdown-divider {
-  height: 1px;
-  background-color: #E0E0E0; 
-  margin: 0; 
-}
-
-
-
-
 
 
 
@@ -770,3 +731,58 @@ option{
   background-color: #EBEBEB; 
 } */
 
+/*login modal---------------------------------------------------------------*/
+.modal-content {
+    border: 1px solid rgba(54, 59, 102, 0.2);
+    border-radius: 0.5rem;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(54, 59, 102, 0.15);
+}
+
+.modal-title {
+    color: var(--main-color);
+    font-weight: 700;
+}
+
+.login-form .form-label {
+    color: var(--main-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.login-form .form-control {
+    border: 1px solid rgba(54, 59, 102, 0.3);
+    border-radius: 0.35rem;
+}
+
+.login-form .form-control:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 0.2rem rgba(54, 59, 102, 0.15);
+}
+
+.login-form .btn-primary {
+    background-color: var(--main-color);
+    border: none;
+    font-weight: 600;
+}
+
+.login-form .btn-primary:hover {
+    background-color: #2a2f4e;
+}
+
+.login-form .form-check-label {
+    color: var(--main-color);
+    font-size: 0.95rem;
+}
+
+.login-form a {
+    color: var(--main-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-form a:hover {
+    text-decoration: underline;
+}
