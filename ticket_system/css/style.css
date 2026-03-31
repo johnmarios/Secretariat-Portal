@@ -227,18 +227,6 @@ body:not(.index-page) {
 
 /* ====================== LOGIN PAGE ====================== */
 
-body.login-page .container {
-  width: 100%;          
-  background-color: #FFFFFF;
-  display: flex;
-  margin: 0;  
-  margin-bottom: 5px;  
-  /* padding: 0.1em 0em; */
-  min-width: 320px; /*elaxiso viewport gia na min spasei to layout */
-  height:64px;
-  /* min-width: min-content; */
-}
-
 
 
 
@@ -251,7 +239,19 @@ body.login-page .container {
 
 } */
 
+
+.login-main{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 105px); /* gia na min exei overflow to body */
+}
+
 .login-page .login-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center ;
+  align-items: center;
   background: var(--light);
   width: 100%;
   max-width: 450px; 
@@ -262,7 +262,7 @@ body.login-page .container {
 
 .login-page .login-body {
   background-color: var(--light-gray); 
-  padding: 1rem 5rem;
+  padding: 1rem 7rem;
   display: flex;
   flex-direction: column;
   align-items: center; 
@@ -277,13 +277,14 @@ body.login-page .container {
   background-color: var(--light);
   border: none;
   border-radius: 50px;     
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   font-size:large;
 }
 
 .login-page .login-card h3{
   font-weight: 600;
   font-size: 1.5rem;
+  margin:1.2rem;
 }
 
 .login-page .login-body .small-link {
@@ -317,6 +318,18 @@ body.login-page .container {
   padding-left: 1.5rem;
 }
 
+.login-page .submit-btn {
+  font: 1em 'Manrope', sans-serif;
+  font-weight: bold;
+  background-color: var(--main-color); 
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 20px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
 
 
 /* =================== SUBMIT ==================*/
@@ -333,10 +346,36 @@ body.login-page .container {
   border: 1px  #ccc; 
 }
 
+
 /* ----- Karta upovolis ------------------------------------------ */
 
+/* Labels left, inputs right for wide screens */
 
-body:not(.index-page) main {
+@media (min-width: 768px) {
+  .ticket-submit .left-column {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 12px 18px;
+  }
+  .ticket-submit .left-column label {
+    text-align: right;
+    justify-self: end;
+    margin-bottom: 0;
+    padding-right: 8px;
+    
+  }
+  .ticket-submit .left-column input {
+    justify-self: start;
+    margin-bottom: 12px;
+  }
+}
+
+.ticket-submit .left-column label {
+  font-weight: 600;
+ }
+
+body.ticket-submit main {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -361,6 +400,9 @@ body:not(.index-page) main {
   font-size: 15px;
   /* border-top-right-radius: 20px;
   border-top-left-radius: 20px; */
+}
+.ticket-submit .card-header h1{
+  font-size: 1.8rem;
 }
 
 /* --- grid --- *//*mporousame kai me flex...*/
@@ -403,7 +445,7 @@ body:not(.index-page) main {
 .ticket-submit .submit-btn {
   font: 1em 'Manrope', sans-serif;
   font-weight: bold;
-  background-color: #363B66; 
+  background-color: var(--main-color);
   color: white;
   border: none;
   padding: 15px 30px;
@@ -413,7 +455,7 @@ body:not(.index-page) main {
   align-self: flex-end; /* to sproxnei sta deksia*/
 }
 
-.required {
+.ticket-submit .required {
   color: red;
 }
 
@@ -446,23 +488,47 @@ input[type="file"]::file-selector-button {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+ /* μισό ύψος table */
+
 }
+
 
 .table-card {
   background: #ffffff;
   width: 100%;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05); 
   border-radius: 8px;
-  overflow-x: auto;}
+  overflow-x: auto; /* gia na fainetai to horizontal scrollbar otan xreiazetai */
+  /* padding: 2rem; */
+    position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 1200px;
+}
+
+
 
   /* ================ ΔΗΜΙΟΥΡΓΙΑ ΑΙΤΗΜΑΤΟΣ=============== */
 
-.form-card .requests-table {
+.requests-table {
   width: 100%;
   border-collapse: collapse; /* bgazei kati perierga gaps metaksi twn cells tou table */
   /* min-width: 700px; */
   text-align: left;
   color: #363B66;
+}
+.requests-table .left-column{
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  gap: 5px;
+}
+/* .requests-table .left-col label{
+  text-align: left;
+} */
+.requests-table .left-column input {
+  text-align: right;
 }
 
 .requests-table thead th {
@@ -471,7 +537,7 @@ input[type="file"]::file-selector-button {
     font-weight: 600;
     border-bottom: 2px solid #EBEBEB;
 }
-.form-card .requests-table tbody td{
+.requests-table tbody td{
   padding: 20px 20px;
   line-height: 1.2; 
 }
