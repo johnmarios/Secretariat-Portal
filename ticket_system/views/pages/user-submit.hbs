@@ -1,0 +1,31 @@
+{{> dashboard-navbar ticketHref="/user/tickets" ticketLabel="Αιτήματα"}}
+
+<main>
+  <article class="form-card">
+    <div class="card-header">
+      <h1>Δημιουργία Αιτήματος</h1>
+    </div>
+
+    <form action="#" class="form-grid">
+      <div class="left-column">
+        <label for="firstName">Θέμα<span class="required">*</span>:</label>
+        <input type="text" name="name" id="firstName" required>
+
+        <label for="onomateponumo">Ονοματεπώνυμο<span class="required">*</span>:</label>
+        <input type="text" name="onomateponumo" id="onomateponumo" required>
+
+        <label for="email">Email<span class="required">*</span>:</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="fileUpload">Επισύναψη Αρχείου:</label>
+        <input type="file" id="fileUpload" name="fileUpload">
+      </div>
+
+      <div class="right-column">
+        <label for="description">Περιγραφή Αιτήματος<span class="required">*</span>:</label>
+        <textarea id="description" name="description" placeholder="Περιγράψτε αναλυτικά το αίτημά σας..." required></textarea>
+        <button type="submit" class="submit-btn">Υποβολή</button>
+      </div>
+    </form>
+  </article>
+</main>

@@ -1,0 +1,80 @@
+{{> home-navbar}}
+
+<div class="d-flex flex-column min-vh-100">
+  <main class="flex-grow-1 overflow-auto">
+    <section id="opening-section" class="d-flex flex-column">
+      <div class="flex-grow-1 d-flex align-items-end">
+        <div class="container pb-5">
+          <div class="opening-caption text-light">
+            <p class="mb-2">ΓΡΑΜΜΑΤΕΙΑ ΠΑΝΕΠΙΣΤΗΜΙΑΚΟΥ ΤΜΗΜΑΤΟΣ</p>
+            <h1 class="mb-4">Διαχείριση <br> Αιτημάτων</h1>
+            <span>Κάνε scroll για είσοδο στην εφαρμογή</span>
+          </div>
+          <div class="scroll-arrow"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="info" class="py-5">
+      <div class="container">
+        <div class="row mb-4 col-12">
+          <div class="col-12">
+            <h1 class="custom-info mb-1 px-4">Πληροφορίες</h1>
+            <hr class="custom-hr w-75">
+          </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          {{#each infoCards}}
+          <div class="col">
+            <div class="card text-center h-100 p-3 {{cardClass}}">
+              <div class="icon-slot">
+                <img src="/images/{{icon}}" class="card-img-top" alt="{{alt}}">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{title}}</h5>
+                <p class="card-text">{{{text}}}</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-body-secondary">{{footer}}</small>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </section>
+
+    <section id="team" class="py-5">
+      <div class="container">
+        <div class="row mb-4 col-12">
+          <div class="col-12">
+            <h1 class="custom-info mb-1 px-4">Ομάδα</h1>
+            <hr class="custom-hr w-75">
+          </div>
+        </div>
+
+        <div class="row">
+          {{#each teamMembers}}
+          <div class="col-12 col-lg-10 member{{add @index 1}}">
+            <div class="d-flex flex-column flex-md-row align-items-start">
+              <div class="team-img me-3">
+                <img src="/images/{{image}}" class="team-member-img" alt="{{alt}}">
+              </div>
+
+              <div class="team-info">
+                <h2 class="team-name">{{name}}</h2>
+                <p class="team-role">{{role}}</p>
+                <p><strong>Email:</strong> <a href="mailto:{{email}}">{{email}}</a></p>
+                <p><strong>GitHub:</strong> <a href="{{githubLink}}" target="_blank" rel="noreferrer">{{github}}</a></p>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {{> footer}}
+</div>

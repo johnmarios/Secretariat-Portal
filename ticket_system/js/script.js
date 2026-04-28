@@ -1,17 +1,18 @@
   const profileWrapper = document.querySelector('.profile-wrapper');
   const profileTrigger = document.querySelector('#avatar');
 
-  profileTrigger.addEventListener('click', (e) => {
-    e.stopPropagation(); 
-    
-    profileWrapper.classList.toggle('open');
-  });
+  if (profileWrapper && profileTrigger) {
+    profileTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileWrapper.classList.toggle('open');
+    });
 
-  document.addEventListener('click', (e) => {
-    if (!profileWrapper.contains(e.target)) {
-      profileWrapper.classList.remove('open');
-    }
-  });
+    document.addEventListener('click', (e) => {
+      if (!profileWrapper.contains(e.target)) {
+        profileWrapper.classList.remove('open');
+      }
+    });
+  }
 
 // ==========================================
 //  TICKET DETAILS POP UP WINDOW
@@ -21,7 +22,7 @@ const modal = document.getElementById('ticketModal');
 const closeBtn = document.getElementById('closeModalBtn');
 const tableRows = document.querySelectorAll('.requests-table tbody tr');
 
-if (modal && tableRows.length > 0) {
+if (modal && closeBtn && tableRows.length > 0) {
   
   tableRows.forEach(row => {
     row.addEventListener('click', () => {

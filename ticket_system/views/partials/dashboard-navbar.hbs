@@ -1,0 +1,39 @@
+<nav class="navbar tickets-navbar viewtickets-page sticky-top navbar-expand-md">
+  <div class="container-fluid">
+    <a class="navbar-brand gap-2" href="/">
+      <img src="/images/University_hat_icon.svg" alt="Secretariat Portal logo">
+      <span>Secretariat Portal</span>
+    </a>
+
+    <div class="search-bar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0A0A0" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" placeholder="Αναζήτηση...">
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-md-center">
+        <li class="nav-item requests">
+          <a class="nav-link" href="{{ticketHref}}">
+            <img src="/images/ticket_icon.svg" alt="Ticket icon" class="nav-icon me-2">
+            <span>{{ticketLabel}}</span>
+          </a>
+        </li>
+        <li class="nav-item user-icon profile-wrapper">
+          <a class="nav-link" href="#" aria-label="Profile menu">
+            <img alt="Avatar" id="avatar">
+          </a>
+          <div class="profile-dropdown">
+            <a href="/login"><img src="/images/exit.svg" alt="" class="nav-icon">Αποσύνδεση</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

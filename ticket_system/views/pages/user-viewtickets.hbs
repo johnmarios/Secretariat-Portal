@@ -1,0 +1,30 @@
+{{> dashboard-navbar ticketHref="/user/submit" ticketLabel="Νέο Αίτημα"}}
+
+<main class="dashboard-main">
+  <div class="table-card">
+    <table class="requests-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Θέμα</th>
+          <th class="col3">Ημερομηνία Υποβολής</th>
+          <th class="col4">Ημερομηνία Ολοκλήρωσης</th>
+          <th>Κατάσταση</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each tickets}}
+        <tr>
+          <td>{{id}}</td>
+          <td>{{subject}}</td>
+          <td class="col3">{{submittedAt}}</td>
+          <td class="col4">{{completedAt}}</td>
+          <td><span class="status {{statusClass}}"><span class="dot"></span>{{status}}</span></td>
+          <td><div class="action-icon {{actionClass}}">✎</div></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</main>

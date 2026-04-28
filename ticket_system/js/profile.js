@@ -18,19 +18,17 @@ function generateAvatar(text,foregroundColor = "blue",backgroundColor = "grey") 
 
     return canvas.toDataURL("image/png"); // it's converted to an image
 }
-document.getElementById('avatar').src = generateAvatar('GP', '#363B66', '#F5F5F5');
 
-function avatarHover(){
-    const avatar = document.getElementById('avatar');
+const avatar = document.getElementById('avatar');
+
+if (avatar) {
+    avatar.src = generateAvatar('GP', '#363B66', '#F5F5F5');
+
     avatar.addEventListener('mouseover', function() {
         avatar.src = generateAvatar('GP', '#363B66', '#f8f8f8');
     });
-}
-avatarHover();
-function avatarHoverOut(){
-    const avatar = document.getElementById('avatar');
+
     avatar.addEventListener('mouseout', function() {
         avatar.src = generateAvatar('GP', '#363B66', '#F5F5F5');
     });
 }
-avatarHoverOut();

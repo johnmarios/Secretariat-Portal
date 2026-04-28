@@ -1,0 +1,79 @@
+{{> dashboard-navbar ticketHref="/admin/submit" ticketLabel="Νέο Αίτημα"}}
+
+<main class="dashboard-main">
+  <div class="table-controls">
+    <div class="filter-group">
+      <select class="filter-select">
+        <option value="all">Όλα τα αιτήματα</option>
+        <option value="this-week">Αυτή τη βδομάδα</option>
+        <option value="this-month">Αυτόν το μήνα</option>
+      </select>
+      <select class="filter-select">
+        <option value="all-status">Κάθε κατάσταση</option>
+        <option value="pending">Σε αναμονή</option>
+        <option value="processing">Σε εξέλιξη</option>
+        <option value="closed">Κλειστά</option>
+      </select>
+    </div>
+    <button class="submit-btn refresh-btn">Ανανέωση <img src="/images/reload.svg" alt="" class="nav-icon"></button>
+  </div>
+
+  <div class="table-card">
+    <table class="requests-table admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Θέμα</th>
+          <th class="col3">Ημερομηνία Υποβολής</th>
+          <th class="col4">Ημερομηνία Ολοκλήρωσης</th>
+          <th>Κατάσταση</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each tickets}}
+        <tr>
+          <td>{{id}}</td>
+          <td>{{subject}}</td>
+          <td class="col3">{{submittedAt}}</td>
+          <td class="col4">{{completedAt}}</td>
+          <td><span class="status {{statusClass}}"><span class="dot"></span>{{status}}</span></td>
+          <td><div class="action-icon {{actionClass}}">✎</div></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal-nav">
+    <button class="close-btn" id="closeModalBtn"></button>
+  </div>
+  <div class="modal-content">
+    <div class="modal-col col-white">
+      <div class="info-group"><span class="label">ID:</span><span class="value">{{selectedTicket.id}}</span></div>
+      <div class="info-group"><span class="label">Ημερομηνία Υποβολής:</span><span class="value">{{selectedTicket.submittedAt}}</span></div>
+      <div class="info-group"><span class="label">Ημερομηνία Ολοκλήρωσης:</span><span class="value">{{selectedTicket.completedAt}}</span></div>
+      <div class="info-group">
+        <span class="label">Κατάσταση:</span>
+        <select class="status-select open-status">
+          <option value="in-progress">Σε εξέλιξη</option>
+          <option value="closed">Κλειστό</option>
+          <option value="open">Σε αναμονή</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-col col-gray">
+      <div class="info-group"><span class="label">Θέμα:</span><span class="value">{{selectedTicket.subject}}</span></div>
+      <div class="info-group"><span class="label">Ονοματεπώνυμο:</span><span class="value">{{selectedTicket.name}}</span></div>
+      <div class="info-group"><span class="label">Email:</span><span class="value">{{selectedTicket.email}}</span></div>
+      <div class="info-group"><span class="label">Επισυναπτόμενα αρχεία:</span><span class="value">{{selectedTicket.attachments}}</span></div>
+    </div>
+
+    <div class="modal-col col-white">
+      <div class="info-group"><span class="label">Περιγραφή αιτήματος:</span><div class="description-box">{{selectedTicket.description}}</div></div>
+    </div>
+  </div>
+</div>

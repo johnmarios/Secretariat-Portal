@@ -4,6 +4,10 @@ document.addEventListener('scroll', function () {
     const sections = document.querySelectorAll('section');
     const navItems = document.querySelectorAll('.navbar-nav .nav-item.left');
 
+    if (sections.length === 0 || navItems.length === 0) {
+        return;
+    }
+
     let currentSection = null;
     let maxVisibility = 0;
 
