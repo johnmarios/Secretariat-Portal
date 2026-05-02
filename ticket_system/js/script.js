@@ -1,17 +1,16 @@
   const profileWrapper = document.querySelector('.profile-wrapper');
   const profileTrigger = document.querySelector('#avatar');
 
-  profileTrigger.addEventListener('click', (e) => {
-    e.stopPropagation(); 
-    
-    profileWrapper.classList.toggle('open');
-  });
+  // profileTrigger.addEventListener('click', (e) => {
+  //   e.stopPropagation(); 
+  //   profileWrapper.classList.toggle('open');
+  // });
 
-  document.addEventListener('click', (e) => {
-    if (!profileWrapper.contains(e.target)) {
-      profileWrapper.classList.remove('open');
-    }
-  });
+  // document.addEventListener('click', (e) => {
+  //   if (!profileWrapper.contains(e.target)) {
+  //     profileWrapper.classList.remove('open');
+  //   }
+  // });
 
 // ==========================================
 //  TICKET DETAILS POP UP WINDOW
