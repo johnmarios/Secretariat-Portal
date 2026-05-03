@@ -1,172 +1,40 @@
 const express = require('express');
-const path = require('path');
-const { engine } = require('express-handlebars');
+const session = require('express-session');
+const passport = require('passport');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-const infoCards = [
-  {
-    icon: 'Ανώνυμο-σχέδιο.svg',
-    alt: 'phone-icon',
-    title: 'Τηλέφωνο',
-    text: '+30 210 1234567 <br> +30 6978403742',
-    footer: 'Last updated 5 months ago',
-    cardClass: 'phone'
-  },
-  {
-    icon: '2124ac0db949622e8b42892a5df9989b4f00f223.svg',
-    alt: 'mail-icon',
-    title: 'Email',
-    text: 'secretariat@university.edu.gr <br> info@university.edu.gr',
-    footer: 'Last updated 3 years ago',
-    cardClass: 'email'
-  },
-  {
-    icon: '8fb34c687b85d23d0971f138df5282589d9d02a5.svg',
-    alt: 'hours-icon',
-    title: 'Ωράριο Γραφείου',
-    text: 'Δευτέρα - Παρασκευή: <br>11:00 - 13:00',
-    footer: 'Last updated 1 year ago',
-    cardClass: 'hours'
-  }
-];
+// 1. Βασικές Ρυθμίσεις (Middleware)
+// Επιτρέπουν στον server να καταλαβαίνει δεδομένα από φόρμες και JSON
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const teamMembers = [
-  {
-    name: 'Γιάννης Παπαδόπουλος',
-    role: 'Electrical and Computer Engineer',
-    email: 'jnmrs03@gmail.com',
-    github: 'github.com/johnmarios',
-    githubLink: 'https://github.com/johnmarios',
-    image: 'IMG_2343.jpg',
-    alt: 'giannis-icon'
-  },
-  {
-    name: 'Αλέξης Λωρίδας',
-    role: 'Electrical and Computer Engineer',
-    email: 'alexisloridas@gmail.com',
-    github: 'github.com/iLuvPuns',
-    githubLink: 'https://github.com/iLuvPuns',
-    image: '20251126_182827.jpg',
-    alt: 'alexis-icon'
-  }
-];
-
-const tickets = [
-  {
-    id: 6,
-    subject: 'Βεβαίωση Σπουδών',
-    submittedAt: '20/11/23',
-    completedAt: '-',
-    status: 'Σε εξέλιξη',
-    statusClass: 'status-green',
-    actionClass: 'disabled'
-  },
-  {
-    id: 5,
-    subject: 'Εκπρόθεσμη Δήλωση Μαθ...',
-    submittedAt: '20/11/22',
-    completedAt: '-',
-    status: 'Σε αναμονή',
-    statusClass: 'status-orange',
-    actionClass: 'active'
-  },
-  {
-    id: 4,
-    subject: 'Αναβαθμολόγηση',
-    submittedAt: '20/11/21',
-    completedAt: '28/11/21',
-    status: 'Κλειστό',
-    statusClass: 'status-red',
-    actionClass: 'disabled'
-  },
-  {
-    id: 3,
-    subject: 'Έκδοση Πάσου',
-    submittedAt: '20/11/20',
-    completedAt: '-',
-    status: 'Σε αναμονή',
-    statusClass: 'status-orange',
-    actionClass: 'active'
-  }
-];
-
-const selectedTicket = {
-  id: 6,
-  submittedAt: '25/03/26',
-  completedAt: '-',
-  status: 'Σε εξέλιξη',
-  subject: 'Βεβαίωση Σπουδών',
-  name: 'Σάκης Ρουβάς',
-  email: 'sakisrouvas@upatras.gr',
-  attachments: '-',
-  description: ''
-};
-
-app.engine('hbs', engine({
-  extname: '.hbs',
-  defaultLayout: 'main',
-  layoutsDir: path.join(__dirname, 'views/layouts'),
-  partialsDir: path.join(__dirname, 'views/partials'),
-  helpers: {
-    add: (value, increment) => value + increment
-  }
+// 2. Ρύθμιση Session (Απαραίτητο για το Passport.js - Σελίδες 1-5 του PDF)
+// Δημιουργεί το "cookie" για να θυμάται ο server ποιος χρήστης έκανε login
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'ενα_μυστικο_κλειδι_για_την_εργασια_μου',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 } // Το session λήγει σε 24 ώρες
 }));
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'views'));
 
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
+// 3. Φόρτωση του config του Passport (από τον φάκελο config που φτιάξαμε)
+require('./config/passport')(passport);
 
-app.get('/', (req, res) => {
-  res.render('pages/index', {
-    title: 'Σύστημα Διαχείρισης Αιτημάτων Γραμματείας',
-    bodyClass: 'index-page',
-    infoCards,
-    teamMembers
-  });
-});
+// 4. Αρχικοποίηση του Passport.js
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.get('/login', (req, res) => {
-  res.render('pages/login', {
-    title: 'Σύνδεση - Secretariat Portal',
-    bodyClass: 'login-page'
-  });
-});
+// 5. Σύνδεση των Διαδρομών / Routes (από τον φάκελο routes)
+// Όλα τα requests που ξεκινούν με '/api' θα πηγαίνουν στο auth.js
+const authRoutes = require('./routes/auth');
+app.use('/api', authRoutes);
 
-app.get('/user/submit', (req, res) => {
-  res.render('pages/user-submit', {
-    title: 'Νέο Αίτημα - Secretariat Portal',
-    bodyClass: 'ticket-submit'
-  });
-});
-
-app.get('/user/tickets', (req, res) => {
-  res.render('pages/user-viewtickets', {
-    title: 'Αιτήματα - Secretariat Portal',
-    bodyClass: 'ticket-list',
-    tickets
-  });
-});
-
-app.get('/admin/submit', (req, res) => {
-  res.render('pages/admin-submit', {
-    title: 'Νέο Αίτημα - Secretariat Portal',
-    bodyClass: 'ticket-submit'
-  });
-});
-
-app.get('/admin/tickets', (req, res) => {
-  res.render('pages/admin-viewtickets', {
-    title: 'Αιτήματα - Secretariat Portal',
-    bodyClass: 'ticket-list',
-    tickets,
-    selectedTicket
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Ticket system running on http://localhost:${port}`);
+// 6. Εκκίνηση του Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Ο Server ξεκίνησε επιτυχώς και τρέχει στο http://localhost:${PORT}`);
 });

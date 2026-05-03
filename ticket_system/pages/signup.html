@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create Account - Secretariat Portal</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link href="../css/signup.css" rel="stylesheet">
+	<link href="../css/navbar.css" rel="stylesheet">
+	<link href="../css/style_index.css" rel="stylesheet">
+</head>
+<body class="signup-page">
+	<main class="signup-shell">
+		<article class="signup-card">
+			<h1>Δημιουργία Λογαριασμού</h1>
+
+			<div id="message" class="message"></div>
+
+			<form class="signup-form" id="signupForm">
+				<input type="text" name="firstName" id="firstName" placeholder="First Name" required>
+				<input type="text" name="lastName" id="lastName" placeholder="Last Name" required>
+				<input type="email" name="email" id="email" placeholder="University Email" required>
+				<input type="password" name="password" id="password" placeholder="Password" required>
+
+				<div class="role-block">
+					<p>Select your role:</p>
+
+					<label>
+						<input type="radio" name="role" value="student" checked required>
+						I am a Student
+					</label>
+
+					<label>
+						<input type="radio" name="role" value="secretariat" required>
+						I am Secretariat Staff
+					</label>
+
+					<label class="leader-option">
+						<input type="checkbox" name="isHead" id="isHead" value="true">
+						I am the Head of the Department
+					</label>
+				</div>
+
+				<button type="submit">Create Account</button>
+
+				<p class="login-link">Already have an account? <a href="login_screen.html">Log in</a></p>
+			</form>
+		</article>
+	</main>
+
+	<script>
+		document.getElementById('signupForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			const messageDiv = document.getElementById('message');
+			messageDiv.textContent = '';
+			messageDiv.className = 'message';
+
+			const firstName = document.getElementById('firstName').value.trim();
+			const lastName = document.getElementById('lastName').value.trim();
+			const email = document.getElementById('email').value.trim();
+			const password = document.getElementById('password').value;
+			const role = document.querySelector('input[name="role"]:checked').value;
+			const isHead = document.getElementById('isHead').checked;
+
+			// Validation
+			if (!firstName || !lastName || !email || !password) {
+				messageDiv.textContent = 'Όλα τα πεδία είναι υποχρεωτικά!';
+				messageDiv.className = 'message error';
+				return;
+			}
+
+			if (password.length < 6) {
+				messageDiv.textContent = 'Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες!';
+				messageDiv.className = 'message error';
+				return;
+			}
+
+			try {
+				const response = await fetch('/api/register', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						firstName,
+						lastName,
+						email,
+						password,
+						role,
+						isHead
+					})
+				});
+
+				const data = await response.json();
+
+				if (response.ok) {
+					messageDiv.textContent = 'Ο λογαριασμός δημιουργήθηκε επιτυχώς! Μετατροπή στη σελίδα σύνδεσης...';
+					messageDiv.className = 'message success';
+					document.getElementById('signupForm').reset();
+					setTimeout(() => {
+						window.location.href = 'login_screen.html';
+					}, 2000);
+				} else {
+					messageDiv.textContent = data.message || 'Σφάλμα κατά την εγγραφή. Δοκιμάστε ξανά.';
+					messageDiv.className = 'message error';
+				}
+			} catch (error) {
+				console.error('Error:', error);
+				messageDiv.textContent = 'Σφάλμα σύνδεσης με τον διακομιστή!';
+				messageDiv.className = 'message error';
+			}
+		});
+	</script>
+</body>
+</html>
