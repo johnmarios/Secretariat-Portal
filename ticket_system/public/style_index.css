@@ -1,0 +1,17 @@
+
+
+
+
+
+/* opening caption---------------------------------------- */
+
+@media (max-width: 460px) {
+
+    html {
+        min-width: min-content;
+    }
+}
+
+/* .navbar-toggler, .navbar-toggler.collapsed {
+    border: none;
+} */

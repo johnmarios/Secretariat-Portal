@@ -11,3 +11,9 @@ exports.getLoginPage = (req, res) => {
         bodyClass: 'login-page'
     });
 };
+exports.getCreateTicketPage = (req, res) => {
+    res.render('pages/createTicket', {
+        title: 'Δημιουργία Αιτήματος',
+        bodyClass: 'create-ticket-page'
+    });
+};

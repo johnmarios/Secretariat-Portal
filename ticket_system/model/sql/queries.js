@@ -16,7 +16,16 @@ const getUserById = `
                 WHERE u.user_id = ?
                 `;
 
+const getStudentInfo = `
+                SELECT u.user_id, u.first_name, u.last_name, u.email,
+                s.student_id, s.student_am, s.enrollment_year, s.type
+                FROM USER u
+                JOIN STUDENT s ON u.user_id = s.for_id
+                WHERE s.student_id = ?
+                `;
+
 module.exports = {
        getUserByEmailAndPassword,
        getUserById,
+       getStudentInfo,
 };

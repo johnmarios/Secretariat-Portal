@@ -2,10 +2,17 @@
   "name": "ticket_system",
   "version": "1.0.0",
   "description": "Secretariat Portal ",
-  "main": "server.js",
+  "main": "index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon ./index.mjs",
+		"start": "node ./index.mjs"
   },
+  "nodemonConfig": {
+		"ignore": [
+			"model/*.json"
+		]
+	},
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
@@ -17,8 +24,10 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
   },
+  "devDependencies": {
+		"nodemon": "^3.1.10"
+	},
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "license": "ISC"
 }

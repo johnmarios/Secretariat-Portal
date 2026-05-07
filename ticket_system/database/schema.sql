@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
     `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
     `for_user_id` int NOT NULL,
     `for_ticket_id` int NOT NULL,
-    PRIMARY KEY (`id`),
+    PRIMARY KEY (`message_id`),
     CONSTRAINT `MESSAGE_fk_user` FOREIGN KEY (`for_user_id`) REFERENCES `USER`(`user_id`),
     CONSTRAINT `MESSAGE_fk_ticket` FOREIGN KEY (`for_ticket_id`) REFERENCES `TICKET`(`ticket_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;

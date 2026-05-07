@@ -1,0 +1,455 @@
+/*navbar-------------------------*/
+.container-fluid{
+  /* height: 64px; */
+  min-height: 64px;
+}
+/* .portal-navbar img{
+    width: 36px !important;
+    height: 36px !important;
+} */
+.portal-navbar nav .avatar-icon img{
+    width: 1.8rem;
+    height: 1.8rem;
+}
+ /* avatar box size slightly bigger than img for padding/hover effects*/
+.portal-navbar nav .avatar-icon a{
+    width: 2rem;
+    height: 2rem;
+}
+.portal-navbar .avatar-icon .nav-item{
+        display: flex;
+        align-items: center;
+        /* margin-right:20px; */
+        /* margin: 12px 0px; */
+}
+.portal-navbar .navbar {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.portal-navbar {
+    /* --bs-navbar-padding-y: 0; */
+    padding: 0;
+    font: 1em / 1 'Manrope', sans-serif;
+    background-color: var(--light);
+}
+.portal-navbar .collapse{
+    align-items: stretch;
+}
+.portal-navbar .container-fluid {
+    /*space between items*/
+    gap: 1rem;
+    padding: 0 1rem;
+    align-items: stretch;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    /* padding-right: 10px; */
+    /* max-height: 80px;  */
+    /* min-height: 64px; */
+}
+/* ----------------------------- */
+/* .portal-navbar .navbar-brand {
+  font-size: 20px;
+  line-height: 1; 
+  padding-left: 10px;
+  margin-right: 1rem;
+  gap: 4px; 
+  width: max-content;
+}
+
+.portal-navbar .navbar-brand img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain; 
+  border-radius: 0;
+} */
+/* ------------------------------- */
+.portal-navbar a {
+    padding: 0.9rem 1rem;
+    /*top/bottom, left/right*/
+    display: flex;
+    align-items: center;
+    height: 100%; 
+    color: var(--main-color);
+    /* font-weight: 550; */
+    letter-spacing: -0.02em;
+    text-decoration: none;
+}
+/*navbar effects---------------------------------*/
+.nav-item.active  {
+    background-color: var(--navbar-selected-color);
+}
+.portal-navbar li {
+    padding: 0 1em;
+    transition: all 0.2s ease-in;
+}
+
+.portal-navbar .not-active:hover {
+    background-color: var(--navbar-selected-color);
+    /* font-weight: 550; */
+}
+ .portal-navbar .active:hover {
+    /* font-weight: 550; */
+    color: rgb(91, 134, 209); 
+}
+
+.portal-navbar img {
+    width: 2rem;
+    height: 2rem;
+    transition: box-shadow 0.5s ease;
+    border-radius: 50%;
+}
+
+
+.portal-navbar .avatar-icon img:hover {
+    box-shadow:0 0px 7px #7d7d7d; /*allagi*/
+    /* border: var(--dark) solid 1px; */
+}
+
+/* navbar for login page --------------------------------------- */
+body.login-page .container-fluid {
+  width: 100%;          
+  background-color: var(--light);
+  display: flex;
+  margin: 0;  
+  margin-bottom: 5px;  
+  /* padding: 0.1em 0em; */
+  min-width: 320px; /*elaxiso viewport gia na min spasei to layout */
+  height:64px;
+  /* min-width: min-content; */
+}
+
+body.login-page nav{
+  text-align: center;
+  position: sticky;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;          
+  max-width: 1800px;   
+  margin: 0 auto; 
+  padding: 0 1rem;
+  /* flex-wrap: wrap; */
+}
+
+body.login-page ul li{
+  margin-left: 5px;
+  list-style: none;
+}
+
+.login-page .nav-icon{
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.login-page .user-icon{
+  width: 2em;
+  height: 2em;
+  object-fit: contain;
+}
+  
+.login-page .logo-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.login-page .logo a{
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  width:max-content;
+  gap: 4px;
+  line-height: 1; 
+  margin: 0;
+  /* max-width: 980px;*//* de thumamai */
+  text-decoration: none;
+  color: var(--main-color);;
+}
+
+
+body.login-page ul {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 703px) {
+  .login-page .logo a{
+    width:fit-content;
+    
+  }
+  .login-page .logo-icon {
+    object-fit: contain;
+  }
+}
+
+.login-page img {
+    width: 2rem;
+    height: 2rem;
+    transition: box-shadow 0.5s ease;
+    border-radius: 50%;
+}
+
+
+.login-page img.user-icon:hover {
+    box-shadow:0 0px 7px #7d7d7d; 
+    /* border: var(--dark) solid 1px; */
+}
+
+.portal-navbar .container-fluid{
+    min-width: 320px;
+    min-height:60.8px;
+    max-width: 1800px;   
+    align-items: stretch;
+
+}
+
+.portal-navbar .nav-item{
+    /* font-weight: 600; */
+    padding:0 !important;
+}
+ .portal-navbar .logo:hover{
+  /* color: #363B66; */
+  color: rgb(91, 134, 209);
+}
+
+.portal-navbar .nav-link:hover, .portal-navbar .navbar-brand.gap-1:hover{
+    color: var(--main-color);
+}
+.navbar-brand.gap-1{
+    display:flex;
+    align-items: center;
+    padding-left:10px;
+    letter-spacing: normal; /*xriste mou*/
+}
+
+.portal-navbar .nav-link{
+    padding: 15px 25px !important;
+}
+
+
+.portal-navbar .navbar-toggler,
+.portal-navbar .navbar-toggler:focus,
+.portal-navbar .navbar-toggler:active {
+    outline: none;
+    box-shadow: none;
+    border: none; 
+}
+
+.portal-navbar .avatar-icon .nav-item .nav-link{
+    padding: 0px !important;
+    margin: 10px 0px;
+    margin-left: 25px;
+}
+
+
+
+
+/* search-bar for viewtickets----------------------------------------------------- */
+.viewtickets-page .search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #F5F5F5;
+  /* justify-content: center ; */
+  /* box-sizing: border-box;  */
+  border-radius: 8px;
+  padding: 0px 1rem;
+  flex-grow: 1;
+  max-width: 400px;
+  min-width: 64px;
+  margin-left:20px; /* apostasi apo to logo*/
+  margin-right: auto; 
+}
+
+.viewtickets-page .search-bar input {
+  font: 1rem 'Manrope', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 200;
+  color:#363B66;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  width:100%;
+  /* flex-grow: 1; */
+  box-shadow: none;
+  
+}
+.viewtickets-page .search-bar svg {
+  /* apagoreuei to browser na mikrenei to svg auto */
+  flex-shrink: 0; 
+}
+
+.viewtickets-page .search-bar input::placeholder {
+  font-size: 1.3rem;
+}
+
+.viewtickets-page .search-bar input:focus {
+  outline: none; /* afairei to glow me to type */
+}
+
+
+
+/* view tickets ------------------------------------------------*/
+.viewtickets-page .container-fluid{
+    min-width: 320px;
+    min-height:60.8px;
+    max-width: 1800px;   
+    align-items: stretch;
+
+}
+
+.tickets-navbar.navbar {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    /* margin-bottom: calc(25%);  */
+    margin:auto auto;
+}
+
+.tickets-navbar {
+    /* --bs-navbar-padding-y: 0; */
+    padding: 0;
+    font: 1rem sans-serif;
+    background-color: var(--light);
+}
+
+.tickets-navbar .container-fluid {
+    /*space between items*/
+    gap: 1rem;
+    padding: 0 1rem;
+    /* align-items: center; */
+}
+
+.tickets-navbar .navbar-collapse {
+    justify-content: flex-end;
+}
+
+.tickets-navbar a {
+    padding: 0.9rem 1rem;
+    /*top/bottom, left/right*/
+    display: flex;
+    align-items: center;
+    height: 100%;
+    color: var(--main-color);
+    /* font-weight: 550; */
+    letter-spacing: -0.02em;
+    text-decoration: none;
+}
+
+.tickets-navbar li {
+    padding: 0 1rem;
+    transition: all 0.2s ease-in;
+}
+
+.tickets-navbar img {
+    width: 2rem;
+    height: 2rem;
+}
+.tickets-navbar .requests img {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.navbar-nav .requests .nav-link {
+    background-color: var(--searchbar-color);
+    border-radius: 0.8rem;
+    padding: 0.35rem 0.7rem;
+}
+
+/* .navbar-nav .exit .nav-link {
+    background-color: var(--searchbar-color);
+    border-radius: 0.8rem;
+    padding: 0.35rem 0.7rem;
+} */
+
+.navbar-nav .user-icon .nav-link {
+  /* padding: 0 !important;
+  display: inline-flex;
+  align-items: center; */
+  padding: 0.35rem 0rem;
+}
+
+.navbar-nav .requests .nav-link:hover, .navbar-nav .exit .nav-link:hover {
+    background-color: var(--searchbar-hover);
+}
+.navbar-nav .user-icon #avatar{
+    border-radius: 50%;
+    width: 2.2rem;
+    height: 2.2rem;
+    border: 1px solid var(--main-color);
+}
+.navbar-nav .user-icon #avatar:hover {
+    border: var(--light) solid 1px;
+}
+.navbar-toggler{
+    border: none;
+}
+
+
+
+
+/* --- PROFILE DROPDOWN MENU --- */
+
+.viewtickets-page .profile-wrapper {
+  position: relative; /* anchor */
+  list-style: none;
+  width: max-content;
+}
+
+.viewtickets-page #avatar {
+  cursor: pointer; 
+  user-select: none; /* apagoreuei to ΣΡ na mporei na ginei selected ws text */
+}
+
+.viewtickets-page .profile-dropdown {
+  display: block;
+  position: absolute;
+  text-align: center;
+  top: calc(100% + 8px); /* below avatar */
+  left: 50%;
+  right: auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15); 
+  min-width: 150px;
+  overflow: hidden;
+  z-index: 200; 
+  line-height: 1.1;
+  /* krufo by default */
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -10px);
+  transition: all 0.3s ease;
+}
+
+.viewtickets-page .profile-dropdown a{
+  transition: background 0.2s;
+  display: flex;
+  justify-content: column;
+  padding: 10px 20px;
+  gap:8px;
+  color: #363B66; 
+  text-decoration: none;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+}
+
+.viewtickets-page .profile-wrapper.open .profile-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+
+.viewtickets-page .profile-dropdown a:hover {
+  background-color: #F9F9F9; 
+  color:#494f8a;
+
+}
+
+ /* .viewtickets-page .dropdown-divider {
+  height: 1px;
+  background-color: #E0E0E0; 
+  margin: 0; 
+} */
+
