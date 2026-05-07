@@ -6,6 +6,8 @@
     padding: 0;
     box-shadow: none;
     border: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .file-attachment-title {
@@ -69,15 +71,20 @@
 
 /* File List */
 .file-list {
-    margin-top: 20px;
-    display: flex;
+    margin-top: 0;
+    display: none;
     flex-direction: column;
     gap: 10px;
-    max-height: 230px;
+    max-height: 220px;
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 2px;
     scrollbar-gutter: stable;
+}
+
+.file-list.has-items {
+    display: flex;
+    margin-top: 20px;
 }
 
 .file-list::-webkit-scrollbar {
@@ -108,7 +115,10 @@
 }
 
 .file-item-icon {
-    font-size: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #1E3A8A;
     width: 40px;
     height: 40px;
     display: flex;
@@ -245,7 +255,7 @@
         color: #9CA3AF;
     }
 
-    .upload-zone {
+    .file-upload-zone {
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
         border-color: #60A5FA;
     }

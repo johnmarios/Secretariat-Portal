@@ -24,8 +24,14 @@ const getStudentInfo = `
                 WHERE s.student_id = ?
                 `;
 
+const createTicket = `
+                INSERT INTO TICKET (subject, description, for_student_id, for_category_id)
+                VALUES (?, ?, ?, ?)
+                `;
+
 module.exports = {
        getUserByEmailAndPassword,
        getUserById,
        getStudentInfo,
+       createTicket,
 };

@@ -68,6 +68,17 @@ async function fetchStudentMiddleware(req, res, next) {
     }
 }
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated && req.isAuthenticated()) {
+        return next();
+    }
+
+    return res.status(401).json({
+        success: false,
+        message: 'Δεν είστε συνδεδεμένος'
+    });
+}
+
 // Student card routes
 router.get('/studentViewTicket/:id', fetchStudentByTicketIdMiddleware, (req, res) => {
     res.render('studentCard'); 
@@ -83,6 +94,57 @@ router.get('/createTicket/:id', fetchStudentMiddleware, (req, res) => {
 
 router.get('/pages/createTicket/:id?', fetchStudentMiddleware, (req, res) => {
     res.render('pages/createTicket');
+});
+
+router.post('/tickets/create', ensureAuthenticated, async (req, res) => {
+    try {
+        const { category, subject, description } = req.body;
+        const studentId = req.user?.student_id;
+
+        if (!studentId) {
+            return res.status(403).json({
+                success: false,
+                message: 'Η δημιουργία αιτήματος επιτρέπεται μόνο για φοιτητές'
+            });
+        }
+
+        if (!category || !subject || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Συμπλήρωσε όλα τα υποχρεωτικά πεδία'
+            });
+        }
+
+        const cleanSubject = String(subject).trim();
+        const cleanDescription = String(description).trim();
+        const categoryId = Number(category);
+
+        if (!cleanSubject || !cleanDescription || Number.isNaN(categoryId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Μη έγκυρα δεδομένα αιτήματος'
+            });
+        }
+
+        const [result] = await db.execute(queries.createTicket, [
+            cleanSubject,
+            cleanDescription,
+            studentId,
+            categoryId
+        ]);
+
+        return res.status(201).json({
+            success: true,
+            message: 'Το αίτημα δημιουργήθηκε επιτυχώς',
+            ticketId: result.insertId
+        });
+    } catch (error) {
+        console.error('Error creating ticket:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Σφάλμα κατά τη δημιουργία αιτήματος'
+        });
+    }
 });
 
 module.exports = router;

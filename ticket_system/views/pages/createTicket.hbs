@@ -14,7 +14,7 @@
       <div class="card form-card">
         <h2>Το Αίτημά μου</h2>
 
-        <form id="createTicketForm" method="post" action="/tickets/create" enctype="multipart/form-data">
+        <form id="createTicketForm" method="post" action="/tickets/create">
           <div class="form-group">
             <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
             <select id="category" name="category" class="form-control">
@@ -54,46 +54,5 @@
     </aside>
   </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  document.documentElement.classList.add('create-ticket-no-scroll');
-  document.body.classList.add('create-ticket-no-scroll');
-
-  const submitBtn = document.getElementById('submitTicketBtn');
-  const form = document.getElementById('createTicketForm');
-
-  submitBtn.addEventListener('click', async function(e){
-    e.preventDefault();
-
-    // gather form data
-    const formData = new FormData(form);
-
-    // append selected files from the fileAttachment partial
-    const selectedFiles = window.getSelectedFiles ? window.getSelectedFiles() : [];
-    selectedFiles.forEach((file, idx) => {
-      formData.append('attachments', file);
-    });
-
-    try {
-      const resp = await fetch(form.action || '/tickets/create', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!resp.ok) throw new Error('Σφάλμα κατά την υποβολή');
-
-      const data = await resp.json();
-      // handle success (redirect or show message)
-      if (data && data.success) {
-        window.location.href = '/user_viewtickets';
-      } else {
-        alert(data.message || 'Το αίτημα υποβλήθηκε με σφάλμα');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Σφάλμα κατά την υποβολή του αιτήματος');
-    }
-  });
-});
-</script>
+<script src="/fileAttachment.js"></script>
+<script src="/createTicket.js"></script>
