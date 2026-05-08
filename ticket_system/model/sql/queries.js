@@ -29,9 +29,22 @@ const createTicket = `
                 VALUES (?, ?, ?, ?)
                 `;
 
+const getTicketsByStudentId = `
+                SELECT 
+                    ticket_id,
+                    subject,
+                    status,
+                    created_at,
+                    resolved_at
+                FROM TICKET
+                WHERE for_student_id = ?
+                ORDER BY created_at DESC
+                `;
+
 module.exports = {
        getUserByEmailAndPassword,
        getUserById,
        getStudentInfo,
        createTicket,
+       getTicketsByStudentId,
 };

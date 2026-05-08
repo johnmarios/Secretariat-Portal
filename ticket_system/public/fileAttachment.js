@@ -88,20 +88,37 @@ document.addEventListener('DOMContentLoaded', function () {
             const fileIcon = getFileIcon(file.type);
             const fileSize = formatFileSize(file.size);
 
-            fileItem.innerHTML = `
-                <div class="file-item-icon">${fileIcon}</div>
-                <div class="file-item-info">
-                    <p class="file-item-name">${file.name}</p>
-                    <p class="file-item-size">${fileSize}</p>
-                </div>
-                <button class="file-item-remove" data-index="${index}" type="button">✕</button>
-            `;
+            const iconElement = document.createElement('div');
+            iconElement.className = 'file-item-icon';
+            iconElement.textContent = fileIcon;
 
-            fileItem.querySelector('.file-item-remove').addEventListener('click', () => {
+            const infoElement = document.createElement('div');
+            infoElement.className = 'file-item-info';
+
+            const nameElement = document.createElement('p');
+            nameElement.className = 'file-item-name';
+            nameElement.textContent = file.name;
+
+            const sizeElement = document.createElement('p');
+            sizeElement.className = 'file-item-size';
+            sizeElement.textContent = fileSize;
+
+            infoElement.appendChild(nameElement);
+            infoElement.appendChild(sizeElement);
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'file-item-remove';
+            removeButton.type = 'button';
+            removeButton.textContent = '✕';
+            removeButton.addEventListener('click', () => {
                 selectedFiles.splice(index, 1);
                 syncInputFiles();
                 renderFileList();
             });
+
+            fileItem.appendChild(iconElement);
+            fileItem.appendChild(infoElement);
+            fileItem.appendChild(removeButton);
 
             fileList.appendChild(fileItem);
         });
@@ -128,4 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
         fileError.textContent = message;
         fileError.classList.remove('hidden');
     }
+
+    renderFileList();
 });

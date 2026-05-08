@@ -148,7 +148,7 @@
 	flex-direction: column;
 	gap: 12px;
 	max-height: calc(100vh - 140px);
-	overflow: hidden;
+	overflow: visible;
 }
 
 /* Submit button wrapper */

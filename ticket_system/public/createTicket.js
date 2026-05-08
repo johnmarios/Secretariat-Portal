@@ -36,7 +36,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             });
 
-            const data = await response.json();
+            const contentType = response.headers.get('content-type') || '';
+            let data = null;
+
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const rawResponse = await response.text();
+
+                // Usually means auth/session redirect or server returned an HTML error page
+                if (response.redirected || rawResponse.trim().startsWith('<!DOCTYPE')) {
+                    throw new Error('Η συνεδρία σου έληξε ή η απάντηση του server δεν ήταν JSON. Κάνε ξανά σύνδεση.');
+                }
+
+                throw new Error(rawResponse || 'Μη έγκυρη απάντηση από τον server');
+            }
 
             if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Σφάλμα κατά την υποβολή');

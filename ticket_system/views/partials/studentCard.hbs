@@ -1,26 +1,35 @@
-<link rel="stylesheet" href="/studentCard.css">
 <div class="student-card">
-    <div class="student-avatar"></div>
+    <h3 class="student-card-title">Στοιχεία Φοιτητή</h3>
+
+    <div class="student-avatar">
+        <span class="avatar-head"></span>
+        <span class="avatar-body"></span>
+    </div>
 
     <p class="student-name">{{student.fullName}}</p>
-    
-    <div class="info-item">
+
+    <div class="info-row">
         <span class="label">ΑΜ:</span>
         <span class="value">{{student.studentAm}}</span>
     </div>
-    
-    <div class="info-item">
-        <span class="label">Τμήμα:</span>
-        <span class="value">{{"Ηλεκτρολόγων Μηχανικών"}}</span>
+
+    <div class="info-row">
+        <span class="label">ΤΜΗΜΑ:</span>
+        <span class="value">Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών</span>
     </div>
-    <div class="info-item">
-        <span class="label">Email:</span>
+
+    <div class="info-row">
+        <span class="label">EMAIL:</span>
         <span class="value">{{student.email}}</span>
     </div>
 
-    <div class="info-item">
-        <span class="label">Έτος Σπουδών:</span>
-        <span class="value">{{student.studyYear}}ο</span>
+    <div class="info-row">
+        <span class="label">ΕΤΟΣ ΣΠΟΥΔΩΝ:</span>
+        <span class="value">{{student.studyYear}}ο Έτος Σπουδών</span>
     </div>
 
+    <div class="info-row">
+        <span class="label">ΗΜΕΡΟΜΗΝΙΑ ΥΠΟΒΟΛΗΣ:</span>
+        <span class="value">25/03/26</span>
+    </div>
 </div>

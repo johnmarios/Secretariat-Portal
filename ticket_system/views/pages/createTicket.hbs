@@ -18,9 +18,36 @@
           <div class="form-group">
             <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
             <select id="category" name="category" class="form-control">
-              <option value="">Επιλέξτε Κατηγορία...</option>
-              <option value="1">Διοικητικά</option>
-              <option value="2">Βεβαιώσεις</option>
+              <option value="" disabled selected>Επιλέξτε Κατηγορία...</option>
+
+              <optgroup label="Βεβαιώσεις & Πιστοποιητικά">
+                <option value="cert_enrollment">Βεβαίωση Σπουδών (Γενική Χρήση)</option>
+                <option value="cert_transcript">Αναλυτική Βαθμολογία</option>
+                <option value="cert_military">Πιστοποιητικό για Στρατολογική Χρήση</option>
+                <option value="cert_tax">Βεβαίωση για Εφορία / Επίδομα Ενοικίου</option>
+                <option value="cert_diploma_copy">Αντίγραφο Πτυχίου / Διπλώματος</option>
+              </optgroup>
+
+              <optgroup label="Ακαδημαϊκά Θέματα">
+                <option value="acad_registration">Πρόβλημα με την Εγγραφή / Ανανέωση</option>
+                <option value="acad_courses">Θέματα Δηλώσεων Μαθημάτων</option>
+                <option value="acad_regrading">Αίτηση Αναβαθμολόγησης</option>
+                <option value="acad_exam_review">Επανεξέταση Μαθήματος</option>
+                <option value="acad_graduation">Αίτηση για Ορκωμοσία / Λήψη Πτυχίου</option>
+              </optgroup>
+
+              <optgroup label="Φοιτητική Κατάσταση">
+                <option value="status_suspension">Αναστολή Σπουδών</option>
+                <option value="status_deletion">Αίτηση Διαγραφής από το Τμήμα</option>
+                <option value="status_transfer">Θέματα Μετεγγραφών</option>
+                <option value="status_pass">Πρόβλημα με την Ακαδημαϊκή Ταυτότητα (Πάσο)</option>
+              </optgroup>
+
+              <optgroup label="Λοιπά">
+                <option value="general_query">Γενικό Ερώτημα / Πληροφορίες</option>
+                <option value="other">Άλλο (Περιγράψτε παρακάτω)</option>
+              </optgroup>
+
             </select>
           </div>
 
@@ -31,7 +58,8 @@
 
           <div class="form-group">
             <label for="description">ΠΕΡΙΓΡΑΦΗ ΑΙΤΗΜΑΤΟΣ*</label>
-            <textarea id="description" name="description" class="form-control" rows="8" placeholder="Περιγράψτε αναλυτικά το αίτημά σας..."></textarea>
+            <textarea id="description" name="description" class="form-control" rows="8"
+              placeholder="Περιγράψτε αναλυτικά το αίτημά σας..."></textarea>
           </div>
 
           {{!-- note: attachment handled in right column via fileAttachment partial --}}
