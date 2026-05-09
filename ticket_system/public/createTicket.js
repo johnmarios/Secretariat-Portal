@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     submitBtn.addEventListener('click', async function (event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission
 
         const category = document.getElementById('category')?.value?.trim();
         const subject = document.getElementById('subject')?.value?.trim();

@@ -9,12 +9,12 @@
       {{>studentCard}}
     </aside>
 
-    <!-- Middle: Ticket Form (without attachment area) -->
+    <!-- Middle: Ticket Form  -->
     <main class="col middle-col">
       <div class="card form-card">
         <h2>Το Αίτημά μου</h2>
 
-        <form id="createTicketForm" method="post" action="/tickets/create">
+        <form id="createTicketForm" method="post" action="/tickets/create"> 
           <div class="form-group">
             <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
             <select id="category" name="category" class="form-control">
@@ -62,8 +62,6 @@
               placeholder="Περιγράψτε αναλυτικά το αίτημά σας..."></textarea>
           </div>
 
-          {{!-- note: attachment handled in right column via fileAttachment partial --}}
-
         </form>
       </div>
     </main>
@@ -71,7 +69,6 @@
     <!-- Right: File Attachment + Submit -->
     <aside class="col right-col">
       <div class="card attachments-card">
-        <h2>Υποβολή</h2>
 
         {{>fileAttachment}}
 

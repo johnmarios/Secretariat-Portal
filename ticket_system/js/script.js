@@ -1,6 +1,7 @@
   const profileWrapper = document.querySelector('.profile-wrapper');
   const profileTrigger = document.querySelector('#avatar');
 
+<<<<<<< HEAD
   if (profileWrapper && profileTrigger) {
     profileTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -13,6 +14,18 @@
       }
     });
   }
+=======
+  // profileTrigger.addEventListener('click', (e) => {
+  //   e.stopPropagation(); 
+  //   profileWrapper.classList.toggle('open');
+  // });
+
+  // document.addEventListener('click', (e) => {
+  //   if (!profileWrapper.contains(e.target)) {
+  //     profileWrapper.classList.remove('open');
+  //   }
+  // });
+>>>>>>> e70a6cc097334f8f3a23336a515eca59d1067327
 
 // ==========================================
 //  TICKET DETAILS POP UP WINDOW

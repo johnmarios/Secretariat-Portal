@@ -1,5 +1,11 @@
 /* Student Card Partial Styles */
-
+/* font sizes */
+:root {
+    --main-color: #2b3f7d;
+    --light: #fff;
+    --header-size: 14px;
+    --label-size: 12px;
+}
 .student-card {
     background: #fff;
     border: 1px solid #e5e7eb;
@@ -53,9 +59,9 @@
 
 .student-name {
     margin: 2px 0 8px;
-    font-size: 18px;
+    font-size: var(--header-size);
     font-weight: 700;
-    color: #2b3f7d;
+    color: var(--main-color);
     text-align: center;
     word-break: break-word;
 }
@@ -63,7 +69,7 @@
 .info-row {
     width: 100%;
     text-align: center;
-    padding: 8px 4px 14px;
+    padding: 4px 2px 10px; 
     border-bottom: 1px solid #e9edf3;
 }
 
@@ -73,7 +79,7 @@
 
 .info-row .label {
     display: block;
-    font-size: 13px;
+    font-size: var(--label-size);
     font-weight: 700;
     color: #c7ced8;
     margin-bottom: 6px;
@@ -81,9 +87,9 @@
 
 .info-row .value {
     display: block;
-    font-size: 16px;
+    font-size: var(--header-size);
     font-weight: 500;
-    color: #1f2a58;
+    color: var(--main-color);
     line-height: 1.25;
     word-break: break-word;
 }
@@ -96,7 +102,7 @@
     }
 
     .student-card-title {
-        font-size: 15px;
+        font-size: var(--header-size);
     }
 
     .student-avatar {
@@ -117,14 +123,14 @@
     }
 
     .student-name {
-        font-size: 16px;
+        font-size: var(--header-size);
     }
 
     .info-row .label {
-        font-size: 12px;
+        font-size: var(--label-size);
     }
 
     .info-row .value {
-        font-size: 14px;
+        font-size: var(--header-size);
     }
 }
