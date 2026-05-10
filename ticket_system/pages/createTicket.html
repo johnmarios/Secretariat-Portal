@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Σύνδεση - Secretariat Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,17 +10,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/fileAttachment.css">
     <link href="../css/createTicket.css" rel="stylesheet">
     <link href="../css/navbar.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
-    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
     <script src="../js/script.js" defer></script>
     <script src="../js/fileAttachment.js" defer></script>
 </head>
 
 <body>
-    <link rel="stylesheet" href="/createTicket.css">
-    <link rel="stylesheet" href="/fileAttachment.css">
     <div class="container create-ticket-page">
         <h1 class="page-title">Δημιουργία Αιτήματος</h1>
 
@@ -125,34 +122,41 @@
 
             <!-- Right: File Attachment + Submit -->
             <aside class="col right-col">
-                <div class="file-attachment-container">
-                    <h3 class="file-attachment-title">Επισύναψη Αρχείων</h3>
+                <div class="card attachments-card">
+                    <div class="file-attachment-container">
+                        <h3 class="file-attachment-title">Επισύναψη Αρχείων</h3>
 
-                    <!-- Drag & Drop Zone -->
-                    <div class="file-upload-zone" id="fileUploadZone">
-                        <img class="upload-icon" src="../images/upload-cloud-icon.svg" height="87" width="100"></img>
-                        <p class="upload-text">Σύρετε αρχεία ή κάντε κλικ για επιλογή</p>
-                        <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
+                        <!-- Drag & Drop Zone -->
+                        <div class="file-upload-zone" id="fileUploadZone">
+                            <img class="upload-icon" src="../images/upload-cloud-icon.svg" height="87"
+                                width="100"></img>
+                            <p class="upload-text">Σύρετε αρχεία ή κάντε κλικ για επιλογή</p>
+                            <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
 
-                        <input type="file" id="fileInput" name="attachments" multiple
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input">
+                            <input type="file" id="fileInput" name="attachments" multiple
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input">
+                        </div>
+
+                        <!-- File List -->
+                        <div class="file-list has-items" id="fileList"></div>
+
+                        <!-- Error Message -->
+
+                        <div class="file-error-message hidden" id="fileError">
+                            <!-- example: -->
+                            <p class="file-error-text">Το αρχείο "example.pdf" είναι πολύ μεγάλο (max 10MB)</p>
+                        </div>
                     </div>
 
-                    <!-- File List -->
-                    <div class="file-list has-items" id="fileList"></div>
 
-                    <!-- Error Message -->
-                     
-                    <div class="file-error-message hidden" id="fileError">
-                        <!-- example: -->
-                        <p class="file-error-text">Το αρχείο "example.pdf" είναι πολύ μεγάλο (max 10MB)</p>
+                    <div class="submit-wrap">
+                        <button id="submitTicketBtn" class="btn btn-primary btn-block">Υποβολή Αιτήματος</button>
                     </div>
                 </div>
-
-
             </aside>
+        </div>
 
 
-            <script src="/fileAttachment.js"></script>
-            <script src="/createTicket.js"></script>
+        <script src="/fileAttachment.js"></script>
+        <script src="/createTicket.js"></script>
 </body>
