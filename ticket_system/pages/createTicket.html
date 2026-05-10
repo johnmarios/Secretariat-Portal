@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σύνδεση - Secretariat Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="../css/createTicket.css" rel="stylesheet">
+    <link href="../css/navbar.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+    <script src="../js/script.js" defer></script>
+    <script src="../js/fileAttachment.js" defer></script>
+</head>
+
+<body>
+    <link rel="stylesheet" href="/createTicket.css">
+    <div class="container create-ticket-page">
+        <h1 class="page-title">Δημιουργία Αιτήματος</h1>
+
+        <div class="grid three-col">
+            <!-- Left: Student Card Partial -->
+            <aside class="col left-col">
+                <div class="student-card">
+                    <h3 class="student-card-title">Στοιχεία Φοιτητή</h3>
+
+                    <div class="student-avatar">
+                        <span class="avatar-head"></span>
+                        <span class="avatar-body"></span>
+                    </div>
+
+                    <p class="student-name">Sakis Rouvas</p>
+
+                    <div class="info-row">
+                        <span class="label">ΑΜ:</span>
+                        <span class="value">up1091234</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">ΤΜΗΜΑ:</span>
+                        <span class="value">Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">EMAIL:</span>
+                        <span class="value">sakis.rouvas@university.gr</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">ΕΤΟΣ ΣΠΟΥΔΩΝ:</span>
+                        <span class="value">4ο Έτος Σπουδών</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">ΗΜΕΡΟΜΗΝΙΑ ΥΠΟΒΟΛΗΣ:</span>
+                        <span class="value">25/03/26</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Middle: Ticket Form  -->
+            <main class="col middle-col">
+                <div class="card form-card">
+                    <h2>Το Αίτημά μου</h2>
+
+                    <form id="createTicketForm" method="post" action="/tickets/create">
+                        <div class="form-group">
+                            <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
+                            <select id="category" name="category" class="form-control">
+                                <option value="" disabled selected>Επιλέξτε Κατηγορία...</option>
+
+                                <optgroup label="Βεβαιώσεις & Πιστοποιητικά">
+                                    <option value="cert_enrollment">Βεβαίωση Σπουδών (Γενική Χρήση)</option>
+                                    <option value="cert_transcript">Αναλυτική Βαθμολογία</option>
+                                    <option value="cert_military">Πιστοποιητικό για Στρατολογική Χρήση</option>
+                                    <option value="cert_tax">Βεβαίωση για Εφορία / Επίδομα Ενοικίου</option>
+                                    <option value="cert_diploma_copy">Αντίγραφο Πτυχίου / Διπλώματος</option>
+                                </optgroup>
+
+                                <optgroup label="Ακαδημαϊκά Θέματα">
+                                    <option value="acad_registration">Πρόβλημα με την Εγγραφή / Ανανέωση</option>
+                                    <option value="acad_courses">Θέματα Δηλώσεων Μαθημάτων</option>
+                                    <option value="acad_regrading">Αίτηση Αναβαθμολόγησης</option>
+                                    <option value="acad_exam_review">Επανεξέταση Μαθήματος</option>
+                                    <option value="acad_graduation">Αίτηση για Ορκωμοσία / Λήψη Πτυχίου</option>
+                                </optgroup>
+
+                                <optgroup label="Φοιτητική Κατάσταση">
+                                    <option value="status_suspension">Αναστολή Σπουδών</option>
+                                    <option value="status_deletion">Αίτηση Διαγραφής από το Τμήμα</option>
+                                    <option value="status_transfer">Θέματα Μετεγγραφών</option>
+                                    <option value="status_pass">Πρόβλημα με την Ακαδημαϊκή Ταυτότητα (Πάσο)</option>
+                                </optgroup>
+
+                                <optgroup label="Λοιπά">
+                                    <option value="general_query">Γενικό Ερώτημα / Πληροφορίες</option>
+                                    <option value="other">Άλλο (Περιγράψτε παρακάτω)</option>
+                                </optgroup>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">ΘΕΜΑ*</label>
+                            <input id="subject" name="subject" class="form-control"
+                                placeholder="Γράψτε ένα σύντομο Θέμα" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">ΠΕΡΙΓΡΑΦΗ ΑΙΤΗΜΑΤΟΣ*</label>
+                            <textarea id="description" name="description" class="form-control" rows="8"
+                                placeholder="Περιγράψτε αναλυτικά το αίτημά σας..."></textarea>
+                        </div>
+
+                    </form>
+                </div>
+            </main>
+
+            <!-- Right: File Attachment + Submit -->
+            <aside class="col right-col">
+
+                <!-- Drag & Drop Zone -->
+                <div class="upload-widget">
+                    
+                    <h3 class="widget-subtitle">Επισύναψη Αρχείων</h3>
+
+                    <input type="file" class="filepond" name="file" multiple data-max-file-size="10MB" />
+
+                    <button class="submit-btn" type="button">Υποβολή Αιτήματος</button>
+                </div>
+
+                <script
+                    src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+                <script
+                    src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+                <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+                <script src="app.js"></script>
+
+
+                <div class="submit-wrap">
+                    <button id="submitTicketBtn" class="btn btn-primary btn-block">Υποβολή Αιτήματος</button>
+                </div>
+
+            </aside>
+
+
+            <script src="/fileAttachment.js"></script>
+            <script src="/createTicket.js"></script>
+</body>
