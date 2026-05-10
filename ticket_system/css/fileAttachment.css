@@ -76,15 +76,19 @@
     margin-top: 16px;
     display: none; /* hide the file list container when there are no files to display */
     flex-direction: column;
-    /* gap: 10px;  */
-    max-height: 240px;
 
     /* hide scrollbars when not needed */
-    overflow-y: hidden; 
     overflow-x: hidden;
     padding-right: 2px;
     scrollbar-gutter: stable;
     /* to prevent layout shift when scrollbars appear */
+
+    max-height:130px;
+     /* to show only 2 files and then scroll for more, 
+     since each file item is 60px height + 12px gap */
+    overflow-y: auto; 
+     /* to show scrollbars when there are more than 2 files */
+    gap: 12px;
 }
 
 .file-list.has-items {
@@ -93,31 +97,29 @@
     overflow-y: scroll;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    /* padding: 8px 4px 8px 0; */
     scrollbar-width: thin;
     scrollbar-color: #94a3b8 #f1f5f9;
 }
 
 .file-list::-webkit-scrollbar {
-    /* width: 10px; */
+    width: 10px;
 }
 
 .file-list::-webkit-scrollbar-track {
-    /* background: #f1f5f9;
-    border-radius: 999px; */
+    background: #f1f5f9;
+    border-radius: 999px;
 }
 
 .file-list::-webkit-scrollbar-thumb {
-    /* background: #94a3b8;
+    background: #94a3b8;
     border-radius: 999px;
-    border: 2px solid #f1f5f9; */
+    border: 2px solid #f1f5f9;
 }
 
 .file-item {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    gap: 12px;
     padding: 12px 10px;
     background: #F9FAFB;
     border-radius: 8px;
@@ -125,6 +127,10 @@
     transition: all 0.2s ease;
     width: 100%;
     overflow: hidden;
+    flex-shrink: 0; 
+     /* to prevent the files from shrinking when the 
+     others are added */
+     height:60px;
 }
 
 .file-item:hover {
@@ -171,7 +177,6 @@
 }
 
 .file-item-remove {
-    /* padding: 6px 8px; */
     margin-right: 18px;
     background: #FEE2E2;
     color: #991B1B;
@@ -239,12 +244,6 @@
     .file-item {
         flex-wrap: wrap;
     }
-
-    /* .file-item-icon { */
-        /* width: 32px;
-        height: 32px;
-        font-size: 18px; */
-    /* } */
 
     .file-item-name {
         font-size: 13px;
