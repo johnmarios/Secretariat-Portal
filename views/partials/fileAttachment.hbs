@@ -2,24 +2,14 @@
     <h3 class="file-attachment-title">Επισύναψη Αρχείων</h3>
     
     <!-- Drag & Drop Zone -->
-    <div class="file-upload-zone" id="fileUploadZone">
-        <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-        <p class="upload-text">Σύρετε αρχεία ή κάντε κλικ για επιλογή</p>
-        <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
-        
-        <input 
-            type="file" 
-            id="fileInput" 
-            name="attachments"
-            multiple 
-            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-            class="file-input"
-        >
-    </div>
+       <div class="file-upload-zone" id="fileUploadZone">
+            <img class="upload-icon" src="../images/upload-cloud-icon.svg" height="87" width="100"></img>
+            <p class="upload-text">Σύρετε αρχεία ή κάντε κλικ για επιλογή</p>
+            <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
+
+            <input type="file" id="fileInput" name="attachments" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                class="file-input">
+        </div>
 
     <!-- File List -->
     <div class="file-list" id="fileList"></div>

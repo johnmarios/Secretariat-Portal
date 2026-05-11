@@ -1,5 +1,5 @@
 import express from 'express'
-import { engine } from 'express-handlebars'
+import { create } from 'express-handlebars'
 
 import path from 'path'; 
 import { fileURLToPath } from 'url';
