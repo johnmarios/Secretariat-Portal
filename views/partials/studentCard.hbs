@@ -1,7 +1,7 @@
 <div class="student-card">
     <h3 class="student-card-title">Στοιχεία Φοιτητή</h3>
 
-    <img class="student-avatar" src="../images/avatar-person.svg" alt="Student Avatar">
+    <img class="student-avatar" src="/images/avatar-person.svg" alt="Student Avatar">
 
     <p class="student-name">{{student.fullName}}</p>
 
@@ -22,11 +22,11 @@
 
     <div class="info-row">
         <span class="label">ΕΤΟΣ ΣΠΟΥΔΩΝ:</span>
-        <span class="value">{{student.studyYear}}ο Έτος Σπουδών</span>
+        <span class="value">{{student.studyYear}}ο </span>
     </div>
-
+{{!-- 
     <div class="info-row">
         <span class="label">ΗΜΕΡΟΜΗΝΙΑ ΥΠΟΒΟΛΗΣ:</span>
-        <span class="value">25/03/26</span>
-    </div>
+        <span class="value">{{student.submittedAt}}</span>
+    </div> --}}
 </div>

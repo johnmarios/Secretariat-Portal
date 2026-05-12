@@ -1,4 +1,4 @@
-const getUserByEmailAndPassword = `
+export const getUserByEmailAndPassword = `
                     SELECT u.user_id, u.first_name, u.last_name, u.email,
                            s.student_id, sec.secretary_id, sec.is_leader
                     FROM USER u
@@ -7,7 +7,7 @@ const getUserByEmailAndPassword = `
                     WHERE u.email = ? AND u.password = ?
                 `;
                 
-const getUserById = `
+export const getUserById = `
                 SELECT u.user_id, u.first_name, u.last_name, u.email,
                 s.student_id, sec.secretary_id, sec.is_leader
                 FROM USER u
@@ -16,7 +16,7 @@ const getUserById = `
                 WHERE u.user_id = ?
                 `;
 
-const getStudentInfo = `
+export const getStudentInfo = `
                 SELECT u.user_id, u.first_name, u.last_name, u.email,
                 s.student_id, s.student_am, s.enrollment_year, s.type
                 FROM USER u
@@ -24,12 +24,16 @@ const getStudentInfo = `
                 WHERE s.student_id = ?
                 `;
 
-const createTicket = `
+export const createTicket = `
                 INSERT INTO TICKET (subject, description, for_student_id, for_category_id)
                 VALUES (?, ?, ?, ?)
                 `;
 
-const getTicketsByStudentId = `
+export const getCategoryIdByName = `
+                SELECT category_id FROM CATEGORY WHERE name = ? LIMIT 1
+                `;
+
+export const getTicketsByStudentId = `
                 SELECT 
                     ticket_id,
                     subject,
@@ -41,10 +45,15 @@ const getTicketsByStudentId = `
                 ORDER BY created_at DESC
                 `;
 
-module.exports = {
-       getUserByEmailAndPassword,
-       getUserById,
-       getStudentInfo,
-       createTicket,
-       getTicketsByStudentId,
-};
+export const getAllCategories = `
+                SELECT * FROM CATEGORY
+                `;
+
+// module.exports = {
+//        getUserByEmailAndPassword,
+//        getUserById,
+//        getStudentInfo,
+//        createTicket,
+//        getTicketsByStudentId,
+//        getAllCategories
+// };

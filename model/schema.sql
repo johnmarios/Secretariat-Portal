@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS `USER` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `CATEGORY` (
-    `category_id` int AUTO_INCREMENT NOT NULL UNIQUE,
+    `category_id` varchar(255) NOT NULL UNIQUE,
+    `theme` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB;
@@ -31,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `STUDENT` (
     `student_id` int AUTO_INCREMENT NOT NULL UNIQUE,
     `student_am` varchar(20) NOT NULL UNIQUE,
     `type` enum('undergrad', 'postgrad', 'phd') NOT NULL DEFAULT 'undergrad',
-    `enrollment_year` YEAR NOT NULL,
+    `enrollment_year` int NOT NULL,
     `for_id` int NOT NULL,
     PRIMARY KEY (`student_id`),
     CONSTRAINT `STUDENT_fk_user` FOREIGN KEY (`for_id`) REFERENCES `USER`(`user_id`) ON DELETE CASCADE
@@ -49,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `TICKET` (
     `resolved_at` timestamp NULL DEFAULT NULL,
     `for_student_id` int NOT NULL,
     `for_secretary_id` int DEFAULT NULL,
-    `for_category_id` int NOT NULL,
+    `for_category_id` varchar(255) NOT NULL,
     PRIMARY KEY (`ticket_id`),
     CONSTRAINT `TICKET_fk_student` FOREIGN KEY (`for_student_id`) REFERENCES `STUDENT`(`student_id`),
     CONSTRAINT `TICKET_fk_secretary` FOREIGN KEY (`for_secretary_id`) REFERENCES `SECRETARY`(`secretary_id`),
@@ -80,3 +81,10 @@ CREATE TABLE IF NOT EXISTS `ATTACHMENT` (
     CONSTRAINT `ATTACHMENT_fk_ticket` FOREIGN KEY (`for_ticket_id`) REFERENCES `TICKET`(`ticket_id`) ON DELETE CASCADE,
     CONSTRAINT `ATTACHMENT_fk_message` FOREIGN KEY (`for_message_id`) REFERENCES `MESSAGE`(`message_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+
+INSERT INTO USER (first_name, last_name, email, password) VALUES
+    ('Άννα', 'Δοκιμή', 'anna.demo@uni.test', 'demo');
+
+INSERT INTO STUDENT (student_am, type, enrollment_year, for_id)
+SELECT '2024001', 'undergrad', 2023, user_id FROM USER WHERE email = 'anna.demo@uni.test' LIMIT 1;

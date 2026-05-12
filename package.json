@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.mjs",
+  "type": "module",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.mjs",
-    "watch": "nodemon app.mjs"
+    "start": "node index.mjs",
+    "watch": "nodemon index.mjs"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,8 @@
   "dependencies": {
     "express": "^5.2.1",
     "express-handlebars": "^9.0.1",
-    "mysql2": "^3.22.3"
+    "mysql2": "^3.22.3",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

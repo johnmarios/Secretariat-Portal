@@ -4,7 +4,7 @@ import { create } from 'express-handlebars'
 import path from 'path'; 
 import { fileURLToPath } from 'url';
 
-import customHelpers from './controllers/helpers.js';
+// import customHelpers from './controllers/helpers.js';
 
 import createTicketRouter from './routes/createTicket.mjs';
 
@@ -25,14 +25,15 @@ const hbs = create({
     layoutsDir: path.join(__dirname, 'views/layouts'),
     partialsDir: path.join(__dirname, 'views/partials'),
     extname: '.hbs',
-    helpers: customHelpers 
+    // helpers: customHelpers 
 });
 
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views')); 
 
-app.use('/create-ticket', createTicketRouter);
+// app.use('/create-ticket', createTicketRouter);
+app.use('/', createTicketRouter);
 
 export default app;
 

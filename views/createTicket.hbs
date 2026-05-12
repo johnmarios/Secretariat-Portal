@@ -1,7 +1,8 @@
 {{!-- Create Ticket Page --}}
-<link rel="stylesheet" href="/createTicket.css">
+<link rel="stylesheet" href="/css/pages/createTicket.css">
 <div class="container create-ticket-page">
   <h1 class="page-title">Δημιουργία Αιτήματος</h1>
+
 
   <div class="grid three-col">
     <!-- Left: Student Card Partial -->
@@ -14,40 +15,18 @@
       <div class="card form-card">
         <h2>Το Αίτημά μου</h2>
 
-        <form id="createTicketForm" method="post" action="/tickets/create"> 
+        <form id="createTicketForm" method="post" action="/tickets/create">
+          <input type="hidden" name="student_id" value="{{studentId}}">
           <div class="form-group">
             <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
-            <select id="category" name="category" class="form-control">
-              <option value="" disabled selected>Επιλέξτε Κατηγορία...</option>
-
-              <optgroup label="Βεβαιώσεις & Πιστοποιητικά">
-                <option value="cert_enrollment">Βεβαίωση Σπουδών (Γενική Χρήση)</option>
-                <option value="cert_transcript">Αναλυτική Βαθμολογία</option>
-                <option value="cert_military">Πιστοποιητικό για Στρατολογική Χρήση</option>
-                <option value="cert_tax">Βεβαίωση για Εφορία / Επίδομα Ενοικίου</option>
-                <option value="cert_diploma_copy">Αντίγραφο Πτυχίου / Διπλώματος</option>
+            <select id="category" name="category_id" class="form-control">
+              {{#each groupedCategories}}
+              <optgroup label="{{this.themeName}}">
+                {{#each this.options}}
+                <option value="{{this.id}}">{{this.name}}</option>
+                {{/each}}
               </optgroup>
-
-              <optgroup label="Ακαδημαϊκά Θέματα">
-                <option value="acad_registration">Πρόβλημα με την Εγγραφή / Ανανέωση</option>
-                <option value="acad_courses">Θέματα Δηλώσεων Μαθημάτων</option>
-                <option value="acad_regrading">Αίτηση Αναβαθμολόγησης</option>
-                <option value="acad_exam_review">Επανεξέταση Μαθήματος</option>
-                <option value="acad_graduation">Αίτηση για Ορκωμοσία / Λήψη Πτυχίου</option>
-              </optgroup>
-
-              <optgroup label="Φοιτητική Κατάσταση">
-                <option value="status_suspension">Αναστολή Σπουδών</option>
-                <option value="status_deletion">Αίτηση Διαγραφής από το Τμήμα</option>
-                <option value="status_transfer">Θέματα Μετεγγραφών</option>
-                <option value="status_pass">Πρόβλημα με την Ακαδημαϊκή Ταυτότητα (Πάσο)</option>
-              </optgroup>
-
-              <optgroup label="Λοιπά">
-                <option value="general_query">Γενικό Ερώτημα / Πληροφορίες</option>
-                <option value="other">Άλλο (Περιγράψτε παρακάτω)</option>
-              </optgroup>
-
+              {{/each}}
             </select>
           </div>
 
@@ -73,11 +52,11 @@
         {{>fileAttachment}}
 
         <div class="submit-wrap">
-          <button id="submitTicketBtn" class="btn btn-primary btn-block">Υποβολή Αιτήματος</button>
+          <button id="submitTicketBtn" type="submit" class="btn btn-primary btn-block">Υποβολή Αιτήματος</button>
         </div>
       </div>
     </aside>
   </div>
 </div>
-<script src="/fileAttachment.js"></script>
-<script src="/createTicket.js"></script>
+<script src="/js/partials/fileAttachment.js" defer></script>
+<script src="/js/pages/createTicket.js" defer></script>
