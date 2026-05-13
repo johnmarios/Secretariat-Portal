@@ -38,12 +38,13 @@ export async function getCategoryIdByName(categoryKey) {
     return rows[0]?.category_id ?? null;
 }
 
-export async function insertTicket(subject, description, studentId, categoryId) {
+export async function insertTicket({subject, description, created_at, for_student_id, for_category_id}) {
     const [result] = await pool.query(sql.createTicket, [
         subject,
         description,
-        studentId,
-        categoryId,
+        created_at,
+        for_student_id,
+        for_category_id,
     ]);
     return result.insertId;
 }
@@ -53,4 +54,13 @@ export async function getAllCategories() {
     return rows;
 }
 
+export async function saveAttachment({ ticketId, filePath, fileName, fileSize }) {
+    const [result] = await pool.query(sql.saveAttachment, [
+        filePath,
+        fileName,
+        fileSize,
+        ticketId
+    ]);
+    return result.insertId;
+}
 export default pool;

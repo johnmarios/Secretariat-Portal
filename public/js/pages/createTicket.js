@@ -3,7 +3,7 @@
   if (!form) return;
 
   form.addEventListener('submit', (e) => {
-    const category = form.querySelector('[name="category"]');
+    const category = form.querySelector('[name="category_id"]');
     const subject = form.querySelector('[name="subject"]');
     const description = form.querySelector('[name="description"]');
     if (!category?.value) {

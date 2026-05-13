@@ -15,11 +15,12 @@
       <div class="card form-card">
         <h2>Το Αίτημά μου</h2>
 
-        <form id="createTicketForm" method="post" action="/tickets/create">
+        <form id="createTicketForm" method="post" enctype="multipart/form-data" action="/create-ticket/{{studentId}}">
           <input type="hidden" name="student_id" value="{{studentId}}">
           <div class="form-group">
             <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
-            <select id="category" name="category_id" class="form-control">
+            <select id="category" name="category_id" class="form-control" required>
+              <option value="" selected disabled>-- Επιλέξτε κατηγορία --</option>
               {{#each groupedCategories}}
               <optgroup label="{{this.themeName}}">
                 {{#each this.options}}
@@ -41,7 +42,6 @@
               placeholder="Περιγράψτε αναλυτικά το αίτημά σας..."></textarea>
           </div>
 
-        </form>
       </div>
     </main>
 
@@ -56,6 +56,7 @@
         </div>
       </div>
     </aside>
+    </form>
   </div>
 </div>
 <script src="/js/partials/fileAttachment.js" defer></script>

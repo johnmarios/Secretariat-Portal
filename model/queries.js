@@ -25,8 +25,8 @@ export const getStudentInfo = `
                 `;
 
 export const createTicket = `
-                INSERT INTO TICKET (subject, description, for_student_id, for_category_id)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO TICKET (subject, description, created_at, for_student_id, for_category_id)
+                VALUES (?, ?, ?, ?, ?)
                 `;
 
 export const getCategoryIdByName = `
@@ -48,6 +48,15 @@ export const getTicketsByStudentId = `
 export const getAllCategories = `
                 SELECT * FROM CATEGORY
                 `;
+export const insertTicket = `
+                INSERT INTO TICKET (description, subject, created_at, for_student_id, for_category_id)
+                VALUES (?, ?, ?, ?, ?)
+                `;
+
+export const saveAttachment = `
+                INSERT INTO ATTACHMENT (file_name, file_path, file_size, for_ticket_id)
+                VALUES (?, ?, ?, ?)
+                `;  
 
 // module.exports = {
 //        getUserByEmailAndPassword,

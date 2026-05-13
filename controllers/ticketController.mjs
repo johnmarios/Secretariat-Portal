@@ -54,7 +54,7 @@ let createOptions = async () => {
     //     { 
     //        themeName, 
     //        options: [
-    //          { id, name }, ...
+    //          { id, name, selected }, ...
     //        ] 
     //     },
     //     ...
@@ -71,9 +71,57 @@ let createOptions = async () => {
             acc.push(group);
         }
         
-        group.options.push({ id: item.id, name: item.name });
+        group.options.push({
+            id: String(item.category_id),
+            name: item.name,
+        });
         return acc;
     }, []);
     return groupedCategories;
 };
 
+export const submitCreateTicket = async (req, res) => {
+    try {
+        const{ subject, description, category_id } = req.body;
+        console.log(req.body);
+        const files = req.files; // array of uploaded files (if any)
+        const studentId = Number(req.params.student_id);
+        const categoryId = String(category_id ?? '').trim();
+
+        if (!Number.isInteger(studentId) || studentId < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός φοιτητή');
+        }
+
+        if (!categoryId) {
+            return res.status(400).send('Επιλέξτε κατηγορία αιτήματος');
+        }
+
+        if (!subject?.trim() || !description?.trim()) {
+            return res.status(400).send('Συμπληρώστε όλα τα υποχρεωτικά πεδία');
+        }
+
+        //save ticket info to the database
+        const ticketId = await db.insertTicket({
+            description: description,
+            subject: subject,
+            created_at: new Date(),
+            for_student_id: studentId,
+            for_category_id: categoryId
+        });
+        // save file paths to the database, into attachments table
+        if (files && files.length > 0) {
+            for (let file of files) {
+                await db.saveAttachment({
+                    ticketId: ticketId,
+                    filePath: file.path,
+                    fileName: file.originalname,
+                    fileSize: file.size
+                });
+            }
+        }
+        res.redirect(`/create-ticket/${studentId}`);
+    } catch (error) {
+        console.error('Error submitting create ticket:', error);
+        res.status(500).send("Upload failed: " + error.message);
+    }
+};

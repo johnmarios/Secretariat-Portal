@@ -82,9 +82,3 @@ CREATE TABLE IF NOT EXISTS `ATTACHMENT` (
     CONSTRAINT `ATTACHMENT_fk_message` FOREIGN KEY (`for_message_id`) REFERENCES `MESSAGE`(`message_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-
-INSERT INTO USER (first_name, last_name, email, password) VALUES
-    ('Άννα', 'Δοκιμή', 'anna.demo@uni.test', 'demo');
-
-INSERT INTO STUDENT (student_am, type, enrollment_year, for_id)
-SELECT '2024001', 'undergrad', 2023, user_id FROM USER WHERE email = 'anna.demo@uni.test' LIMIT 1;
