@@ -66,12 +66,12 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `ATTACHMENT` (
-    `attachment_id` int AUTO_INCREMENT NOT NULL UNIQUE,
+    `file_id` int AUTO_INCREMENT NOT NULL UNIQUE,
     `file_name` varchar(255) NOT NULL,
     `file_path` varchar(255) NOT NULL, 
     `file_size` int NOT NULL,  
     `for_message_id` int DEFAULT NULL, 
-    PRIMARY KEY (`attachment_id`),
+    PRIMARY KEY (`file_id`),
     CONSTRAINT `ATTACHMENT_fk_message` FOREIGN KEY (`for_message_id`) REFERENCES `MESSAGE`(`message_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

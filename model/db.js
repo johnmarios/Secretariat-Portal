@@ -11,21 +11,10 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
 });
 
-// async function initializeDatabase() {
-//     try {
-//         const connection = await pool.getConnection();
-//         console.log('Connected to the database successfully.');
-//         connection.release();
-//     } catch (error) {
-//         console.error('Error connecting to the database:', error);
-//     }
-// }
 
-// initializeDatabase();
-
-export async function getStudentInfo(studentId) {
+export async function getStudentInfo(student_id) {
     try {
-        const [rows] = await pool.query(sql.getStudentInfo, [studentId]);
+        const [rows] = await pool.query(sql.getStudentInfo, [student_id]);
         return rows[0];
     } catch (error) {
         console.error('Error fetching student info:', error);
@@ -33,18 +22,26 @@ export async function getStudentInfo(studentId) {
     }
 }
 
-export async function getCategoryIdByName(categoryKey) {
-    const [rows] = await pool.query(sql.getCategoryIdByName, [categoryKey]);
+export async function getCategoryIdByName(category_name) {
+    const [rows] = await pool.query(sql.getCategoryIdByName, [category_name]);
     return rows[0]?.category_id ?? null;
 }
 
-export async function insertTicket({subject, description, created_at, for_student_id, for_category_id}) {
-    const [result] = await pool.query(sql.createTicket, [
-        subject,
-        description,
+export async function insertTicket({created_at, for_student_id, for_category_id}) {
+    const [result] = await pool.query(sql.insertTicket, [
         created_at,
         for_student_id,
         for_category_id,
+    ]);
+    return result.insertId;
+}
+
+export async function insertMessage({message_subject, message_description, for_user_id, for_ticket_id}) {
+    const [result] = await pool.query(sql.insertMessage, [
+        message_subject,
+        message_description,
+        for_user_id,
+        for_ticket_id,
     ]);
     return result.insertId;
 }
@@ -54,12 +51,12 @@ export async function getAllCategories() {
     return rows;
 }
 
-export async function saveAttachment({ ticketId, filePath, fileName, fileSize }) {
+export async function saveAttachment({ for_message_id, file_path, file_name, file_size }) {
     const [result] = await pool.query(sql.saveAttachment, [
-        filePath,
-        fileName,
-        fileSize,
-        ticketId
+        file_path,
+        file_name,
+        file_size,
+        for_message_id
     ]);
     return result.insertId;
 }

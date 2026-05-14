@@ -1,20 +1,20 @@
-export const getUserByEmailAndPassword = `
-                    SELECT u.user_id, u.first_name, u.last_name, u.email,
-                           s.student_id, sec.secretary_id, sec.is_leader
-                    FROM USER u
-                    LEFT JOIN STUDENT s ON u.user_id = s.for_id
-                    LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
-                    WHERE u.email = ? AND u.password = ?
-                `;
+// export const getUserByEmailAndPassword = `
+//                     SELECT u.user_id, u.first_name, u.last_name, u.email,
+//                            s.student_id, sec.secretary_id, sec.is_leader
+//                     FROM USER u
+//                     LEFT JOIN STUDENT s ON u.user_id = s.for_id
+//                     LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
+//                     WHERE u.email = ? AND u.password = ?
+//                 `;
                 
-export const getUserById = `
-                SELECT u.user_id, u.first_name, u.last_name, u.email,
-                s.student_id, sec.secretary_id, sec.is_leader
-                FROM USER u
-                LEFT JOIN STUDENT s ON u.user_id = s.for_id
-                LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
-                WHERE u.user_id = ?
-                `;
+// export const getUserById = `
+//                 SELECT u.user_id, u.first_name, u.last_name, u.email,
+//                 s.student_id, sec.secretary_id, sec.is_leader
+//                 FROM USER u
+//                 LEFT JOIN STUDENT s ON u.user_id = s.for_id
+//                 LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
+//                 WHERE u.user_id = ?
+//                 `;
 
 export const getStudentInfo = `
                 SELECT u.user_id, u.first_name, u.last_name, u.email,
@@ -24,45 +24,27 @@ export const getStudentInfo = `
                 WHERE s.student_id = ?
                 `;
 
-export const createTicket = `
-                INSERT INTO TICKET (subject, description, created_at, for_student_id, for_category_id)
-                VALUES (?, ?, ?, ?, ?)
-                `;
-
 export const getCategoryIdByName = `
                 SELECT category_id FROM CATEGORY WHERE name = ? LIMIT 1
                 `;
 
-export const getTicketsByStudentId = `
-                SELECT 
-                    ticket_id,
-                    subject,
-                    status,
-                    created_at,
-                    resolved_at
-                FROM TICKET
-                WHERE for_student_id = ?
-                ORDER BY created_at DESC
-                `;
+
 
 export const getAllCategories = `
                 SELECT * FROM CATEGORY
                 `;
 export const insertTicket = `
-                INSERT INTO TICKET (description, subject, created_at, for_student_id, for_category_id)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO TICKET (created_at, for_student_id, for_category_id)
+                VALUES (?, ?, ?)
+                `;
+
+export const insertMessage = `
+                INSERT INTO MESSAGE (message_subject, message_description, for_user_id, for_ticket_id)
+                VALUES (?, ?, ?, ?)
                 `;
 
 export const saveAttachment = `
-                INSERT INTO ATTACHMENT (file_name, file_path, file_size, for_ticket_id)
+                INSERT INTO ATTACHMENT (file_name, file_path, file_size, for_message_id)
                 VALUES (?, ?, ?, ?)
                 `;  
 
-// module.exports = {
-//        getUserByEmailAndPassword,
-//        getUserById,
-//        getStudentInfo,
-//        createTicket,
-//        getTicketsByStudentId,
-//        getAllCategories
-// };

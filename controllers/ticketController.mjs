@@ -1,12 +1,14 @@
+import fs from 'fs';
+import path from 'path';
 import * as db from '../model/db.js';
 
 export const renderCreateTicketPage = async (req, res) => {
     try {
-        const studentId = Number(req.params.student_id);
-        if (!Number.isInteger(studentId) || studentId < 1) {
+        const student_id = Number(req.params.student_id);
+        if (!Number.isInteger(student_id) || student_id < 1) {
             return res.status(400).send('Μη έγκυρος αριθμός φοιτητή');
         }
-        const row = await db.getStudentInfo(studentId);
+        const row = await db.getStudentInfo(student_id);
         if (!row) {
             return res.status(404).send('Δεν βρέθηκε ο φοιτητής');
         }
@@ -14,7 +16,7 @@ export const renderCreateTicketPage = async (req, res) => {
         res.render('createTicket', {
             title: 'Νέο Αίτημα',
             student: buildStudent(row), 
-            studentId,
+            studentId: student_id,
             groupedCategories: await createOptions()
         });
     } catch (error) {
@@ -85,14 +87,13 @@ export const submitCreateTicket = async (req, res) => {
         const{ subject, description, category_id } = req.body;
         console.log(req.body);
         const files = req.files; // array of uploaded files (if any)
-        const studentId = Number(req.params.student_id);
-        const categoryId = String(category_id ?? '').trim();
+        const student_id = Number(req.params.student_id);
 
-        if (!Number.isInteger(studentId) || studentId < 1) {
+        if (!Number.isInteger(student_id) || student_id < 1) {
             return res.status(400).send('Μη έγκυρος αριθμός φοιτητή');
         }
 
-        if (!categoryId) {
+        if (!category_id) {
             return res.status(400).send('Επιλέξτε κατηγορία αιτήματος');
         }
 
@@ -101,25 +102,30 @@ export const submitCreateTicket = async (req, res) => {
         }
 
         //save ticket info to the database
-        const ticketId = await db.insertTicket({
-            description: description,
-            subject: subject,
+        const ticket_id = await db.insertTicket({
             created_at: new Date(),
-            for_student_id: studentId,
-            for_category_id: categoryId
+            for_student_id: student_id,
+            for_category_id: category_id
+        });
+
+        const message_id = await db.insertMessage({
+            message_subject: subject.trim(),
+            message_description: description.trim(),
+            for_user_id: student_id,
+            for_ticket_id: ticket_id
         });
         // save file paths to the database, into attachments table
         if (files && files.length > 0) {
             for (let file of files) {
                 await db.saveAttachment({
-                    ticketId: ticketId,
-                    filePath: file.path,
-                    fileName: file.originalname,
-                    fileSize: file.size
+                    file_path: file.path,
+                    file_name: file.originalname,
+                    file_size: file.size,
+                    for_message_id: message_id
                 });
             }
         }
-        res.redirect(`/create-ticket/ticket/student/${studentId}`);
+        res.redirect(`/tickets/create-ticket/student/${student_id}`);
     } catch (error) {
         console.error('Error submitting create ticket:', error);
         res.status(500).send("Upload failed: " + error.message);
@@ -128,19 +134,61 @@ export const submitCreateTicket = async (req, res) => {
 
 export const renderSecretaryViewTicketPage = async (req, res) => {
     try {
-        const studentId = Number(req.params.student_id);
-        const ticketId = Number(req.params.ticket_id);
+        const student_id = Number(req.params.student_id);
+        const ticket_id = Number(req.params.ticket_id);
 
-        if (!Number.isInteger(studentId) || studentId < 1 || !Number.isInteger(ticketId) || ticketId < 1) {
+        if (!Number.isInteger(student_id) || student_id < 1 || !Number.isInteger(ticket_id) || ticket_id < 1) {
             return res.status(400).send('Μη έγκυρος αριθμός φοιτητή ή αιτήματος');
         }
         res.render('secretaryViewTicket', {
             title: 'Λεπτομέρειες Αιτήματος',
-            studentId,
-            ticketId
+            student_id,
+            ticket_id
         });
     } catch (error) {
         console.error('Error rendering secretary view ticket page:', error);    
         res.status(500).send('Internal Server Error');
+    }
+};
+
+const getFilesFromFolder = () => {
+    const directoryPath = path.join(process.cwd(), 'public', 'files');
+    if (!fs.existsSync(directoryPath)) {
+        return [];
+    }
+    return fs.readdirSync(directoryPath).map((fileName) => ({
+        fileName,
+        filePath: path.join(directoryPath, fileName),
+    }));
+};
+
+export const clearDuplicateFiles = async (req, res) => {
+    try {
+        const files = getFilesFromFolder();
+        const seen = new Map();
+        const deletedFiles = [];
+
+        for (const file of files) {
+            const stats = fs.statSync(file.filePath);
+            const canonicalName = file.fileName.replace(/-\d+-\d+(\.[^.]+)$/, '$1');
+            const duplicateKey = `${canonicalName}-${stats.size}`;
+
+            if (seen.has(duplicateKey)) {
+                fs.unlinkSync(file.filePath);
+                deletedFiles.push(file.fileName);
+            } else {
+                seen.set(duplicateKey, true);
+            }
+        }
+
+        return res.json({
+            ok: true,
+            scanned: files.length,
+            deleted: deletedFiles.length,
+            deletedFiles,
+        });
+    } catch (error) {
+        console.error('Error clearing duplicate files:', error);
+        return res.status(500).json({ ok: false, error: error.message });
     }
 };

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 // import customHelpers from './controllers/helpers.js';
 
 import createTicketRouter from './routes/createTicket.mjs';
+import * as ticketController from './controllers/ticketController.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,8 @@ const hbs = create({
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views')); 
+
+// app.get('/clear-duplicate-uploads', ticketController.clearDuplicateFiles);  
 
 // app.use('/create-ticket', createTicketRouter);
 // app.use('/', createTicketRouter);

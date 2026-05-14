@@ -15,7 +15,7 @@
       <div class="card form-card">
         <h2>Το Αίτημά μου</h2>
 
-        <form id="createTicketForm" method="post" enctype="multipart/form-data" action="/create-ticket/{{studentId}}">
+        <form id="createTicketForm" method="post" enctype="multipart/form-data" action="/tickets/create-ticket/student/{{studentId}}">
           <input type="hidden" name="student_id" value="{{studentId}}">
           <div class="form-group">
             <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
