@@ -119,9 +119,28 @@ export const submitCreateTicket = async (req, res) => {
                 });
             }
         }
-        res.redirect(`/create-ticket/${studentId}`);
+        res.redirect(`/create-ticket/ticket/student/${studentId}`);
     } catch (error) {
         console.error('Error submitting create ticket:', error);
         res.status(500).send("Upload failed: " + error.message);
+    }
+};
+
+export const renderSecretaryViewTicketPage = async (req, res) => {
+    try {
+        const studentId = Number(req.params.student_id);
+        const ticketId = Number(req.params.ticket_id);
+
+        if (!Number.isInteger(studentId) || studentId < 1 || !Number.isInteger(ticketId) || ticketId < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός φοιτητή ή αιτήματος');
+        }
+        res.render('secretaryViewTicket', {
+            title: 'Λεπτομέρειες Αιτήματος',
+            studentId,
+            ticketId
+        });
+    } catch (error) {
+        console.error('Error rendering secretary view ticket page:', error);    
+        res.status(500).send('Internal Server Error');
     }
 };

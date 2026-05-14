@@ -33,7 +33,7 @@ app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views')); 
 
 // app.use('/create-ticket', createTicketRouter);
-app.use('/', createTicketRouter);
+// app.use('/', createTicketRouter);
 app.use('/tickets', createTicketRouter);
 
 export default app;
