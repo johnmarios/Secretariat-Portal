@@ -42,3 +42,19 @@ if (modal && closeBtn && tableRows.length > 0) {
   });
 
 }
+
+// Παράδειγμα κώδικα στο login page
+fetch('/api/login', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' }
+})
+.then(response => response.json())
+.then(data => {
+    if (data.success) {
+        // ΑΥΤΗ Η ΓΡΑΜΜΗ ΕΙΝΑΙ ΠΟΥ ΑΛΛΑΖΕΙ ΤΗ ΣΕΛΙΔΑ!
+        window.location.href = data.redirectUrl; 
+    } else {
+        alert("Λάθος στοιχεία!");
+    }
+});

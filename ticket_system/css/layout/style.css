@@ -19,6 +19,10 @@ html {
   /* color: 363B66; */
   /* min-width: min-content; */
 }
+
+/* simantiko gia na min emfanizete orizontio scrollbar akures stigmes kata ti xrisi */
+
+
 /* ==================== homepage========================= */
 section {
     scroll-margin-top: 80px;
@@ -203,6 +207,8 @@ section {
 }
 
 /* ============= for zoom========================= */
+/* simantiko gia na min emfanizete orizontio scrollbar akures stigmes kata ti xrisi */
+
 @media (max-width: 460px) {
 
     html {
@@ -217,7 +223,7 @@ body:not(.index-page) {
   background: linear-gradient(270deg, #C6D8F2 0%, #F4F4F4 53%);
   color: #363B66;
   margin: 0;
-  padding: 0;
+  /* padding: 0; */
   /* min-width: min-content; */
   font: 1rem / 1 'Manrope', sans-serif;
   /* font-size/line-height */
@@ -230,14 +236,15 @@ body:not(.index-page) {
 
 
 
-/* label {
+
+.ticket-submit label {
   display: block;
   margin-bottom: 5px;
   font-weight: 540;
   font-size: 20px;
   line-height: 1.1; 
-
-} */
+  /* color: var(--main-color); */
+}
 
 
 .login-main{
@@ -248,10 +255,6 @@ body:not(.index-page) {
 }
 
 .login-page .login-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center ;
-  align-items: center;
   background: var(--light);
   width: 100%;
   max-width: 450px; 
@@ -262,10 +265,12 @@ body:not(.index-page) {
 
 .login-page .login-body {
   background-color: var(--light-gray); 
-  padding: 1rem 7rem;
+  padding: 1rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center; 
+  width: 100%; 
+  box-sizing: border-box; 
 }
 
 .login-page .login-body input {
@@ -279,6 +284,7 @@ body:not(.index-page) {
   border-radius: 50px;     
   padding: 1.5rem 1rem;
   font-size:large;
+  padding-left: 0px;
 }
 
 .login-page .login-card h3{
@@ -330,11 +336,29 @@ body:not(.index-page) {
   cursor: pointer;
 }
 
+.login-page .card-header {
+  text-align: center;
+  padding:3px;
+  border-bottom: 1px solid #dcdcdc; 
+  color: #363B66;
+  font-size: 15px;
+  /* border-top-right-radius: 20px;
+  border-top-left-radius: 20px; */
+}
 
 
-/* =================== SUBMIT ==================*/
 
-.ticket-submit .left-column input {
+
+/* ==================================================================*/
+/* ==================================================================*/
+/* ============================ SUBMIT ==============================*/
+/* ==================================================================*/
+/* ==================================================================*/
+
+
+
+
+/* .ticket-submit .left-column input{
   margin-top: 5px;
   margin-bottom: 20px;
   width: 100%;
@@ -344,14 +368,14 @@ body:not(.index-page) {
   border-radius: 8px;     
   padding: 13px;          
   border: 1px  #ccc; 
-}
+} */
 
 
 /* ----- Karta upovolis ------------------------------------------ */
 
 /* Labels left, inputs right for wide screens */
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .ticket-submit .left-column {
     display: grid;
     grid-template-columns: 180px 1fr;
@@ -373,7 +397,12 @@ body:not(.index-page) {
 
 .ticket-submit .left-column label {
   font-weight: 600;
- }
+ } */
+
+body.ticket-submit {
+  /* font-size: 18px;  */
+  line-height: 1.2; 
+} 
 
 body.ticket-submit main {
   display: flex;
@@ -386,7 +415,7 @@ body.ticket-submit main {
 .ticket-submit .form-card {
   background: #ffffff;
   width: 100%;
-  max-width: 900px; 
+  max-width: 1100px; 
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
   border: 1px solid #dcdcdc;
   border-radius: 20px;
@@ -394,21 +423,26 @@ body.ticket-submit main {
 
 .ticket-submit .card-header {
   text-align: center;
+  align-content: center;
   padding:3px;
   border-bottom: 1px solid #dcdcdc; 
   color: #363B66;
-  font-size: 15px;
+  height: 90px;
   /* border-top-right-radius: 20px;
   border-top-left-radius: 20px; */
 }
+
 .ticket-submit .card-header h1{
-  font-size: 1.8rem;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 /* --- grid --- *//*mporousame kai me flex...*/
 .ticket-submit .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* ftiaxnei duo columns me to idio width */
+  /* grid-template-columns: 1fr 1fr; ftiaxnei duo columns me to idio width */
+  grid-template-columns: 1fr 1fr 1.3fr;
+
 }
 
 .ticket-submit .left-column {
@@ -418,7 +452,13 @@ body.ticket-submit main {
   background-color: #ffffff;
   border-bottom-left-radius: 20px;
 }
+.ticket-submit .middle-column {
+  padding: 30px;
+  padding-top: 35px;
 
+  background-color: #ffffff;
+  border-bottom-left-radius: 20px;
+}
 .ticket-submit .right-column {
   padding: 30px;
   padding-top: 35px;
@@ -427,6 +467,33 @@ body.ticket-submit main {
   flex-direction: column; 
   border-bottom-right-radius: 20px;
 
+}
+.left-column input,
+.left-column select,
+.middle-column input,
+.middle-column select {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box; 
+  max-width: 300px;
+  background: #ecebeb;
+  border-radius: 8px;     
+  padding: 13px;          
+  border: 1px  #ccc;
+  outline: none; 
+  height:50px; /*to choose file einai periergo xoris auto*/
+}
+
+
+.left-column select,
+.middle-column select {
+  appearance: none;
+  background-image: url("../images/arrow.svg"); /* Βεβαιώσου ότι το path ισχύει! */
+  background-repeat: no-repeat;
+  background-position: center right 12px; 
+  background-size: 18px auto;
+  cursor: pointer;
 }
 
 .ticket-submit textarea {
@@ -440,6 +507,8 @@ body.ticket-submit main {
   resize: none; 
   margin-bottom: 20px;
   font-family: 'Manrope', sans-serif; 
+  outline: none;
+
 }
 
 .ticket-submit .submit-btn {
@@ -459,6 +528,33 @@ body.ticket-submit main {
   color: red;
 }
 
+input#name:hover,.input#email:hover,
+input#name:focus, input#email:focus{
+  cursor: not-allowed;
+  outline: none;
+  user-select: none;
+}
+
+/* na ginete column */
+@media (max-width: 955px) {
+  .ticket-submit .form-grid {
+    display: flex; 
+    flex-direction: column; 
+  }
+  .ticket-submit .form-card {
+  max-width: 450px; 
+  }  
+  .ticket-submit .left-column{
+  padding:20px 80px 0 80px; 
+  }
+  .ticket-submit .middle-column{
+    padding:0px 80px 20px 80px;
+  }
+  .ticket-submit .right-column{
+    padding:20px 80px;
+    min-height: 400px;
+  }
+}
 
 /* gia to mellon */
 
@@ -558,12 +654,76 @@ input[type="file"]::file-selector-button {
   max-width: 1200px;
 }
 
+/*//////////////////////////////////////////////////////////////*/
+/* ==========================================
+   TABS STYLING (Για τη σελίδα της Γραμματείας)
+========================================== */
+
+/* 1. Το κοντέινερ που κρατάει τα κουμπιά */
+.tabs-header {
+  display: flex;
+  width: 100%;
+  max-width: 1200px; /* Ίδιο με το dashboard-main για στοίχιση */
+  margin: 20px auto 0 auto;
+  gap: 5px; /* Μικρό κενό ανάμεσα στα κουμπιά */
+}
+
+/* 2. Τα κουμπιά - Καρτέλες */
+.tab-link {
+  background-color: #EBEBEB; /* Αχνό γκρι για τα ανενεργά */
+  color: #6C7293;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 12px 25px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-link:hover {
+  background-color: #e0e0e0;
+  color: var(--main-color);
+}
+
+/* 3. Το Ενεργό Tab (Αυτό που πατήθηκε) */
+.tab-link.active {
+  background-color: #ffffff; /* Γίνεται λευκό για να "ενωθεί" με την κάρτα */
+  color: rgb(91, 134, 209);  /* Το χαρακτηριστικό μπλε σου */
+  border-bottom: 3px solid rgb(91, 134, 209); /* Η μπλε γραμμή στη βάση */
+}
+
+/* 4. Διόρθωση της κάρτας του πίνακα για να "κολλήσει" στα Tabs */
+.table-card {
+  border-top-left-radius: 0px !important; /* Βγάζουμε τη γωνία για να φαίνεται ενιαίο */
+  margin-top: 0px !important;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 5. Διαχείριση εμφάνισης των πινάκων */
+.tab-content {
+  display: none; /* Κρυφό από προεπιλογή */
+  animation: fadeIn 0.4s; /* Μικρό εφε εμφάνισης */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
 .table-controls {
   width: 100%;
   display: flex;
   justify-content: space-between; 
   align-items: center; 
 }
+/*//////////////////////////////////////////////////////////////*/
 
 
 .status {

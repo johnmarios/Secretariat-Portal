@@ -2,20 +2,61 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
-const db = require('../model/sql/db');
+const db = require('../model/db');
 
 // POST /api/login means that passport authenticated the user 
-router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.json({
-        success: true,
-        message: "Επιτυχής σύνδεση",
-        user: {
-            id: req.user.user_id,
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            role: req.user.role
+// POST /login
+// POST /login (Με αναλυτικό κοριό)
+router.post('/login', (req, res, next) => {
+    
+    console.log("=== ΝΕΑ ΠΡΟΣΠΑΘΕΙΑ ΣΥΝΔΕΣΗΣ ===");
+    console.log("Email που ήρθε:", req.body.email);
+    // Καλούμε το Passport χειροκίνητα για να δούμε τι ακριβώς κάνει
+    passport.authenticate('local', async (err, user, info) => {
+        
+        if (err) {
+            console.log("❌ Έσκασε σφάλμα στο Passport:", err);
+            return res.status(500).send("Σφάλμα server");
         }
-    });
+        
+        if (!user) {
+            console.log("⛔ Ο Πορτιέρης έριξε πόρτα! Αιτία:", info ? info.message : "Άγνωστο");
+            return res.send("Αποτυχία σύνδεσης: Κοίτα το τερματικό για την αιτία!");
+        }
+        
+        console.log("✅ Ο κωδικός είναι ΣΩΣΤΟΣ! Χρήστης:", user.email);
+        
+        // Βάζουμε τον χρήστη μέσα
+        req.logIn(user, async (err) => {
+            if (err) return next(err);
+            
+            try {
+                const userId = user.user_id || user.id; 
+                console.log("🔍 Ψάχνω τον ρόλο για το ID:", userId);
+
+                const [secRows] = await db.execute('SELECT secretary_id FROM SECRETARY WHERE for_id = ?', [userId]);
+                if (secRows.length > 0) {
+                    req.user.secretary_id = secRows[0].secretary_id;
+                    req.user.role = 'secretary';
+                    console.log("🚀 Είναι Γραμματεία! Πάμε στα Tabs!");
+                    return res.redirect('/secretary_viewtickets');
+                } 
+
+                const [studentRows] = await db.execute('SELECT student_id FROM STUDENT WHERE for_id = ?', [userId]);
+                if (studentRows.length > 0) {
+                    req.user.student_id = studentRows[0].student_id;
+                    req.user.role = 'student';
+                    console.log("🎓 Είναι Φοιτητής! Πάμε στα δικά του Tickets!");
+                    return res.redirect('/user_viewtickets');
+                }
+
+                res.send("Ο χρήστης συνδέθηκε, αλλά δεν υπάρχει ούτε σαν Γραμματεία ούτε σαν Φοιτητής!");
+            } catch (error) {
+                console.error("Σφάλμα βάσης:", error);
+                res.send("Σφάλμα κατά την ανάγνωση του ρόλου.");
+            }
+        });
+    })(req, res, next);
 });
 
 // POST /api/logout

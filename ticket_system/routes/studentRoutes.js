@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../model/sql/db');
-const queries = require('../model/sql/queries');
+const db = require('../model/db');
+const queries = require('../model/queries');
 
 // GET /api/student/:student_id - Φέρνει τα στοιχεία φοιτητή
 router.get('/student/:student_id', async (req, res) => {

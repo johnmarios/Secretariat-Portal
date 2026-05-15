@@ -3,6 +3,7 @@ import { engine } from 'express-handlebars';
 import { createRequire } from 'node:module'; // to use require 
 import { dirname, resolve } from 'node:path'; // to find the correct paths of folders and files
 import { fileURLToPath } from 'node:url'; // converts the URL of the current file to a path 
+import createTicketRouter from './routes/createTicket.js';
 
 const require = createRequire(import.meta.url); 
 const cors = require('cors'); //allows to other pages to access the server
@@ -12,6 +13,7 @@ const configurePassport = require('./config/passport.js');
 const pageRoutes = require('./routes/pageRoutes.js'); // routes for rendering pages
 const authRoutes = require('./routes/auth.js'); // routes for authentication 
 const studentRoutes = require('./routes/studentRoutes.js'); // routes for student-related API endpoints
+const createTicketRoutes = require('./routes/createTicket.js'); 
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 
@@ -40,15 +42,19 @@ function createApp() {
     app.engine('hbs', engine({
         extname: 'hbs',
         defaultLayout: 'main',
+        helpers: {
+        add: function (a, b) {
+            return a + b;
+        },
         layoutsDir: resolve(__dirname, 'views', 'layouts'),
         partialsDir: resolve(__dirname, 'views', 'partials')
-    }));
+    }}));
     app.set('view engine', 'hbs');
     app.set('views', resolve(__dirname, 'views'));
 
     app.use('/', pageRoutes);
     app.use('/api', authRoutes);
-    app.use('/api', studentRoutes);
+    app.use('/', createTicketRoutes);
 
     return app;
 }

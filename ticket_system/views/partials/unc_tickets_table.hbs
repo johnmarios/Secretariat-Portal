@@ -1,0 +1,29 @@
+{{!-- {{#if title}}
+  <h3>{{title}}</h3>
+{{/if}} --}}
+
+<table class="requests-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Θέμα</th>
+            <th>Ημερομηνία Υποβολής</th>
+            <th>Ημερομηνία Ολοκλήρωσης</th>
+            <th></th> </tr>
+        </thead>
+        <tbody>
+          {{#each tickets}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.subject}}</td>
+            <td>{{this.submittedAt}}</td>
+            <td>{{this.completedAt}}</td>
+            <td>
+              <form action="/tickets/assign/{{this.id}}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-primary btn-sm">Αναλαμβάνω</button>
+              </form>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+</table>

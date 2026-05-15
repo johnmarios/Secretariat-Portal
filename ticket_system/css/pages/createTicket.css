@@ -11,11 +11,21 @@
 	--success-text: #1f8a3d;
 }
 
-@media (min-width: 600px) {
-	html.create-ticket-no-scroll,
-	body.create-ticket-no-scroll {
-		height: 100%;
-		overflow: hidden;
+
+@media(max-width: 880px) {
+	.grid {
+		grid-template-columns: 1fr;
+		gap: 12px;
+        flex-direction: column;
+	}
+	.middle-col {
+		order: 1;
+	}
+	.right-col {
+		order: 2;
+	}
+	.left-col {
+		order: 3;
 	}
 }
 
@@ -23,20 +33,27 @@
 	box-sizing: border-box;
 	font-family: 'Manrope', sans-serif;
 }
+.create-ticket-page .body {
+	overflow-y: auto;
+}
+.create-ticket-page .container{
+	overflow-y: auto;
+}
 
-/* Page wrapper */
 .create-ticket-page {
 	max-width: 1180px;
 	margin: 0 auto;
-	padding: 20px 18px;
+	padding: clamp(12px, 2.5vh, 20px) 18px;
 	background: transparent;
 	color: var(--main-color);
 }
 
+
 /* Page title */
 .create-ticket-page .page-title {
 	font-size: 32px;
-	margin: 0 0 24px;
+	margin: 0 0 24px; 
+	/* bottom margin for spacing */
 	line-height: 1.1;
 	font-weight: 700;
 	color: var(--main-color);
@@ -44,14 +61,15 @@
 
 /* Three-column grid layout */
 .create-ticket-page .grid {
-	display: grid;
+	display: flex;
 	grid-template-columns: 250px 1fr 300px;
 	gap: 16px;
-	align-items: start;
+	align-items:stretch; 
 }
 
 .create-ticket-page .col {
 	min-width: 0;
+    flex: 1;
 }
 
 /* Card styling for all three columns */
@@ -73,12 +91,13 @@
 /* Student card (left column) */
 .create-ticket-page .left-col {
 	position: sticky;
-	top: 90px;
+
 }
+
 
 /* Form card (middle column) */
 .create-ticket-page .form-card {
-	min-height: 400px;
+	min-height: min(400px, 52vh);
 }
 
 .create-ticket-page .form-card form {
@@ -132,7 +151,6 @@
 }
 
 .create-ticket-page textarea.form-control {
-	min-height: 150px;
 	resize: vertical;
 	font-family: 'Manrope', sans-serif;
 }
@@ -140,15 +158,14 @@
 /* Attachments card (right column) */
 .create-ticket-page .right-col {
 	position: sticky;
-	top: 90px;
+
 }
 
 .create-ticket-page .attachments-card {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-	max-height: calc(100vh - 140px);
-	overflow: visible;
+
 }
 
 /* Submit button wrapper */
@@ -202,7 +219,7 @@
 
 	.create-ticket-page .left-col,
 	.create-ticket-page .right-col {
-		position: static;
+		position: static; 
 	}
 
 	.create-ticket-page .attachments-card {
@@ -233,3 +250,5 @@
 		font-size: 14px;
 	}
 }
+
+

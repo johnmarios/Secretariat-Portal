@@ -1,7 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
-const db = require('../model/sql/db'); // Πάμε έναν φάκελο πίσω για να βρούμε το db.js
+const db = require('../model/db'); // Πάμε έναν φάκελο πίσω για να βρούμε το db.js
 const { get } = require('../routes/auth');
-const { getUserByEmailAndPassword, getUserById } = require('../model/sql/queries');
+const { getUserByEmailAndPassword, getUserById } = require('../model/queries');
 
 module.exports = function(passport) {
     // Login
