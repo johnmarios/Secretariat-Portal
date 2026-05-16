@@ -3,8 +3,24 @@
         {{#each messages}}
             <div class="message-bubble {{this.bubbleClass}}">
                 <div class="message-meta">{{messageMeta this.senderDisplay this.created_at}}</div>
-                <p><strong>{{this.message_subject}}</strong></p>
-                <p>{{this.message_description}}</p>
+                {{#if this.message_subject}}<p>{{this.message_subject}}</p>{{/if}}
+                {{#if this.message_description}}<p>{{this.message_description}}</p>{{/if}}
+                {{#if (hasItems this.attachments)}}
+                    <div class="file-list has-items message-file-list">
+                        {{#each this.attachments}}
+                        <div class="file-item">
+                            <div class="file-item-icon">{{this.file_type}}</div>
+                            <div class="file-item-info">
+                                <p class="file-item-name">{{this.file_name}}</p>
+                                <p class="file-item-size">{{this.file_size}}</p>
+                            </div>
+                            <a href="{{attachmentUrl this.file_path}}" class="message-download attachment-download" aria-label="Download message attachment">
+                                <img src="../images/file-download-svgrepo-com.svg" alt="Download">
+                            </a>
+                        </div>
+                        {{/each}}
+                    </div>
+                {{/if}}
             </div>
         {{/each}}
     {{else}}
