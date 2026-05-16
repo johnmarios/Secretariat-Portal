@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS `USER` (
 
 CREATE TABLE IF NOT EXISTS `CATEGORY` (
     `category_id` varchar(255) NOT NULL UNIQUE,
-    `theme` varchar(255) NOT NULL,
-    `name` varchar(255) NOT NULL,
+    `category_theme` varchar(255) NOT NULL,
+    `category_name` varchar(255) NOT NULL,
     PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB;
 

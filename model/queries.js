@@ -86,18 +86,18 @@ export const getStudentInfoByTicketId = `
                 `;
 
 export const getCategoryThemeByTicketId = `
-                SELECT c.theme FROM TICKET t
+                SELECT c.category_theme FROM TICKET t
                 JOIN CATEGORY c ON c.category_id = t.for_category_id
                 WHERE t.ticket_id = ?
                 LIMIT 1
                 `;
 export const getAttachmentsByMessageId = `
-                SELECT file_name, file_path, file_size, file_type FROM ATTACHMENT
+                SELECT file_name, file_path, file_size, file_type, for_message_id FROM ATTACHMENT
                 WHERE for_message_id = ?
                 `;
 
 export const getAttachmentsByMessagesId = `
-                SELECT file_name, file_path, file_size, file_type FROM ATTACHMENT
+                SELECT file_name, file_path, file_size, file_type, for_message_id FROM ATTACHMENT
                 WHERE for_message_id IN (?)
                 `;
 

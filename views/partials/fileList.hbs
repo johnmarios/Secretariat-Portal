@@ -2,14 +2,13 @@
     {{#if (hasItems attachments)}}
         {{#each attachments}}
         <div class="file-item">
-            <div class="file-item-icon">{{this.file_type}}</div>
+            <div class="file-item-icon">{{fileLabel this.file_name this.file_type}}</div>
             <div class="file-item-info">
                 <p class="file-item-name">{{this.file_name}}</p>
-                <p class="file-item-size">{{this.file_size}}</p>
-                <p class="file-item-type">{{this.file_type}}</p>
+                <p class="file-item-size">{{formatFileSize this.file_size}}</p>
             </div>
             <a href="{{attachmentUrl this.file_path}}" class="attachment-download" aria-label="Download attachment">
-                <img src="../images/file-download-svgrepo-com.svg" alt="Download">
+                <img src="/images/file-download-svgrepo-com.svg" alt="Download">
             </a>
         </div>
         {{/each}}

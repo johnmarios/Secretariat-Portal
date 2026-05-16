@@ -52,8 +52,8 @@ INSERT INTO `SECRETARY` (`is_leader`, `for_id`) VALUES (TRUE, 3);
 INSERT INTO
     `CATEGORY` (
         `category_id`,
-        `theme`,
-        `name`
+        `category_theme`,
+        `category_name`
     )
 VALUES 
     ('cert_enrollment','Βεβαιώσεις και Πιστοποιητικά', 'Βεβαίωση Σπουδών'),

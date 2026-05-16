@@ -40,10 +40,33 @@ function messageMeta(senderDisplay, createdAt) {
 
 function attachmentUrl(filePath) {
 	if (!filePath) {
-		return '#';
+		return '#'; 
 	}
 
 	return `/files/${path.basename(filePath)}`;
+}
+
+function formatFileSize(bytes) {
+	if (bytes == null || isNaN(bytes)) return '';
+	const b = Number(bytes);
+	if (b < 1024) return `${b} B`;
+	const kb = b / 1024;
+	if (kb < 1024) return `${Math.round(kb)} KB`;
+	const mb = kb / 1024;
+	return `${mb.toFixed(1)} MB`;
+}
+
+function fileLabel(fileName, fileType) {
+	if (fileName) {
+		const ext = fileName.split('.').pop();
+		if (ext && ext.length <= 5) return ext.toUpperCase();
+	}
+	if (fileType) {
+		if (fileType.includes('pdf')) return 'PDF';
+		if (fileType.includes('word') || fileType.includes('msword')) return 'DOC';
+		if (fileType.includes('image')) return 'IMG';
+	}
+	return 'FILE';
 }
 
 export default {
@@ -53,4 +76,6 @@ export default {
 	headerTitle,
 	messageMeta,
 	attachmentUrl,
+	formatFileSize,
+	fileLabel,
 };

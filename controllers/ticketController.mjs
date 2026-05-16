@@ -150,13 +150,12 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
 
         const firstMessage = await db.getFirstMessageByTicketId(ticket_id);
         const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
+        // db returns { category_theme: '...' } 
+        const category_name = categoryTheme.category_theme;
         // const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
         // first message filelist: 
         const firstMessageAttachments = await db.getAttachmentsByMessageId(firstMessage.message_id);
-        // const studentMessagesAttachments = await db.getAttachmentsByMessagesId(restStudentMessages.map(m => m.message_id));
-        // const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
-        // const secretaryMessageAttachments = await db.getAttachmentsByMessagesId(secretaryMessages.map(m => m.message_id));
-        
+
         // get all messages of the ticket, except of the first one,
         // ordered by message_id ascending, and for each message get its attachments,
         //  then combine them into a single array of messages with attachments
@@ -189,6 +188,7 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
             title: 'Λεπτομέρειες Αιτήματος',
             ticket_id,
             categoryTheme,
+            category_name,
             student: buildStudent(studentRow),
             studentId: studentRow.student_id,
             firstMessage,
