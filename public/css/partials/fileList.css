@@ -144,3 +144,23 @@
 .file-error-message.hidden {
     display: none;
 }
+.attachment-download,
+.message-download {
+  flex-shrink: 0; /* prevent shrinking when space is tight */
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  color: var(--secretary-blue);
+  background: #e9f1ff;
+  font-weight: 800;
+}
+
+.attachment-download img,
+.message-download img {
+  width: 14px;
+  height: 14px;
+  display: block;
+}

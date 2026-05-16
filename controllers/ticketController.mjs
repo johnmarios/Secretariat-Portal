@@ -111,6 +111,7 @@ export const submitCreateTicket = async (req, res) => {
         const message_id = await db.insertMessage({
             message_subject: subject.trim(),
             message_description: description.trim(),
+            created_at: new Date(),
             for_user_id: student_id,
             for_ticket_id: ticket_id
         });
@@ -121,6 +122,8 @@ export const submitCreateTicket = async (req, res) => {
                     file_path: file.path,
                     file_name: file.originalname,
                     file_size: file.size,
+                    file_type: file.mimetype,
+                    file_id: file.filename,
                     for_message_id: message_id
                 });
             }
@@ -134,16 +137,64 @@ export const submitCreateTicket = async (req, res) => {
 
 export const renderSecretaryViewTicketPage = async (req, res) => {
     try {
-        const student_id = Number(req.params.student_id);
         const ticket_id = Number(req.params.ticket_id);
 
-        if (!Number.isInteger(student_id) || student_id < 1 || !Number.isInteger(ticket_id) || ticket_id < 1) {
-            return res.status(400).send('Μη έγκυρος αριθμός φοιτητή ή αιτήματος');
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
         }
+
+        const studentRow = await db.getStudentInfoByTicketId(ticket_id);
+        if (!studentRow) {
+            return res.status(404).send('Δεν βρέθηκε το αίτημα ή ο φοιτητής');
+        }
+
+        const firstMessage = await db.getFirstMessageByTicketId(ticket_id);
+        const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
+        // const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
+        // first message filelist: 
+        const firstMessageAttachments = await db.getAttachmentsByMessageId(firstMessage.message_id);
+        // const studentMessagesAttachments = await db.getAttachmentsByMessagesId(restStudentMessages.map(m => m.message_id));
+        // const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
+        // const secretaryMessageAttachments = await db.getAttachmentsByMessagesId(secretaryMessages.map(m => m.message_id));
+        
+        // get all messages of the ticket, except of the first one,
+        // ordered by message_id ascending, and for each message get its attachments,
+        //  then combine them into a single array of messages with attachments
+        // format the messages to include a bubbleClass property based on the sender (student or secretary)
+        const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
+        const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
+        const allMessages = [...restStudentMessages, ...secretaryMessages].sort((a, b) => a.message_id - b.message_id);
+        const messageIds = allMessages.map(m => m.message_id);
+
+        const allAttachments = await db.getAttachmentsByMessagesId(messageIds);
+        // for quick access i create a map
+        const attachmentsMap = new Map();
+        allAttachments.forEach(att => {
+            // if the map doesn't have an entry for the message id, create an empty array
+            if (!attachmentsMap.has(att.for_message_id)) {
+                attachmentsMap.set(att.for_message_id, []);
+            }
+            attachmentsMap.get(att.for_message_id).push(att);
+        });
+        const formattedMessages = allMessages.map(message => ({
+            ...message,
+            attachments: attachmentsMap.get(message.message_id) || [],
+            senderDisplay: message.for_user_id === studentRow.student_id ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+            bubbleClass: message.for_user_id === studentRow.student_id ? 'student-message' : 'staff-message',
+            created_at: message.created_at
+        }));
+
+
         res.render('secretaryViewTicket', {
             title: 'Λεπτομέρειες Αιτήματος',
-            student_id,
-            ticket_id
+            ticket_id,
+            categoryTheme,
+            student: buildStudent(studentRow),
+            studentId: studentRow.student_id,
+            firstMessage,
+            firstMessageAttachments,
+            messages: formattedMessages,
+            messagesCount: formattedMessages.length + 1
         });
     } catch (error) {
         console.error('Error rendering secretary view ticket page:', error);    

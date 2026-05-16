@@ -46,7 +46,7 @@ const upload = multer({
 router.get('/create-ticket/student/:student_id', ticketController.renderCreateTicketPage);
 router.post('/create-ticket/student/:student_id', upload.array('files', 10), ticketController.submitCreateTicket);
 
-router.get('/view-secretary-ticket/student/:student_id/ticket/:ticket_id', ticketController.renderSecretaryViewTicketPage);
+router.get('/view-secretary-ticket/ticket/:ticket_id', ticketController.renderSecretaryViewTicketPage);
 
 // clear duplicate files 
 router.get('/clear-duplicate-uploads/',ticketController.clearDuplicateFiles);

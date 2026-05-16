@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
     `message_subject` varchar(255) NOT NULL,
     `message_description` text NOT NULL,
     `is_internal` boolean NOT NULL DEFAULT FALSE,
+    `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
     `for_user_id` int NOT NULL,
     `for_ticket_id` int NOT NULL,
     PRIMARY KEY (`message_id`),
@@ -69,7 +70,8 @@ CREATE TABLE IF NOT EXISTS `ATTACHMENT` (
     `file_id` int AUTO_INCREMENT NOT NULL UNIQUE,
     `file_name` varchar(255) NOT NULL,
     `file_path` varchar(255) NOT NULL, 
-    `file_size` int NOT NULL,  
+    `file_size` int NOT NULL, 
+    `file_type` varchar(50) NOT NULL,   
     `for_message_id` int DEFAULT NULL, 
     PRIMARY KEY (`file_id`),
     CONSTRAINT `ATTACHMENT_fk_message` FOREIGN KEY (`for_message_id`) REFERENCES `MESSAGE`(`message_id`) ON DELETE CASCADE

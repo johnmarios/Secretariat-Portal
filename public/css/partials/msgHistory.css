@@ -1,0 +1,40 @@
+.message-thread {
+  display: grid;
+  gap: 14px;
+}
+
+.message-bubble {
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.student-message {
+  margin-right: 18%;
+  margin-left: 0;
+  /* background: #f3f4f6; */
+  background: #f4f4f4;
+  border-color: #d1d5db;
+}
+
+.staff-message {
+  margin-left: 14%;
+  margin-right: 0;
+  background: #eff6ff;
+  border-color: rgba(37, 99, 235, 0.22);
+}
+
+.message-meta {
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #657086;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.message-bubble p {
+  margin: 0;
+  color: var(--secretary-main);
+  line-height: 1.6;
+}

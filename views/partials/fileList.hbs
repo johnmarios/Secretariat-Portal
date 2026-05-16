@@ -1,16 +1,20 @@
-{{!-- fileList partial --}}
 <div class="file-list has-items student-file-list">
-    {{#each attachments}}
-    <div class="file-item">
-        <div class="file-item-icon">{{this.fileType}}</div>
-        <div class="file-item-info">
-            <p class="file-item-name">{{this.fileName}}</p>
-            <p class="file-item-size">{{this.fileSize}}</p>
+    {{#if (hasItems attachments)}}
+        {{#each attachments}}
+        <div class="file-item">
+            <div class="file-item-icon">{{this.file_type}}</div>
+            <div class="file-item-info">
+                <p class="file-item-name">{{this.file_name}}</p>
+                <p class="file-item-size">{{this.file_size}}</p>
+                <p class="file-item-type">{{this.file_type}}</p>
+            </div>
+            <a href="{{attachmentUrl this.file_path}}" class="attachment-download" aria-label="Download attachment">
+                <img src="../images/file-download-svgrepo-com.svg" alt="Download">
+            </a>
         </div>
-        <a href="{{this.downloadLink}}" class="attachment-download" aria-label="Download attachment">
-            <img src="../images/file-download-svgrepo-com.svg" alt="Download">
-        </a>
-    </div>
-    {{/each}}
+        {{/each}}
+    {{else}}
+        <p class="file-empty-state">Δεν υπάρχουν επισυναπτόμενα αρχεία.</p>
+    {{/if}}
 </div>
 

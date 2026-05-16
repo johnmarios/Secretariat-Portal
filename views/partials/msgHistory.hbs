@@ -1,0 +1,16 @@
+<div class="message-thread" id="messageHistoryContainer">
+    {{#if (hasItems messages)}}
+        {{#each messages}}
+            <div class="message-bubble {{this.bubbleClass}}">
+                <div class="message-meta">{{messageMeta this.senderDisplay this.created_at}}</div>
+                <p><strong>{{this.message_subject}}</strong></p>
+                <p>{{this.message_description}}</p>
+            </div>
+        {{/each}}
+    {{else}}
+        <div class="message-bubble staff-message">
+            <div class="message-meta">ΣΥΣΤΗΜΑ</div>
+            <p>Δεν υπάρχουν ακόμη μηνύματα για αυτό το αίτημα.</p>
+        </div>
+    {{/if}}
+</div>

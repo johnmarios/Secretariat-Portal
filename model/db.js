@@ -36,13 +36,16 @@ export async function insertTicket({created_at, for_student_id, for_category_id}
     return result.insertId;
 }
 
-export async function insertMessage({message_subject, message_description, for_user_id, for_ticket_id}) {
+export async function insertMessage({message_subject, message_description, created_at, for_user_id, for_ticket_id}) {
     const [result] = await pool.query(sql.insertMessage, [
         message_subject,
         message_description,
+        created_at,
         for_user_id,
         for_ticket_id,
     ]);
+    //update ticket's last_updated timestamp
+    await pool.query(sql.updateTicketLastUpdated, [for_ticket_id]);
     return result.insertId;
 }
 
@@ -51,13 +54,52 @@ export async function getAllCategories() {
     return rows;
 }
 
-export async function saveAttachment({ for_message_id, file_path, file_name, file_size }) {
+export async function saveAttachment({ for_message_id, file_path, file_name, file_size, file_type }) {
     const [result] = await pool.query(sql.saveAttachment, [
         file_path,
         file_name,
         file_size,
+        file_type,
         for_message_id
     ]);
     return result.insertId;
 }
+
+export async function getFirstMessageByTicketId(ticket_id) {
+    const [rows] = await pool.query(sql.getFirstMessageByTicketId, [ticket_id]);
+    return rows[0];
+}
+export async function getRestStudentMessagesByTicketId(ticket_id) {
+    const [rows] = await pool.query(sql.getRestStudentMessagesByTicketId, [ticket_id, ticket_id, ticket_id]);
+    return rows;
+}
+export async function getSecretaryMessagesByTicketId(ticket_id) {
+    const [rows] = await pool.query(sql.getSecretaryMessagesByTicketId, [ticket_id, ticket_id]);
+    return rows;
+}
+
+export async function getStudentInfoByTicketId(ticket_id) {
+    const [rows] = await pool.query(sql.getStudentInfoByTicketId, [ticket_id]);
+    return rows[0];
+}
+
+export async function getCategoryThemeByTicketId(ticket_id) {
+    const [rows] = await pool.query(sql.getCategoryThemeByTicketId, [ticket_id]);
+    return rows[0];
+}
+
+export async function getAttachmentsByMessageId(message_id) {
+    const [rows] = await pool.query(sql.getAttachmentsByMessageId, [message_id]);
+    return rows;
+}
+export async function getAttachmentsByMessagesId(message_ids) {
+    const [rows] = await pool.query(sql.getAttachmentsByMessagesId, [message_ids]);
+    return rows;
+}
+
+// export async function getMessagesByTicketId(ticket_id) {
+//     const [rows] = await pool.query(sql.getMessagesByTicketId, [ticket_id]);
+//     return rows;
+// }
+
 export default pool;
