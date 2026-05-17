@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-import * as sql from '../model/queries.js';
+import * as sql from '../model/queries.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();

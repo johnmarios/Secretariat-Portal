@@ -1,0 +1,38 @@
+{{!-- {{#if title}}
+  <h3 class="mb-4">{{title}}</h3>
+{{/if}} --}}
+
+<div class="table-responsive">
+    <table class="requests-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Θέμα</th>
+                <th>Ημερομηνία Υποβολής</th>
+                <th>Κατάσταση</th>
+                <th>Ανατέθηκε σε</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each tickets}}
+            <tr data-id="{{this.id}}">
+                <td>{{this.id}}</td>
+                <td>{{this.subject}}</td>
+                <td>{{this.submittedAt}}</td>
+                <td>
+                    <span class="custom-badge {{this.statusClass}}">
+                        <span class="dot"></span> {{this.status}}
+                    </span>
+                </td>
+                <td>
+                    {{#if this.assignedSecretaryName}}
+                        <span class="text-muted"><i class="fas fa-user-check me-1"></i>{{this.assignedSecretaryName}}</span>
+                    {{else}}
+                        <span class="text-danger italic">Εκκρεμεί ανάθεση</span>
+                    {{/if}}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

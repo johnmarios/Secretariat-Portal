@@ -55,7 +55,7 @@ section {
     position: relative;
     height: 100vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)),
-    url('../images/dom-fou-YRMWVcdyhmI-unsplash.jpg');
+    url('/images/dom-fou-YRMWVcdyhmI-unsplash.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -94,6 +94,13 @@ section {
     background-color: var(--theme-color);
 }
 /*info section---------------------------------------------------------------*/
+
+#info .container{
+  align-items: center;
+  justify-self: center;
+  height: 500px;
+}
+
 #info .custom-hr {
     border: var(--dark) solid 1px; /* boostrap has default opacity -> grey */
     background-color: var(--dark);
@@ -107,6 +114,8 @@ section {
     color: var(--main-color);
 }
 /*cards---------------------------------------------------------*/
+
+
 #info .icon-slot /*card header*/{
     position: relative;
     height: 4rem;
@@ -159,27 +168,33 @@ section {
 #team {
     background-color: var(--theme-color);
 }
+#team .custom-hr {
+    border: var(--dark) solid 1px; /* boostrap has default opacity -> grey */
+    background-color: var(--dark);
+    height: 0.2rem;
+    margin: 0.5rem 0;
+    border-radius: 0.05rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+#team .custom-info{
+    font-size: 1.4rem;
+    color: var(--main-color);
+}
 #team .team-img img{
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
     transition: box-shadow 0.5s ease, border 0.5s ease;
 }
-#team .member1{
-    background-color: var(--navbar-selected-color);
-    box-shadow: 0 0 0 100vmax var(--navbar-selected-color);
+#team .member1, #team .member2 {
+    background-color: var(--member-color); 
+    box-shadow: 0 0 0 100vmax var(--member-color); 
     clip-path: inset(0 -100vmax);
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
-#team .member2{
-    background-color: var(--navbar-selected-color);
-    box-shadow: 0 0 0 100vmax var(--navbar-selected-color); 
-    /* blur-radius:0 spread-radius: 100vmax */
-    clip-path: inset(0 -100vmax);
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
+
 /*footer---------------------------------------------------------------*/
 .site-footer {
     background-color: var(--light);
@@ -228,6 +243,12 @@ body:not(.index-page) {
   font: 1rem / 1 'Manrope', sans-serif;
   /* font-size/line-height */
   /* font-family: 'Manrope', sans-serif; */
+}
+
+body.index-page{
+    margin: 0;
+    padding: 0;
+    font: 1em / 1 'Manrope', sans-serif;
 }
 
 
@@ -629,11 +650,10 @@ input[type="file"]::file-selector-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 20px;
   /* margin-top: 2rem; */
   /* μισό ύψος table */
   min-height: 75vh;
@@ -652,7 +672,77 @@ input[type="file"]::file-selector-button {
   left: 50%;
   transform: translate(-50%, -50%); */
   max-width: 1200px;
+  padding: 0px !important;
 }
+
+.table-card{
+  border-top-left-radius: 0px; /* etsi einai tora me ta koumpia pano apo to table */
+}
+
+
+
+/*//////////////////////////////////////////////////////////////*/
+/* ==========================================
+   TABS STYLING (Για τη σελίδα της Γραμματείας)
+========================================== */
+
+/* 1. Το κοντέινερ που κρατάει τα κουμπιά */
+.tabs-header {
+  display: flex;
+  width: 100%;
+  max-width: 1200px; /* Ίδιο με το dashboard-main για στοίχιση */
+  margin: 20px auto 0 auto;
+  gap: 5px; /* Μικρό κενό ανάμεσα στα κουμπιά */
+}
+
+/* 2. Τα κουμπιά - Καρτέλες */
+.tab-link {
+  background-color: #EBEBEB; /* Αχνό γκρι για τα ανενεργά */
+  color: #6C7293;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 12px 25px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-link:hover {
+  background-color: #e0e0e0;
+  color: var(--main-color);
+}
+
+/* 3. Το Ενεργό Tab (Αυτό που πατήθηκε) */
+.tab-link.active {
+  background-color: #ffffff; /* Γίνεται λευκό για να "ενωθεί" με την κάρτα */
+  color: rgb(91, 134, 209);  /* Το χαρακτηριστικό μπλε σου */
+  border-bottom: 3px solid rgb(91, 134, 209); /* Η μπλε γραμμή στη βάση */
+}
+
+/* 4. Διόρθωση της κάρτας του πίνακα για να "κολλήσει" στα Tabs */
+/* .table-card {
+  border-top-left-radius: 0px !important; 
+  margin-top: 0px !important;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+} */
+
+/* 5. Διαχείριση εμφάνισης των πινάκων */
+.tab-content {
+  display: none; /* Κρυφό από προεπιλογή */
+  animation: fadeIn 0.4s; /* Μικρό εφε εμφάνισης */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 
 .table-controls {
   width: 100%;
@@ -660,6 +750,7 @@ input[type="file"]::file-selector-button {
   justify-content: space-between; 
   align-items: center; 
 }
+/*//////////////////////////////////////////////////////////////*/
 
 
 .status {
@@ -961,3 +1052,56 @@ option{
 .login-form a:hover {
     text-decoration: underline;
 }
+
+/* ================================================================================================ */
+/* =============================================================================================== */
+/* ===================================== ΧΡΩΜΑΤΑ ΚΑΤΑΣΤΑΣΕΩΝ ==================================== */
+/* ================================================================================================ */
+/* =============================================================================================== */
+
+
+/* Το βασικό σχήμα του "χαπιού" */
+    .custom-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85em;
+        white-space: nowrap; /* για να μην σπάει σε πολλές γραμμές το κειμενο status */
+    }
+    
+
+
+    /* Η μικρή τελεία */
+    .custom-badge .dot {
+        width: 8px;
+
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+
+    /* --- ΤΑ ΧΡΩΜΑΤΑ ΜΑΣ --- */
+    
+    /* Πράσινο (Σε Εξέλιξη) */
+    .status-in-progress { background-color: #d1fae5; color: #059669; }
+    .status-in-progress .dot { background-color: #059669; }
+
+    /* Πορτοκαλί (Σε Αναμονή) */
+    .status-pending { background-color: #ffedd5; color: #ea580c; }
+    .status-pending .dot { background-color: #ea580c; }
+
+    /* Μπλε (Μη Εκχωρημένο / Resolved) */
+    .status-open, .status-resolved { background-color: #dbeafe; color: #2563eb; }
+    .status-open .dot, .status-resolved .dot { background-color: #2563eb; }
+
+    /* Κόκκινο (Κλειστό) */
+    .status-closed { background-color: #fee2e2; color: #dc2626; }
+    .status-closed .dot { background-color: #dc2626; }
+
+
+    /* ==================================================================================================== */
+    /* ==================================================================================================== */
+    /* ================================================================================================ */
+    /* =============================================================================================== */

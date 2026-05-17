@@ -1,45 +1,66 @@
-import express from 'express'
-import { create } from 'express-handlebars'
+import express from 'express';
+import { engine } from 'express-handlebars';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import path from 'path'; 
-import { fileURLToPath } from 'url';
+// 1. Εξωτερικές Βιβλιοθήκες (Πλέον με native import αντί για require)
+import cors from 'cors';
+import session from 'express-session';
+import passport from 'passport';
 
-import helpers from './controllers/helpers.js';
+// 2. Τοπικά Αρχεία (Προσέχουμε τις καταλήξεις!)
+import configurePassport from './config/passport.mjs'; 
+import pageRoutes from './routes/pageRoutes.mjs';
+import authRoutes from './routes/authRoutes.mjs';
+// import studentRoutes from './routes/studentRoutes.js'; 
+import createTicketRoutes from './routes/createTicket.mjs'; 
+import helpers from './controllers/helpers.mjs';
 
-import createTicketRouter from './routes/createTicket.mjs';
-import * as ticketController from './controllers/ticketController.mjs';
+const __filename = fileURLToPath(import.meta.url); 
+const __dirname = dirname(__filename); 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+function createApp() {
+    const app = express();
 
-const app = express();
-const port = process.env.PORT || '3000';
+    configurePassport(passport);
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+    app.use(cors());
+    app.use(express.json()); 
+    app.use(express.urlencoded({ extended: true })); 
+    app.use(session({
+        secret: process.env.SESSION_SECRET || 'ενα_μυστικο_κλειδι_για_την_εργασια_μου',
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: 1000 * 60 * 60 * 24 }
+    }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+    app.use(passport.initialize());
+    app.use(passport.session());
 
+    // Serve all static files from public folder
+    app.use(express.static(resolve(__dirname, 'public')));
 
-const hbs = create({
-    defaultLayout: 'main',
-    layoutsDir: path.join(__dirname, 'views/layouts'),
-    partialsDir: path.join(__dirname, 'views/partials'),
-    extname: '.hbs',
-    helpers: helpers
-});
+    // Ρυθμίσεις Handlebars (Διορθώθηκε η θέση των Layouts/Partials!)
+    app.engine('hbs', engine({
+        extname: 'hbs',
+        defaultLayout: 'main',
+        layoutsDir: resolve(__dirname, 'views', 'layouts'),
+        partialsDir: resolve(__dirname, 'views', 'partials'),
+        helpers: helpers
+    }));
+    app.set('view engine', 'hbs');
+    app.set('views', resolve(__dirname, 'views'));
 
-hbs.handlebars.registerHelper(helpers);
+    // Σύνδεση των Routes
+    app.use('/', pageRoutes);
+    app.use('/api', authRoutes);
+    app.use('/tickets', createTicketRoutes); // <-- Βάλαμε το '/tickets' εδώ
+    // app.use('/api/students', studentRoutes); // Σύνδεσέ το κι αυτό αν το χρειάζεσαι κάπου!
 
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'views')); 
+    return app;
+}
 
-// app.get('/clear-duplicate-uploads', ticketController.clearDuplicateFiles);  
-
-// app.use('/create-ticket', createTicketRouter);
-// app.use('/', createTicketRouter);
-app.use('/tickets', createTicketRouter);
+const app = createApp();
 
 export default app;
-
+export { createApp };
