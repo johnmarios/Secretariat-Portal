@@ -85,6 +85,13 @@ export const getStudentInfoByTicketId = `
                 LIMIT 1
                 `;
 
+export const getTicketById = `
+                SELECT ticket_id, for_student_id, for_secretary_id, for_category_id, status
+                FROM TICKET
+                WHERE ticket_id = ?
+                LIMIT 1
+                `;
+
 export const getCategoryThemeByTicketId = `
                 SELECT c.category_theme FROM TICKET t
                 JOIN CATEGORY c ON c.category_id = t.for_category_id

@@ -1,12 +1,19 @@
 .message-thread {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
+  max-height: 320px; /* cap vertical growth */
+  overflow-y: auto;
+  overflow-x: auto; /* allow horizontal scrolling if content overflows */
+  padding-right: 6px; /* reserve space for scrollbar gutter */
+  scrollbar-gutter: stable;
 }
 
 .message-bubble {
   border: 1px solid #dbe4f0;
   border-radius: 14px;
   padding: 14px 16px;
+  flex-shrink: 0; /* keep bubble height stable inside scrolling container */
 }
 
 .student-message {

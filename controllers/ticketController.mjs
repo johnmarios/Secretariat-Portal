@@ -66,16 +66,18 @@ let createOptions = async () => {
 
     const groupedCategories = flatCategories.reduce((acc, item) => {
         
-        let group = acc.find(g => g.themeName === item.theme);
-        
+        let theme = item.category_theme ;
+        let displayName = item.category_name ;
+
+        let group = acc.find(g => g.themeName === theme);
         if (!group) {
-            group = { themeName: item.theme, options: [] };
+            group = { themeName: theme, options: [] };
             acc.push(group);
         }
-        
+
         group.options.push({
             id: String(item.category_id),
-            name: item.name,
+            name: displayName,
         });
         return acc;
     }, []);
@@ -241,5 +243,58 @@ export const clearDuplicateFiles = async (req, res) => {
     } catch (error) {
         console.error('Error clearing duplicate files:', error);
         return res.status(500).json({ ok: false, error: error.message });
+    }
+};
+
+export const submitSecretaryReply = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        }
+
+        const ticket = await db.getTicketById(ticket_id);
+        if (!ticket) {
+            return res.status(404).send('Δεν βρέθηκε το αίτημα');
+        }
+        console.log(req.body);
+
+        const replyText = req.body.replyText.trim();
+        const files = req.files;
+        const secretaryUserId = Number(req.body.secretary_id || ticket.for_secretary_id);
+
+        if (!replyText) {
+            return res.status(400).send('Συμπληρώστε την απάντηση πριν την αποστολή');
+        }
+
+        if (!Number.isInteger(secretaryUserId) || secretaryUserId < 1) {
+            return res.status(409).send('Το αίτημα δεν έχει ανατεθεί ακόμη σε γραμματεία');
+        }
+
+        const message_id = await db.insertMessage({
+            message_subject: null,
+            message_description: replyText,
+            created_at: new Date(),
+            for_user_id: secretaryUserId,
+            for_ticket_id: ticket_id
+        });
+
+        if (files && files.length > 0) {
+            for (const file of files) {
+                await db.saveAttachment({
+                    file_path: file.path,
+                    file_name: file.originalname,
+                    file_size: file.size,
+                    file_type: file.mimetype,
+                    file_id: file.filename,
+                    for_message_id: message_id
+                });
+            }
+        }
+
+        return res.redirect(`/tickets/view-secretary-ticket/ticket/${ticket_id}`);
+    } catch (error) {
+        console.error('Error submitting secretary reply:', error);
+        return res.status(500).send('Reply failed: ' + error.message);
     }
 };

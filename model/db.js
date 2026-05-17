@@ -83,6 +83,11 @@ export async function getStudentInfoByTicketId(ticket_id) {
     return rows[0];
 }
 
+export async function getTicketById(ticket_id) {
+    const [rows] = await pool.query(sql.getTicketById, [ticket_id]);
+    return rows[0];
+}
+
 export async function getCategoryThemeByTicketId(ticket_id) {
     const [rows] = await pool.query(sql.getCategoryThemeByTicketId, [ticket_id]);
     return rows[0];

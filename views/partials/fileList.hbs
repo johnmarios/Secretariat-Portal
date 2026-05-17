@@ -3,8 +3,8 @@
         {{#each attachments}}
         <div class="file-item">
             <div class="file-item-icon">{{fileLabel this.file_name this.file_type}}</div>
-            <div class="file-item-info">
-                <p class="file-item-name">{{this.file_name}}</p>
+                <div class="file-item-info">
+                <p class="file-item-name">{{basename this.file_name}}</p>
                 <p class="file-item-size">{{formatFileSize this.file_size}}</p>
             </div>
             <a href="{{attachmentUrl this.file_path}}" class="attachment-download" aria-label="Download attachment">
