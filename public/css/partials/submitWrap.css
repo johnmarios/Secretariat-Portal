@@ -1,0 +1,23 @@
+.submit-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.submit-wrap .submit-btn {
+  background: #3B82F6;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(59,130,246,0.2);
+  transition: all 0.2s;
+}
+
+.submit-wrap .submit-btn:active { transform: translateY(1px); }
+
+.submit-wrap .submit-btn:hover {
+  background: #2563eb;
+}

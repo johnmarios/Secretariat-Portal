@@ -10,10 +10,10 @@ import passport from 'passport';
 
 // 2. Τοπικά Αρχεία (Προσέχουμε τις καταλήξεις!)
 import configurePassport from './config/passport.mjs'; 
-import pageRoutes from './routes/pageRoutes.mjs';
-import authRoutes from './routes/authRoutes.mjs';
+import pageRouter from './routes/pageRoutes.mjs';
+import authRouter from './routes/authRoutes.mjs';
 // import studentRoutes from './routes/studentRoutes.js'; 
-import createTicketRoutes from './routes/createTicket.mjs'; 
+import createTicketRouter from './routes/createTicket.mjs'; 
 import helpers from './controllers/helpers.mjs';
 
 const __filename = fileURLToPath(import.meta.url); 
@@ -37,6 +37,26 @@ function createApp() {
     app.use(passport.initialize());
     app.use(passport.session());
 
+    app.use((req, res, next) => {
+        const user = req.user || null;
+        let userInitials = '';
+
+        if (user) {
+            const first = (user.first_name || '').trim();
+            const last = (user.last_name || '').trim();
+
+            if (first || last) {
+                userInitials = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+            } else if (user.email) {
+                userInitials = String(user.email).trim().charAt(0).toUpperCase();
+            }
+        }
+
+        res.locals.currentUser = user;
+        res.locals.userInitials = userInitials;
+        next();
+    });
+
     // Serve all static files from public folder
     app.use(express.static(resolve(__dirname, 'public')));
 
@@ -52,9 +72,9 @@ function createApp() {
     app.set('views', resolve(__dirname, 'views'));
 
     // Σύνδεση των Routes
-    app.use('/', pageRoutes);
-    app.use('/api', authRoutes);
-    app.use('/tickets', createTicketRoutes); // <-- Βάλαμε το '/tickets' εδώ
+    app.use('/', pageRouter);
+    app.use('/api', authRouter);
+    app.use('/tickets', createTicketRouter); 
     // app.use('/api/students', studentRoutes); // Σύνδεσέ το κι αυτό αν το χρειάζεσαι κάπου!
 
     return app;

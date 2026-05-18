@@ -33,20 +33,19 @@
 	box-sizing: border-box;
 	font-family: 'Manrope', sans-serif;
 }
-.create-ticket-page .body {
+.body {
 	overflow-y: auto;
 }
-.create-ticket-page .container{
+.container{
 	overflow-y: auto;
 }
 
 .create-ticket-page {
 	max-width: 1180px;
 	margin: 0 auto;
-	padding: clamp(12px, 1vh, 20px) 18px;
+	padding: clamp(12px, 2.5vh, 20px) 18px;
 	background: transparent;
 	color: var(--main-color);
-	overflow-y: auto;
 }
 
 
@@ -83,12 +82,10 @@
 }
 
 .create-ticket-page .card h2 {
+	margin: 0 0 16px;
 	font-size: 18px;
-    font-weight: 600;
+	font-weight: 700;
 	color: var(--main-color);
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #F0F0F0;
 }
 
 /* Student card (left column) */
@@ -253,5 +250,3 @@
 		font-size: 14px;
 	}
 }
-
-

@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         {{#each tickets}}
-        <tr data-id="{{this.id}}">
+        <tr data-id="{{this.id}}" data-href="{{#if ../isStudent}}/tickets/student-view-ticket/ticket/{{this.id}}{{else}}/tickets/secretary-view-ticket/ticket/{{this.id}}{{/if}}">
             <td>{{this.id}}</td>
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>

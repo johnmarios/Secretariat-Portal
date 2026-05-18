@@ -28,7 +28,11 @@
           <!-- User -->
           <li class="nav-item user-icon profile-wrapper">
             <a class="nav-link" href="#" aria-label="Profile menu">
-              <img src="/images/avatar-person.svg" alt="User account" class="user-icon" id="avatar">
+              {{#if @root.userInitials}}
+                <span id="avatar" class="avatar-initials">{{@root.userInitials}}</span>
+              {{else}}
+                <img src="/images/avatar-person.svg" alt="User account" class="user-icon" id="avatar">
+              {{/if}}
             </a>
             <div class="profile-dropdown">
                 <a href="/login"><img src="/images/exit.svg" alt="" class="nav-icon">Αποσύνδεση</a>

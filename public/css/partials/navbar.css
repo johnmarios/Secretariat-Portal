@@ -435,6 +435,22 @@ body.login-page ul {
     /* border: 1px solid var(--main-color); */
 }
 
+.navbar-nav .user-icon .avatar-initials {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F5F5F5;
+  color: #363B66;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 
 /* .navbar-nav .user-icon #avatar:hover {
     border: var(--light) solid 1px;

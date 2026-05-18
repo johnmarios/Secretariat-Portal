@@ -46,6 +46,11 @@ function attachmentUrl(filePath) {
 	return `/files/${path.basename(filePath)}`;
 }
 
+function basename(value) {
+	if (!value) return '';
+	return path.basename(String(value));
+}
+
 function formatFileSize(bytes) {
 	if (bytes == null || isNaN(bytes)) return '';
 	const b = Number(bytes);
@@ -76,6 +81,7 @@ export default {
 	headerTitle,
 	messageMeta,
 	attachmentUrl,
+	basename,
 	formatFileSize,
 	fileLabel,
 };

@@ -1,0 +1,51 @@
+{{> viewtickets_navbar}}
+
+<div class="dashboard-main container mt-4">
+
+  <div class="tabs-header">
+    
+    {{!-- Εμφανίζεται στη Γραμματεία και στον Leader, κρύβεται από τον Φοιτητή --}}
+    {{#unless isStudent}}
+      <button class="tab-link active" onclick="openTab(event, 'unassigned')">Μη Εκχωρημένα</button>
+      <button class="tab-link" onclick="openTab(event, 'my-tickets')">Τα Αιτήματά μου</button>
+    {{/unless}}
+    
+    {{#if isStudent}}
+      <button class="tab-link active" onclick="openTab(event, 'my-tickets')">Τα Αιτήματά μου</button>
+    {{/if}}
+
+    {{!-- Εμφανίζεται ΜΟΝΟ στον Leader --}}
+    {{#if isLeader}}
+      <button class="tab-link" onclick="openTab(event, 'leader-tab')">Όλα τα Εκχωρημένα</button>
+    {{/if}}
+
+  </div>
+
+  {{!-- Κρατάμε την κλάση secretary μόνο αν δεν είναι φοιτητής, σε περίπτωση που έχεις ειδικό CSS --}}
+  <div class="{{#unless isStudent}}secretary{{/unless}} table-card p-4">
+
+    {{#unless isStudent}}
+      <div id="unassigned" class="tab-content" style="display: block;">
+        {{> unc_tickets_table tickets=unassignedTickets title="Μη Εκχωρημένα Αιτήματα" isStudent=isStudent}}
+      </div>
+      <div id="my-tickets" class="tab-content" style="display: none;">
+        {{> my_tickets_table tickets=myTickets title="Τα Αιτήματά Μου" isStudent=isStudent}}
+      </div>
+    {{/unless}}
+
+    {{#if isStudent}}
+      <div id="my-tickets" class="tab-content" style="display: block;">
+        {{> my_tickets_table tickets=myTickets title="Τα Αιτήματά Μου" isStudent=isStudent}}
+      </div>
+    {{/if}}
+
+    {{#if isLeader}}
+      <div id="leader-tab" class="tab-content" style="display:none;">
+          {{> all_tickets_table tickets=allAssignedTickets title="Πανόραμα: Όλα τα Εκχωρημένα Αιτήματα" isStudent=isStudent}}
+      </div>
+    {{/if}}
+
+  </div>
+</div>
+
+<script src="/js/pages/viewtickets.js"></script>

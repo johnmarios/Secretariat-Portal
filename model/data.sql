@@ -192,3 +192,37 @@ VALUES (
         2
     );
 
+-- student response : 
+INSERT INTO 
+    `MESSAGE` (
+        `message_subject`,
+        `message_description`,
+        `is_internal`,
+        `created_at`,
+        `for_user_id`,
+        `for_ticket_id`
+    )
+VALUES (
+        NULL,
+        'Ευχαριστώ πολύ για την ενημέρωση. Περιμένω νέα σας.',
+        FALSE,
+        CURRENT_TIMESTAMP,
+        1,
+        1
+    );
+UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+INSERT INTO
+    `ATTACHMENT` (
+        `file_name`,
+        `file_path`,
+        `file_size`,
+        `file_type`,
+        `for_message_id`
+    )
+VALUES (
+        'CK802_5b-database-connection-1778663324826-210603662.pdf',
+        '/public/uploads/CK802_5b-database-connection-1778663324826-210603662.pdf',
+        3418112,
+        'application/pdf',
+        3
+    );
