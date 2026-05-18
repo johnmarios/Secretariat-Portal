@@ -1,0 +1,57 @@
+<main class="ticket-details-shell">
+
+    <section class="ticket-layout">
+        <aside class="ticket-column left-column">
+            {{>studentCard}}
+        </aside>
+
+        <section class="ticket-column center-column">
+            <article class="detail-card request-card">
+                <h2>Το Αίτημά μου</h2>
+
+                <div class="detail-block">
+                    <span class="detail-label">ΘΕΜΑ</span>
+                    <p>{{firstMessage.message_subject}}</p>
+                </div>
+
+                <div class="detail-block">
+                    <span class="detail-label">ΠΕΡΙΓΡΑΦΗ ΑΙΤΗΜΑΤΟΣ</span>
+                    <p>{{firstMessage.message_description}}</p>
+                </div>
+
+                <div class="detail-block">
+                    <span class="detail-label">ΕΠΙΣΥΝΑΠΤΟΜΕΝΑ ΑΡΧΕΙΑ</span>
+                    {{>fileList attachments=firstMessageAttachments}}
+                </div>
+            </article>
+
+
+            <article class="detail-card history-card">
+                <h2>Ιστορικό Επικοινωνίας</h2>
+                {{>msgHistory messages=messages viewer="student"}}
+            </article>
+        </section>
+
+        <aside class="ticket-column right-column">
+            <article class="detail-card action-card">
+                <h2>Νέο Μήνυμα</h2>
+
+                <form id="replyForm" method="post" enctype="multipart/form-data"
+                    action="/tickets/student-view-ticket/ticket/{{ticket_id}}/reply">
+
+                    <div class="action-block">
+                        <label for="replyText">Γράψτε την απάντησή σας</label>
+                        <textarea id="replyText" rows="5" name="replyText"
+                            placeholder="Γράψτε την απάντησή σας..."></textarea>
+                    </div>
+
+                    <div class="card attachments-card">
+                        {{>fileAttachment}}
+                        {{>submitWrap buttonType="submit" buttonText="Αποστολή Μηνύματος"}}
+                    </div>
+                </form>
+            </article>
+        </aside>
+    </section>
+</main>
+<script src="/js/partials/fileAttachment.js" defer></script>

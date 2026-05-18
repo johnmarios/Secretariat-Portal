@@ -298,3 +298,95 @@ export const submitSecretaryReply = async (req, res) => {
         return res.status(500).send('Reply failed: ' + error.message);
     }
 };
+
+export const renderStudentViewTicketPage = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        }
+
+        const studentRow = await db.getStudentInfoByTicketId(ticket_id);
+        if (!studentRow) return res.status(404).send('Δεν βρέθηκε το αίτημα');
+
+        const firstMessage = await db.getFirstMessageByTicketId(ticket_id);
+        const firstMessageAttachments = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
+
+        const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
+        const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
+        const allMessages = [...restStudentMessages, ...secretaryMessages].sort((a, b) => a.message_id - b.message_id);
+        const messageIds = allMessages.map(m => m.message_id);
+
+        const allAttachments = messageIds.length ? await db.getAttachmentsByMessagesId(messageIds) : [];
+        const attachmentsMap = new Map();
+        allAttachments.forEach(att => {
+            if (!attachmentsMap.has(att.for_message_id)) attachmentsMap.set(att.for_message_id, []);
+            attachmentsMap.get(att.for_message_id).push(att);
+        });
+
+        const formattedMessages = allMessages.map(message => ({
+            ...message,
+            attachments: attachmentsMap.get(message.message_id) || [],
+            senderDisplay: message.for_user_id === studentRow.student_id ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+            bubbleClass: message.for_user_id === studentRow.student_id ? 'student-message' : 'staff-message',
+            created_at: message.created_at
+        }));
+
+        res.render('studentViewTicket', {
+            title: 'Το Αίτημά μου',
+            ticket_id,
+            student: buildStudent(studentRow),
+            studentId: studentRow.student_id,
+            firstMessage,
+            firstMessageAttachments,
+            messages: formattedMessages,
+            messagesCount: formattedMessages.length + 1
+        });
+    } catch (error) {
+        console.error('Error rendering student view ticket page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+export const submitStudentReply = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        }
+
+        const studentRow = await db.getStudentInfoByTicketId(ticket_id);
+        if (!studentRow) return res.status(404).send('Δεν βρέθηκε το αίτημα');
+
+        const replyText = req.body.replyText?.trim();
+        const files = req.files;
+
+        if (!replyText) return res.status(400).send('Συμπληρώστε το μήνυμα πριν την αποστολή');
+
+        const message_id = await db.insertMessage({
+            message_subject: null,
+            message_description: replyText,
+            created_at: new Date(),
+            for_user_id: studentRow.student_id,
+            for_ticket_id: ticket_id
+        });
+
+        if (files && files.length > 0) {
+            for (const file of files) {
+                await db.saveAttachment({
+                    file_path: file.path,
+                    file_name: file.originalname,
+                    file_size: file.size,
+                    file_type: file.mimetype,
+                    file_id: file.filename,
+                    for_message_id: message_id
+                });
+            }
+        }
+
+        return res.redirect(`/tickets/student-view-ticket/ticket/${ticket_id}`);
+    } catch (error) {
+        console.error('Error submitting student reply:', error);
+        return res.status(500).send('Submit failed: ' + error.message);
+    }
+};

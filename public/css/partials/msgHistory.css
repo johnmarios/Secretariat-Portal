@@ -45,3 +45,34 @@
   color: var(--secretary-main);
   line-height: 1.6;
 }
+
+/* When the container has .flip (student view), mirror the thread horizontally
+   then re-flip each bubble so their content stays readable. This preserves
+   existing bubble colors and semantics while swapping left/right positions. */
+.message-thread.flip {
+  transform: scaleX(-1);
+}
+
+.message-thread.flip .message-bubble {
+  transform: scaleX(-1);
+}
+
+/* Ensure attachments, icons and inline elements remain correctly oriented */
+.message-thread.flip img,
+.message-thread.flip a,
+.message-thread.flip .file-item-info {
+  transform: none;
+}
+
+/* Swap bubble colors when flipped (student view):
+   student -> blue, staff -> grey */
+.message-thread.flip .student-message {
+  background: #eff6ff;
+  border-color: rgba(37, 99, 235, 0.22);
+}
+
+.message-thread.flip .staff-message {
+  background: #f4f4f4;
+  border-color: #d1d5db;
+
+}

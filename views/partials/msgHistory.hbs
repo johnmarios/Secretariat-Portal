@@ -1,4 +1,4 @@
-<div class="message-thread" id="messageHistoryContainer">
+<div class="message-thread {{#if viewer}}flip{{/if}}" id="messageHistoryContainer">
     {{#if (hasItems messages)}}
         {{#each messages}}
             <div class="message-bubble {{this.bubbleClass}}">
