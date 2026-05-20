@@ -1,4 +1,3 @@
-/* --- GENERIC MODAL BASE --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -19,7 +18,6 @@
   visibility: visible;
 }
 
-/* --- TICKET MODAL SHELL --- */
 .ticket-modal-overlay {
   padding: 24px;
 }
@@ -193,10 +191,6 @@
   white-space: pre-wrap;
   max-height: 250px;
   overflow: auto;
-}
-
-.ticket-attachments-shell .file-list {
-  margin-top: 0;
 }
 
 .ticket-attachments-shell .file-list,

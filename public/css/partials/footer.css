@@ -1,0 +1,17 @@
+.site-footer {
+    background-color: var(--light);
+    color: var(--main-color);
+    padding: 1.2rem 0;
+    border-top: var(--main-color) solid 1px;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.site-footer a {
+    color: var(--main-color);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
+}
