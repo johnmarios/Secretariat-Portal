@@ -667,6 +667,7 @@ export const getSecretaryTickets = async (req, res) => {
     
             const unassignedTickets = unassignedRows.map(t => ({
                 id: t.ticket_id,
+                am: t.student_am,
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -676,6 +677,7 @@ export const getSecretaryTickets = async (req, res) => {
     
             const myTickets = myRows.map(t => ({
                 id: t.ticket_id,
+                am: t.student_am,
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -716,6 +718,7 @@ export const getLeaderTickets = async (req, res) => {
     
             const unassignedTickets = unassignedRows.map(t => ({
                 id: t.ticket_id,
+                am: t.student_am,
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -725,6 +728,7 @@ export const getLeaderTickets = async (req, res) => {
     
             const myTickets = myRows.map(t => ({
                 id: t.ticket_id,
+                am: t.student_am,
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -734,6 +738,7 @@ export const getLeaderTickets = async (req, res) => {
     
             const allAssignedTickets = allAssignedRows.map(t => ({
                 id: t.ticket_id,
+                am: t.student_am,
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),

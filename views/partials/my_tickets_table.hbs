@@ -4,8 +4,9 @@
 
 <table class="requests-table">
     <thead>
-        <tr>
+            <tr>
             <th>ID</th>
+            {{#unless isStudent}}<th>ΑΜ</th>{{/unless}}
             <th>Θέμα</th>
             <th>Ημερομηνία Υποβολής</th>
             <th>Κατάσταση</th>
@@ -15,6 +16,7 @@
         {{#each tickets}}
         <tr data-id="{{this.id}}" data-href="{{#if ../isStudent}}/tickets/student-view-ticket/ticket/{{this.id}}{{else}}/tickets/secretary-view-ticket/ticket/{{this.id}}{{/if}}">
             <td>{{this.id}}</td>
+            {{#unless ../isStudent}}<td>{{this.am}}</td>{{/unless}}
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>
             <td>

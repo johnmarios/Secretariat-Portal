@@ -179,11 +179,13 @@ export const getTicketsByStudentId = `
 export const getUnassignedTickets = `
     SELECT 
         t.ticket_id, 
+        s.student_am AS student_am,
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
         t.resolved_at
     FROM TICKET t
+    JOIN STUDENT s ON s.student_id = t.for_student_id
     WHERE t.for_secretary_id IS NULL
     ORDER BY t.created_at DESC
 `;
@@ -191,12 +193,14 @@ export const getUnassignedTickets = `
 export const getTicketsBySecretaryId = `
     SELECT 
         t.ticket_id, 
+        s.student_am AS student_am,
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
         t.resolved_at
     FROM TICKET t
     JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
+    JOIN STUDENT s ON s.student_id = t.for_student_id
     WHERE sec.for_id = ?
     ORDER BY t.created_at DESC
 `;
@@ -211,6 +215,7 @@ export const assignTicketToSecretary = `
 export const getAllAssignedTicketsForLeader = `
     SELECT 
         T.ticket_id, 
+        S2.student_am AS student_am,
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = T.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         T.status, 
         T.created_at, 
@@ -220,6 +225,7 @@ export const getAllAssignedTicketsForLeader = `
     FROM TICKET T
     JOIN SECRETARY S ON T.for_secretary_id = S.secretary_id
     JOIN USER U ON S.for_id = U.user_id
+    JOIN STUDENT S2 ON S2.student_id = T.for_student_id
     WHERE T.for_secretary_id IS NOT NULL
     ORDER BY T.created_at DESC
 `;

@@ -6,6 +6,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>ΑΜ</th>
             <th>Θέμα</th>
             <th>Ημερομηνία Υποβολής</th>
             <th>Ημερομηνία Ολοκλήρωσης</th>
@@ -15,6 +16,7 @@
           {{#each tickets}}
           <tr data-modal-url="/tickets/unassigned-ticket-modal/{{this.id}}">
             <td>{{this.id}}</td>
+            <td>{{this.am}}</td>
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>
             <td>{{this.completedAt}}</td>
