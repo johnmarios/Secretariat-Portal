@@ -819,3 +819,28 @@ export const assignTicket = async (req, res) => {
             res.status(500).send("Αποτυχία ανάληψης αιτήματος.");
         }
 };
+
+export const searchTickets = async (req, res) => {
+    try {
+        const isSecretary = Boolean(req.user?.secretary_id) && (req.user.role === 'secretary' || req.user.role === 'leader');
+        if (!isSecretary) return res.status(403).json({ success: false, message: 'Μη εξουσιοδοτημένη πρόσβαση' });
+
+        const term = String(req.query.q || '').trim();
+        if (term.length < 1) return res.json({ success: true, results: [] });
+
+        const rows = await db.searchTicketsByStudentTerm(term);
+        const results = rows.map(r => ({
+            id: r.ticket_id,
+            subject: r.subject,
+            submittedAt: formatDateToGreek(r.created_at),
+            status: r.status,
+            am: r.student_am,
+            studentName: `${r.first_name} ${r.last_name}`
+        }));
+
+        return res.json({ success: true, results });
+    } catch (error) {
+        console.error('Error searching tickets:', error);
+        return res.status(500).json({ success: false, message: 'Σφάλμα αναζήτησης' });
+    }
+};

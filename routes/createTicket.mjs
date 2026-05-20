@@ -50,6 +50,7 @@ router.get('/create-ticket/secretary', ensureAuthenticated, ticketController.ren
 router.get('/secretary_createTicket', ensureAuthenticated, ticketController.renderSecretaryCreateTicketPage);
 router.post('/create-ticket/secretary', ensureAuthenticated, upload.array('files', 10), ticketController.submitCreateTicket);
 router.get('/students/search', ensureAuthenticated, ticketController.searchStudents);
+router.get('/search', ensureAuthenticated, ticketController.searchTickets);
 
 router.get('/secretary-view-ticket/ticket/:ticket_id', ticketController.renderSecretaryViewTicketPage);
 router.post('/secretary-view-ticket/ticket/:ticket_id', upload.array('files', 10), ticketController.submitSecretaryReply);

@@ -229,3 +229,23 @@ export const getAllAssignedTicketsForLeader = `
     WHERE T.for_secretary_id IS NOT NULL
     ORDER BY T.created_at DESC
 `;
+
+export const searchTicketsByStudentTerm = `
+    SELECT 
+        t.ticket_id,
+        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        t.status,
+        t.created_at,
+        s.student_am,
+        u.first_name,
+        u.last_name
+    FROM TICKET t
+    JOIN STUDENT s ON s.student_id = t.for_student_id
+    JOIN USER u ON s.for_id = u.user_id
+    WHERE s.student_am LIKE CONCAT('%', ?, '%')
+       OR u.first_name LIKE CONCAT('%', ?, '%')
+       OR u.last_name LIKE CONCAT('%', ?, '%')
+       OR CONCAT(u.first_name, ' ', u.last_name) LIKE CONCAT('%', ?, '%')
+    ORDER BY t.created_at DESC
+    LIMIT 50
+`;

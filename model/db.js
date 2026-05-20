@@ -124,6 +124,14 @@ export async function getTicketById(ticket_id) {
     return rows[0];
 }
 
+export async function searchTicketsByStudentTerm(term) {
+    const t = String(term || '').trim();
+    if (!t) return [];
+    const params = [t, t, t, t];
+    const [rows] = await pool.query(sql.searchTicketsByStudentTerm, params);
+    return rows;
+}
+
 // export async function getMessagesByTicketId(ticket_id) {
 //     const [rows] = await pool.query(sql.getMessagesByTicketId, [ticket_id]);
 //     return rows;
