@@ -28,6 +28,34 @@ export const getStudentInfo = `
     WHERE s.student_id = ?
 `;
 
+export const searchStudents = `
+    SELECT
+        s.student_id,
+        s.student_am,
+        s.enrollment_year,
+        s.type,
+        u.first_name,
+        u.last_name,
+        u.email
+    FROM STUDENT s
+    JOIN USER u ON u.user_id = s.for_id
+    WHERE
+        s.student_am LIKE CONCAT('%', ?, '%')
+        OR u.last_name LIKE CONCAT('%', ?, '%')
+        OR u.first_name LIKE CONCAT('%', ?, '%')
+        OR CONCAT(u.first_name, ' ', u.last_name) LIKE CONCAT('%', ?, '%')
+    ORDER BY
+        CASE
+            WHEN s.student_am LIKE CONCAT('%', ?, '%') THEN 0
+            WHEN u.last_name LIKE CONCAT('%', ?, '%') THEN 1
+            WHEN CONCAT(u.first_name, ' ', u.last_name) LIKE CONCAT('%', ?, '%') THEN 2
+            ELSE 3
+        END,
+        u.last_name ASC,
+        u.first_name ASC
+    LIMIT 8
+`;
+
 
 // ==========================================
 // 2. CATEGORIES QUERIES
@@ -119,6 +147,13 @@ export const getAttachmentsByMessageId = `
 export const getAttachmentsByMessagesId = `
     SELECT file_name, file_path, file_size, file_type, for_message_id FROM ATTACHMENT
     WHERE for_message_id IN (?)
+`;
+
+export const getTicketById = `
+    SELECT ticket_id, status, created_at, last_updated, resolved_at, for_student_id, for_secretary_id, for_category_id
+    FROM TICKET
+    WHERE ticket_id = ?
+    LIMIT 1
 `;
 
 

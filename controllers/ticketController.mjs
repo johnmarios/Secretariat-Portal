@@ -28,6 +28,26 @@ let buildStudent = (row) => {
     };
 }
 
+let buildStudentSearchResult = (row) => {
+    if (!row) return null;
+
+    const fullName = [row.first_name, row.last_name].filter(Boolean).join(' ').trim();
+    const enrollmentYear = Number(row.enrollment_year);
+    const currentYear = new Date().getFullYear();
+    const studyYear = Number.isFinite(enrollmentYear)
+        ? Math.max(1, currentYear - enrollmentYear + 1)
+        : null;
+
+    return {
+        studentId: row.student_id,
+        fullName,
+        studentAm: row.student_am,
+        email: row.email,
+        studyYear: studyYear ? `${studyYear}ο Έτος Σπουδών` : '-',
+        department: 'Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών'
+    };
+};
+
 let createOptions = async () => {
     // purpose is to fetch flatCategories: [
     //     { id, theme, name },
@@ -152,12 +172,55 @@ export const renderCreateTicketPage = async (req, res) => {
     }
 };
 
+export const renderSecretaryCreateTicketPage = async (req, res) => {
+    try {
+        const isSecretary = Boolean(req.user?.secretary_id) && (req.user.role === 'secretary' || req.user.role === 'leader');
+        if (!isSecretary) {
+            return res.status(403).send('Μη εξουσιοδοτημένη πρόσβαση');
+        }
+
+        res.render('createTicketSec', {
+            title: 'Νέο Αίτημα - Γραμματεία',
+            bodyClass: 'secretary-create-ticket-page',
+            groupedCategories: await createOptions()
+        });
+    } catch (error) {
+        console.error('Error rendering secretary create ticket page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+export const searchStudents = async (req, res) => {
+    try {
+        const isSecretary = Boolean(req.user?.secretary_id) && (req.user.role === 'secretary' || req.user.role === 'leader');
+        if (!isSecretary) {
+            return res.status(403).json({ success: false, message: 'Μη εξουσιοδοτημένη πρόσβαση' });
+        }
+
+        const term = String(req.query.q || '').trim();
+        if (term.length < 2) {
+            return res.json({ success: true, results: [] });
+        }
+
+        const rows = await db.searchStudents(term);
+        return res.json({
+            success: true,
+            results: rows.map(buildStudentSearchResult).filter(Boolean)
+        });
+    } catch (error) {
+        console.error('Error searching students:', error);
+        res.status(500).json({ success: false, message: 'Σφάλμα αναζήτησης φοιτητών' });
+    }
+};
+
 export const submitCreateTicket = async (req, res) => {
     try {
         const{ subject, description, category_id } = req.body;
         console.log(req.body);
         const files = req.files; // array of uploaded files (if any)
-        const student_id = Number(req.params.student_id);
+        const studentIdValue = req.params.student_id || req.body.for_student_id;
+        const student_id = Number(studentIdValue);
+        const isSecretaryFlow = !req.params.student_id && Boolean(req.body.for_student_id);
 
         if (!Number.isInteger(student_id) || student_id < 1) {
             return res.status(400).send('Μη έγκυρος αριθμός φοιτητή');
@@ -198,6 +261,10 @@ export const submitCreateTicket = async (req, res) => {
                 });
             }
         }
+        if (isSecretaryFlow) {
+            return res.redirect('/secretary_viewtickets');
+        }
+
         res.redirect(`/tickets/create-ticket/student/${student_id}`);
     } catch (error) {
         console.error('Error submitting create ticket:', error);
@@ -343,7 +410,7 @@ export const submitSecretaryReply = async (req, res) => {
         }
 
         const message_id = await db.insertMessage({
-            message_subject: null,
+            message_subject: 'Απάντηση Γραμματείας',
             message_description: replyText,
             created_at: new Date(),
             for_user_id: secretaryUserId,
@@ -435,7 +502,7 @@ export const submitStudentReply = async (req, res) => {
         if (!replyText) return res.status(400).send('Συμπληρώστε το μήνυμα πριν την αποστολή');
 
         const message_id = await db.insertMessage({
-            message_subject: null,
+            message_subject: 'Απάντηση Φοιτητή',
             message_description: replyText,
             created_at: new Date(),
             for_user_id: studentRow.student_id,

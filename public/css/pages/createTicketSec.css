@@ -1,0 +1,16 @@
+.secretary-create-ticket-page .left-col,
+.secretary-create-ticket-page .right-col {
+  position: sticky;
+  top: 18px;
+}
+
+.secretary-create-ticket-page .student-card {
+  min-height: 100%;
+}
+
+@media (max-width: 599px) {
+  .secretary-create-ticket-page .left-col,
+  .secretary-create-ticket-page .right-col {
+    position: static;
+  }
+}

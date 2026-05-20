@@ -19,6 +19,7 @@ router.get('/studentViewTicket/:id', ticketController.fetchStudentByTicketIdMidd
 // --- Γραμματεία & Προϊστάμενος ---
 router.get('/secretary_viewtickets', ensureAuthenticated, ticketController.getSecretaryTickets);
 router.get('/leader_viewtickets', ensureAuthenticated, ticketController.getLeaderTickets);
+router.get('/secretary_createTicket', ensureAuthenticated, ticketController.renderSecretaryCreateTicketPage);
 router.get('/secretaryViewTicket/:id', ticketController.fetchStudentByTicketIdMiddleware, (req, res) => res.render('studentCard'));
 
 // --- Actions (POST) ---

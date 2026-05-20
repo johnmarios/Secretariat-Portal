@@ -1,0 +1,60 @@
+{{> viewTicket_navbar}}
+
+<link rel="stylesheet" href="/css/pages/createTicket.css">
+<link rel="stylesheet" href="/css/partials/searchbar.css">
+<link rel="stylesheet" href="/css/pages/createTicketSec.css">
+
+<div class="container create-ticket-page">
+  <h1 class="page-title">Δημιουργία Αιτήματος</h1>
+
+  <form id="createTicketForm" method="post" enctype="multipart/form-data" action="/tickets/create-ticket/secretary">
+    <div class="grid three-col">
+      <aside class="col left-col">
+        <div class="card student-card secretary-student-card" id="studentSearchCard">
+          {{> searchbar}}
+        </div>
+      </aside>
+
+      <main class="col middle-col">
+        <div class="card form-card">
+          <h2>Το Αίτημά μου</h2>
+
+          <div class="form-group">
+            <label for="category">ΚΑΤΗΓΟΡΙΑ ΑΙΤΗΜΑΤΟΣ*</label>
+            <select id="category" name="category_id" class="form-control" required>
+              <option value="" selected disabled>-- Επιλέξτε κατηγορία --</option>
+              {{#each groupedCategories}}
+              <optgroup label="{{this.themeName}}">
+                {{#each this.options}}
+                <option value="{{this.id}}">{{this.name}}</option>
+                {{/each}}
+              </optgroup>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">ΘΕΜΑ*</label>
+            <input id="subject" name="subject" class="form-control" placeholder="Γράψτε ένα σύντομο Θέμα" />
+          </div>
+
+          <div class="form-group">
+            <label for="description">ΠΕΡΙΓΡΑΦΗ ΑΙΤΗΜΑΤΟΣ*</label>
+            <textarea id="description" name="description" class="form-control" rows="8"
+              placeholder="Περιγράψτε αναλυτικά το αίτημά σας..."></textarea>
+          </div>
+        </div>
+      </main>
+
+      <aside class="col right-col">
+        <div class="card attachments-card">
+          {{>fileAttachment}}
+          {{>submitWrap buttonType="submit" buttonText="Υποβολή Αιτήματος"}}
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>
+
+<script src="/js/partials/fileAttachment.js" defer></script>
+<script src="/js/pages/createTicketSec.js" defer></script>

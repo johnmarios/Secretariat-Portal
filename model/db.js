@@ -22,6 +22,28 @@ export async function getStudentInfo(student_id) {
     }
 }
 
+export async function searchStudents(searchTerm) {
+    try {
+        const normalizedTerm = String(searchTerm || '').trim();
+        if (!normalizedTerm) return [];
+
+        const params = [
+            normalizedTerm,
+            normalizedTerm,
+            normalizedTerm,
+            normalizedTerm,
+            normalizedTerm,
+            normalizedTerm,
+            normalizedTerm,
+        ];
+        const [rows] = await pool.query(sql.searchStudents, params);
+        return rows;
+    } catch (error) {
+        console.error('Error searching students:', error);
+        throw error;
+    }
+}
+
 export async function getCategoryIdByName(category_name) {
     const [rows] = await pool.query(sql.getCategoryIdByName, [category_name]);
     return rows[0]?.category_id ?? null;
@@ -95,6 +117,11 @@ export async function getAttachmentsByMessageId(message_id) {
 export async function getAttachmentsByMessagesId(message_ids) {
     const [rows] = await pool.query(sql.getAttachmentsByMessagesId, [message_ids]);
     return rows;
+}
+
+export async function getTicketById(ticket_id) {
+    const [rows] = await pool.query(sql.getTicketById, [ticket_id]);
+    return rows[0];
 }
 
 // export async function getMessagesByTicketId(ticket_id) {
