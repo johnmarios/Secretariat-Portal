@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `TICKET` (
 
 CREATE TABLE IF NOT EXISTS `MESSAGE` (
     `message_id` int AUTO_INCREMENT NOT NULL UNIQUE,
-    `message_subject` varchar(255) NOT NULL,
+    `message_subject` varchar(255),
     `message_description` text NOT NULL,
     `is_internal` boolean NOT NULL DEFAULT FALSE,
     `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,

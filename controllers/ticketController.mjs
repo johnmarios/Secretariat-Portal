@@ -122,13 +122,16 @@ const loadUnassignedTicketModalData = async (ticket_id) => {
         attachmentsMap.get(att.for_message_id).push(att);
     });
 
-    const formattedMessages = allMessages.map(message => ({
-        ...message,
-        attachments: attachmentsMap.get(message.message_id) || [],
-        senderDisplay: message.for_user_id === studentRow.student_id ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
-        bubbleClass: message.for_user_id === studentRow.student_id ? 'student-message' : 'staff-message',
-        created_at: message.created_at
-    }));
+    const formattedMessages = allMessages.map(message => {
+        const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+        return {
+            ...message,
+            attachments: attachmentsMap.get(message.message_id) || [],
+            senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+            bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
+            created_at: message.created_at
+        };
+    });
 
     return {
         ticket_id: ticketRow.ticket_id,
@@ -315,13 +318,16 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
             }
             attachmentsMap.get(att.for_message_id).push(att);
         });
-        const formattedMessages = allMessages.map(message => ({
-            ...message,
-            attachments: attachmentsMap.get(message.message_id) || [],
-            senderDisplay: message.for_user_id === studentRow.student_id ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
-            bubbleClass: message.for_user_id === studentRow.student_id ? 'student-message' : 'staff-message',
-            created_at: message.created_at
-        }));
+        const formattedMessages = allMessages.map(message => {
+            const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            return {
+                ...message,
+                attachments: attachmentsMap.get(message.message_id) || [],
+                senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+                bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
+                created_at: message.created_at
+            };
+        });
 
 
         res.render('secretaryViewTicket', {
@@ -410,7 +416,7 @@ export const submitSecretaryReply = async (req, res) => {
         }
 
         const message_id = await db.insertMessage({
-            message_subject: 'Απάντηση Γραμματείας',
+            message_subject: null,
             message_description: replyText,
             created_at: new Date(),
             for_user_id: secretaryUserId,
@@ -462,13 +468,16 @@ export const renderStudentViewTicketPage = async (req, res) => {
             attachmentsMap.get(att.for_message_id).push(att);
         });
 
-        const formattedMessages = allMessages.map(message => ({
-            ...message,
-            attachments: attachmentsMap.get(message.message_id) || [],
-            senderDisplay: message.for_user_id === studentRow.student_id ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
-            bubbleClass: message.for_user_id === studentRow.student_id ? 'student-message' : 'staff-message',
-            created_at: message.created_at
-        }));
+        const formattedMessages = allMessages.map(message => {
+            const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            return {
+                ...message,
+                attachments: attachmentsMap.get(message.message_id) || [],
+                senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+                bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
+                created_at: message.created_at
+            };
+        });
 
         res.render('studentViewTicket', {
             title: 'Το Αίτημά μου',
@@ -502,7 +511,7 @@ export const submitStudentReply = async (req, res) => {
         if (!replyText) return res.status(400).send('Συμπληρώστε το μήνυμα πριν την αποστολή');
 
         const message_id = await db.insertMessage({
-            message_subject: 'Απάντηση Φοιτητή',
+            message_subject: null,
             message_description: replyText,
             created_at: new Date(),
             for_user_id: studentRow.student_id,
