@@ -1,0 +1,64 @@
+<div class="modal-overlay open ticket-modal-overlay" id="modalGen" role="dialog" aria-modal="true" aria-labelledby="ticketModalTitle">
+  <div class="ticket-modal-shell">
+    <div class="ticket-modal-header">
+      <div class="ticket-modal-title-block">
+        <p class="ticket-modal-id">#{{ticket_id}} - {{ticket.subject}}</p>
+      </div>
+      <button class="close-btn ticket-modal-close" id="closeModalBtn" type="button" aria-label="Κλείσιμο">×</button>
+    </div>
+
+    <div class="ticket-modal-body">
+      <section class="ticket-modal-panel ticket-modal-panel-left">
+        <div class="ticket-left-card">
+          <div class="ticket-meta-row">
+            <span class="label">ID:</span>
+            <span class="value">#{{ticket_id}}</span>
+          </div>
+          <div class="ticket-meta-row">
+            <span class="label">Ημερομηνία Υποβολής:</span>
+            <span class="value">{{ticket.submittedAt}}</span>
+          </div>
+          <div class="ticket-meta-row">
+            <span class="label">Κατηγορία:</span>
+            <span class="value">{{category_name}}</span>
+          </div>
+
+          {{> studentCard}}
+        </div>
+      </section>
+
+      <section class="ticket-modal-panel ticket-modal-panel-middle ticket-middle-panel">
+        <div class="ticket-modal-section ticket-modal-section--flat">
+          <p class="ticket-modal-kicker">Θέμα</p>
+          <h2 class="ticket-modal-heading">{{ticket.subject}}</h2>
+        </div>
+
+        <div class="ticket-modal-section ticket-modal-section--flat">
+          <p class="ticket-modal-kicker">Περιγραφή αιτήματος</p>
+          <div class="ticket-description-box ticket-description-box--auto">
+            <div class="ticket-description-scroll">
+              {{firstMessage.message_description}}
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket-modal-section ticket-modal-section--flat">
+          <p class="ticket-modal-kicker">Επισυναπτόμενα αρχεία</p>
+          <div class="ticket-attachments-shell">
+            {{> fileList attachments=firstMessageAttachments}}
+          </div>
+        </div>
+      </section>
+
+      <section class="ticket-modal-panel ticket-modal-panel-right">
+        <div class="ticket-actions-card">
+          <p class="ticket-modal-kicker">Actions</p>
+          <form action="/tickets/assign/{{ticket_id}}" method="POST" class="ticket-actions-form">
+            {{> submitWrap buttonType="submit" buttonText="Ανάληψη Αιτήματος"}}
+          </form>
+          <button type="button" class="btn btn-light ticket-cancel-btn" id="cancelModalBtn">Ακύρωση</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

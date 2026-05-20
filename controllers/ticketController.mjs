@@ -47,8 +47,8 @@ let createOptions = async () => {
 
     const groupedCategories = flatCategories.reduce((acc, item) => {
         
-        let theme = item.category_theme ;
-        let displayName = item.category_name ;
+        let theme = item.theme;
+        let displayName = item.name;
 
         let group = acc.find(g => g.themeName === theme);
         if (!group) {
@@ -57,12 +57,76 @@ let createOptions = async () => {
         }
 
         group.options.push({
-            id: String(item.category_id),
+            id: String(item.id),
             name: displayName,
         });
         return acc;
     }, []);
     return groupedCategories;
+};
+
+const loadUnassignedTicketModalData = async (ticket_id) => {
+    const numericTicketId = Number(ticket_id);
+
+    const [unassignedRows] = await dbPool.execute(queries.getUnassignedTickets);
+    const ticketRow = unassignedRows.find(row => Number(row.ticket_id) === numericTicketId);
+    if (!ticketRow) {
+        return null;
+    }
+
+    const studentRow = await db.getStudentInfoByTicketId(numericTicketId);
+    if (!studentRow) {
+        return null;
+    }
+
+    const firstMessage = await db.getFirstMessageByTicketId(numericTicketId);
+    if (!firstMessage) {
+        return null;
+    }
+
+    const categoryTheme = await db.getCategoryThemeByTicketId(numericTicketId);
+    const firstMessageAttachments = await db.getAttachmentsByMessageId(firstMessage.message_id);
+
+    const restStudentMessages = await db.getRestStudentMessagesByTicketId(numericTicketId);
+    const secretaryMessages = await db.getSecretaryMessagesByTicketId(numericTicketId);
+    const allMessages = [...restStudentMessages, ...secretaryMessages].sort((a, b) => a.message_id - b.message_id);
+    const messageIds = allMessages.map(message => message.message_id);
+
+    const allAttachments = messageIds.length ? await db.getAttachmentsByMessagesId(messageIds) : [];
+    const attachmentsMap = new Map();
+
+    allAttachments.forEach(att => {
+        if (!attachmentsMap.has(att.for_message_id)) {
+            attachmentsMap.set(att.for_message_id, []);
+        }
+        attachmentsMap.get(att.for_message_id).push(att);
+    });
+
+    const formattedMessages = allMessages.map(message => ({
+        ...message,
+        attachments: attachmentsMap.get(message.message_id) || [],
+        senderDisplay: message.for_user_id === studentRow.student_id ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+        bubbleClass: message.for_user_id === studentRow.student_id ? 'student-message' : 'staff-message',
+        created_at: message.created_at
+    }));
+
+    return {
+        ticket_id: ticketRow.ticket_id,
+        ticket: {
+            id: ticketRow.ticket_id,
+            subject: ticketRow.subject,
+            submittedAt: formatDateToGreek(ticketRow.created_at),
+            completedAt: formatDateToGreek(ticketRow.resolved_at),
+            status: mapTicketStatus(ticketRow.status),
+        },
+        category_name: categoryTheme?.category_theme || '-',
+        student: buildStudent(studentRow),
+        studentId: studentRow.student_id,
+        firstMessage,
+        firstMessageAttachments,
+        messages: formattedMessages,
+        messagesCount: formattedMessages.length + 1,
+    };
 };
 
 export const renderCreateTicketPage = async (req, res) => {
@@ -99,7 +163,7 @@ export const submitCreateTicket = async (req, res) => {
             return res.status(400).send('Μη έγκυρος αριθμός φοιτητή');
         }
 
-        if (!category_id) {
+        if (!category_id || category_id === 'undefined' || category_id === 'null') {
             return res.status(400).send('Επιλέξτε κατηγορία αιτήματος');
         }
 
@@ -616,6 +680,33 @@ export const getLeaderTickets = async (req, res) => {
             console.error('Σφάλμα φόρτωσης:', error);
             return res.status(500).send('Σφάλμα κατά την ανάκτηση των αιτημάτων');
         }
+};
+
+export const renderUnassignedTicketModal = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        }
+
+        if (!req.user?.secretary_id) {
+            return res.status(403).send('Η προβολή είναι διαθέσιμη μόνο για γραμματεία ή προϊστάμενο');
+        }
+
+        const modalData = await loadUnassignedTicketModalData(ticket_id);
+        if (!modalData) {
+            return res.status(404).send('Δεν βρέθηκε μη εκχωρημένο αίτημα');
+        }
+
+        return res.render('modalGen', {
+            layout: false,
+            title: `#${modalData.ticket_id} - ${modalData.ticket.subject}`,
+            ...modalData,
+        });
+    } catch (error) {
+        console.error('Error loading unassigned ticket modal:', error);
+        return res.status(500).send('Σφάλμα κατά τη φόρτωση του αιτήματος');
+    }
 };
 
 export const assignTicket = async (req, res) => {

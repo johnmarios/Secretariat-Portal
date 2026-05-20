@@ -1,5 +1,6 @@
 import express from 'express';
 import * as ticketController from '../controllers/ticketController.mjs';
+import { ensureAuthenticated } from '../middlewares/authMiddleware.mjs';
 
 const router = express.Router();
 
@@ -49,6 +50,7 @@ router.post('/create-ticket/student/:student_id', upload.array('files', 10), tic
 router.get('/secretary-view-ticket/ticket/:ticket_id', ticketController.renderSecretaryViewTicketPage);
 router.post('/secretary-view-ticket/ticket/:ticket_id', upload.array('files', 10), ticketController.submitSecretaryReply);
 router.post('/secretary-view-ticket/ticket/:ticket_id/reply', upload.array('files', 10), ticketController.submitSecretaryReply);
+router.get('/unassigned-ticket-modal/:ticket_id', ensureAuthenticated, ticketController.renderUnassignedTicketModal);
 
 router.get('/student-view-ticket/ticket/:ticket_id', ticketController.renderStudentViewTicketPage);
 router.post('/student-view-ticket/ticket/:ticket_id', upload.array('files', 10), ticketController.submitStudentReply);

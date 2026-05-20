@@ -1,0 +1,27 @@
+<nav class="navbar tickets-navbar viewticket-page sticky-top navbar-expand-md">
+  <div class="container-fluid">
+    <a class="navbar-brand gap-1" href="/">
+      <img src="/images/logo.svg" alt="Secretariat Portal logo">
+      <span>Secretariat Portal</span>
+    </a>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-md-center ms-auto">
+        <li class="nav-item user-icon profile-wrapper">
+          <a class="nav-link" href="#" aria-label="Profile menu">
+            {{#if @root.userInitials}}
+              <span id="avatar" class="avatar-initials">{{@root.userInitials}}</span>
+            {{else}}
+              <img src="/images/avatar-person.svg" alt="Avatar" class="user-icon" id="avatar">
+            {{/if}}
+          </a>
+          <div class="profile-dropdown">
+            <a href="/login">
+              <img src="/images/exit.svg" alt="" class="nav-icon">Αποσύνδεση
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

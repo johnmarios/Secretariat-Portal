@@ -226,3 +226,4 @@ VALUES (
         'application/pdf',
         3
     );
+

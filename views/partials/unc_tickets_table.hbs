@@ -13,7 +13,7 @@
         </thead>
         <tbody>
           {{#each tickets}}
-          <tr data-href="{{#if ../isStudent}}/tickets/student-view-ticket/ticket/{{this.id}}{{else}}/tickets/secretary-view-ticket/ticket/{{this.id}}{{/if}}">
+          <tr data-modal-url="/tickets/unassigned-ticket-modal/{{this.id}}">
             <td>{{this.id}}</td>
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>

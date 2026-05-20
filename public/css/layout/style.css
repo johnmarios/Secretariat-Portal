@@ -202,6 +202,8 @@ section {
     padding: 1.2rem 0;
     /* border-top: 1px solid rgba(255, 255, 255, 0.2); */
     border-top: var(--main-color) solid 1px ;
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .site-footer a {
@@ -238,6 +240,9 @@ body:not(.index-page) {
   background: linear-gradient(270deg, #C6D8F2 0%, #F4F4F4 53%);
   color: #363B66;
   margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   /* padding: 0; */
   /* min-width: min-content; */
   font: 1rem / 1 'Manrope', sans-serif;
@@ -248,7 +253,14 @@ body:not(.index-page) {
 body.index-page{
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font: 1em / 1 'Manrope', sans-serif;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 
@@ -846,114 +858,7 @@ option{
 
 
 
-/* --- LEPTOMERIES TWN TICKETS ADMIN --- */
-
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #dadadac0; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* z-index: 1000;  */
-  
-  /* krufo by default */
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.modal-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-
 /* ---------------- POP UP CARD ---------------- */
-
-
-.modal-content{
-  background: #ffffff;
-  border-radius: 12px;
-  display: flex; /* gia na einai 3 columns dipla dipla */
-  width:870px;
-  max-width: 95%;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
-  max-height: 90vh;
-  overflow-x: auto;
-  overflow-y: auto;
-}
-
-.modal-col {
-  flex: 1; /* kanei ta rows idio width */
-  padding: 30px 25px;
-  /* min-width: 240px; */
-  display: flex;
-  flex-direction: column;
-  gap: 25px; /* spacing between rows */
-}
-
-
-
-.col-white { 
-  background: #ffffff; 
-}
-.col-gray { 
-  background: #EBEBEB; 
-} 
-
-.info-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-family: 'Manrope', sans-serif;
-}
-
-.label {
-  font-weight: 600;
-  color: #363B66;
-}
-
-.value {
-  color: #6C7293;
-  font-size: 0.95em;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #363B66;
-  cursor: pointer;
-  align-self: flex-start;
-  padding: 0;
-  margin-bottom: 10px;
-}
-
-.status-select {
-  padding: 6px 7px;
-  border-radius: 20px;
-  border: 1px solid black; 
-  color: #10B981;
-  font-family: 'Manrope', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  background: transparent;
-  width: max-content;
-  cursor: pointer;
-}
-
-.description-box {
-  border: 1px solid #D1D5DB;
-  border-radius: 8px;
-  height: 250px;
-  background: #ffffff;
-}
-
 
 .admin-table tbody tr {
   cursor: pointer;
@@ -963,37 +868,6 @@ option{
 .admin-table tbody tr:hover {
   background-color: #2131411e; 
 }
-
-@media (max-width: 906px) {
-  
-  .modal-content {
-    flex-direction: column; 
-    max-width: 60vw;
-    height: 90vh;
-    
-    overflow-x: hidden;
-    overflow-y: auto; 
-    @media (max-width: 425px){
-          overflow-x: auto;
-    }
-  }
-  
-  .modal-col {
-    width: 100%; 
-    padding: 20px 25px; 
-    gap: 15px; 
-  }
-  .description-box {
-  width: 70%;
-  }
-}
-
-/* .modal-nav {
-  display: flex;
-  align-items: center;
-  padding: 0px -15px;
-  background-color: #EBEBEB; 
-} */
 
 /*login modal---------------------------------------------------------------*/
 .modal-content {
