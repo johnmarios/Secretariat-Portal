@@ -28,6 +28,7 @@ export const getStudentInfo = `
     WHERE s.student_id = ?
 `;
 
+// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ]: Αναζήτηση Φοιτητών ---
 export const searchStudents = `
     SELECT
         s.student_id,
@@ -65,7 +66,6 @@ export const getCategoryIdByName = `
     SELECT category_id FROM CATEGORY WHERE category_name = ? LIMIT 1
 `;
 
-// Φέρνουμε τα νέα ονόματα στηλών, αλλά τα κάνουμε "AS" για να μη χαλάσει το Frontend σου!
 export const getAllCategories = `
     SELECT category_id AS id, category_theme AS theme, category_name AS name FROM CATEGORY
 `;
@@ -149,6 +149,7 @@ export const getAttachmentsByMessagesId = `
     WHERE for_message_id IN (?)
 `;
 
+// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ] ---
 export const getTicketById = `
     SELECT ticket_id, status, created_at, last_updated, resolved_at, for_student_id, for_secretary_id, for_category_id
     FROM TICKET
@@ -161,7 +162,8 @@ export const getTicketById = `
 // 5. DASHBOARDS (Για Φοιτητή, Γραμματεία, Προϊστάμενο)
 // ==========================================
 
-// Επειδή το subject δεν υπάρχει πια στο TICKET, το τραβάμε από το 1ο MESSAGE!
+// --- [ΔΙΚΕΣ ΣΟΥ ΑΛΛΑΓΕΣ]: Joins για Κατηγορία και ΑΜ σε όλα τα tables! ---
+
 export const getTicketsByStudentId = `
     SELECT 
         t.ticket_id,
@@ -169,9 +171,11 @@ export const getTicketsByStudentId = `
         t.status,
         t.created_at,
         t.resolved_at,
-        c.category_name
+        c.category_name AS category,
+        s.student_am
     FROM TICKET t
     JOIN CATEGORY c ON t.for_category_id = c.category_id
+    JOIN STUDENT s ON t.for_student_id = s.student_id
     WHERE t.for_student_id = ?
     ORDER BY t.created_at DESC
 `;
@@ -179,13 +183,15 @@ export const getTicketsByStudentId = `
 export const getUnassignedTickets = `
     SELECT 
         t.ticket_id, 
-        s.student_am AS student_am,
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
-        t.resolved_at
+        t.resolved_at,
+        c.category_name AS category,
+        s.student_am
     FROM TICKET t
-    JOIN STUDENT s ON s.student_id = t.for_student_id
+    JOIN CATEGORY c ON t.for_category_id = c.category_id
+    JOIN STUDENT s ON t.for_student_id = s.student_id
     WHERE t.for_secretary_id IS NULL
     ORDER BY t.created_at DESC
 `;
@@ -193,15 +199,37 @@ export const getUnassignedTickets = `
 export const getTicketsBySecretaryId = `
     SELECT 
         t.ticket_id, 
-        s.student_am AS student_am,
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
-        t.resolved_at
+        t.resolved_at,
+        c.category_name AS category,
+        s.student_am
     FROM TICKET t
     JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
-    JOIN STUDENT s ON s.student_id = t.for_student_id
+    JOIN CATEGORY c ON t.for_category_id = c.category_id
+    JOIN STUDENT s ON t.for_student_id = s.student_id
     WHERE sec.for_id = ?
+    ORDER BY t.created_at DESC
+`;
+
+export const getEscalatedTickets = `
+    SELECT 
+        t.ticket_id, 
+        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        t.status, 
+        t.created_at, 
+        t.resolved_at,
+        c.category_name AS category,
+        s.student_am,
+        u.first_name,
+        u.last_name
+    FROM TICKET t
+    JOIN CATEGORY c ON t.for_category_id = c.category_id
+    JOIN STUDENT s ON t.for_student_id = s.student_id
+    JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
+    JOIN USER u ON sec.for_id = u.user_id
+    WHERE t.status = 'escalated'
     ORDER BY t.created_at DESC
 `;
 
@@ -215,21 +243,24 @@ export const assignTicketToSecretary = `
 export const getAllAssignedTicketsForLeader = `
     SELECT 
         T.ticket_id, 
-        S2.student_am AS student_am,
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = T.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         T.status, 
         T.created_at, 
         T.resolved_at,
+        C.category_name AS category,
+        ST.student_am,
         U.first_name, 
         U.last_name 
     FROM TICKET T
+    JOIN CATEGORY C ON T.for_category_id = C.category_id
+    JOIN STUDENT ST ON T.for_student_id = ST.student_id
     JOIN SECRETARY S ON T.for_secretary_id = S.secretary_id
     JOIN USER U ON S.for_id = U.user_id
-    JOIN STUDENT S2 ON S2.student_id = T.for_student_id
     WHERE T.for_secretary_id IS NOT NULL
     ORDER BY T.created_at DESC
 `;
 
+// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ]: Αναζήτηση στα Tickets ---
 export const searchTicketsByStudentTerm = `
     SELECT 
         t.ticket_id,
@@ -248,4 +279,12 @@ export const searchTicketsByStudentTerm = `
        OR CONCAT(u.first_name, ' ', u.last_name) LIKE CONCAT('%', ?, '%')
     ORDER BY t.created_at DESC
     LIMIT 50
+`;
+
+export const getInternalMessageByTicketId = `
+    SELECT m.message_description, m.created_at, u.first_name, u.last_name
+    FROM MESSAGE m
+    JOIN USER u ON m.for_user_id = u.user_id
+    WHERE m.for_ticket_id = ? AND m.is_internal = 1
+    ORDER BY m.created_at DESC LIMIT 1
 `;

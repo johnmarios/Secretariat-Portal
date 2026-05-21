@@ -25,5 +25,8 @@ router.get('/secretaryViewTicket/:id', ticketController.fetchStudentByTicketIdMi
 // --- Actions (POST) ---
 router.post('/tickets/assign/:id', ensureAuthenticated, ticketController.assignTicket);
 
+// Βάλε το μαζί με τα άλλα Routes της Γραμματείας:
+router.get('/api/ticket/:id', ensureAuthenticated, ticketController.getTicketDetailsAPI);
+
 // Exporting το router σε .mjs
 export default router;

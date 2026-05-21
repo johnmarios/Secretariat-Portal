@@ -2,28 +2,29 @@
   <h3>{{title}}</h3>
 {{/if}} --}}
 
-<table class="requests-table">
+<table class="requests-table" >
         <thead>
           <tr>
             <th>ID</th>
-            <th>ΑΜ</th>
+            <th>Α.Μ.</th>
+            <th>Κατηγορία</th>
             <th>Θέμα</th>
             <th>Ημερομηνία Υποβολής</th>
-            <th>Ημερομηνία Ολοκλήρωσης</th>
-            <th></th> </tr>
+            <th>Κατάσταση</th>
+          </tr>
         </thead>
         <tbody>
           {{#each tickets}}
-          <tr data-modal-url="/tickets/unassigned-ticket-modal/{{this.id}}">
+          <tr data-ticket-id="{{this.id}}">
             <td>{{this.id}}</td>
             <td>{{this.am}}</td>
+            <td>{{this.category}}</td>
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>
-            <td>{{this.completedAt}}</td>
             <td>
-              <form action="/tickets/assign/{{this.id}}" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-primary btn-sm">Αναλαμβάνω</button>
-              </form>
+                <span class="custom-badge {{this.statusClass}}">
+                    <span class="dot"></span> {{this.status}}
+                </span>
             </td>
           </tr>
           {{/each}}

@@ -163,7 +163,7 @@ export const renderCreateTicketPage = async (req, res) => {
             return res.status(404).send('Δεν βρέθηκε ο φοιτητής');
         }
         //student_id, full name, am, email, study_year, submitted_at
-        res.render('createTicket', {
+        res.render('pages/createTicket', {
             title: 'Νέο Αίτημα',
             student: buildStudent(row), 
             studentId: student_id,
@@ -182,7 +182,7 @@ export const renderSecretaryCreateTicketPage = async (req, res) => {
             return res.status(403).send('Μη εξουσιοδοτημένη πρόσβαση');
         }
 
-        res.render('createTicketSec', {
+        res.render('pages/createTicketSec', {
             title: 'Νέο Αίτημα - Γραμματεία',
             bodyClass: 'secretary-create-ticket-page',
             groupedCategories: await createOptions()
@@ -330,7 +330,7 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
         });
 
 
-        res.render('secretaryViewTicket', {
+        res.render('pages/secretaryViewTicket', {
             title: 'Λεπτομέρειες Αιτήματος',
             ticket_id,
             categoryTheme,
@@ -479,7 +479,7 @@ export const renderStudentViewTicketPage = async (req, res) => {
             };
         });
 
-        res.render('studentViewTicket', {
+        res.render('pages/studentViewTicket', {
             title: 'Το Αίτημά μου',
             ticket_id,
             student: buildStudent(studentRow),
@@ -633,10 +633,12 @@ export const getUserTickets = async (req, res) => {
             };
         });
 
-        return res.render('viewtickets', {
+        return res.render('pages/viewtickets', {
             title: 'Τα Αιτήματά μου',
             bodyClass: 'ticket-list',
             isStudent: true,    
+            isSecretary: false,
+            isLeader: false, 
             studentId: req.user.student_id, 
             myTickets 
         });
@@ -668,6 +670,7 @@ export const getSecretaryTickets = async (req, res) => {
             const unassignedTickets = unassignedRows.map(t => ({
                 id: t.ticket_id,
                 am: t.student_am,
+                category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -678,6 +681,7 @@ export const getSecretaryTickets = async (req, res) => {
             const myTickets = myRows.map(t => ({
                 id: t.ticket_id,
                 am: t.student_am,
+                category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -685,10 +689,11 @@ export const getSecretaryTickets = async (req, res) => {
                 statusClass: mapTicketStatus(t.status).className
             }));
     
-            return res.render('viewtickets', {
+            return res.render('pages/viewtickets', {
                 title: 'Πίνακας Ελέγχου - Γραμματεία',
                 bodyClass: 'ticket-list',
                 isStudent: false,
+                isSecretary: true,
                 isLeader: false, // Κρύβει το tab του leader
                 unassignedTickets, 
                 myTickets
@@ -714,11 +719,13 @@ export const getLeaderTickets = async (req, res) => {
             // Ο Leader χρειάζεται και τα τρία Queries
             const [unassignedRows] = await dbPool.execute(queries.getUnassignedTickets);
             const [myRows] = await dbPool.execute(queries.getTicketsBySecretaryId, [userId]);
+            const [escalatedRows] = await dbPool.execute(queries.getEscalatedTickets); // <--- ΠΡΟΣΘΗΚΗ
             const [allAssignedRows] = await dbPool.execute(queries.getAllAssignedTicketsForLeader);
     
             const unassignedTickets = unassignedRows.map(t => ({
                 id: t.ticket_id,
                 am: t.student_am,
+                category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -729,16 +736,28 @@ export const getLeaderTickets = async (req, res) => {
             const myTickets = myRows.map(t => ({
                 id: t.ticket_id,
                 am: t.student_am,
+                category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
                 status: mapTicketStatus(t.status).label,
                 statusClass: mapTicketStatus(t.status).className
             }));
-    
+            const escalatedTickets = escalatedRows.map(t => ({
+            id: t.ticket_id,
+            student_am: t.student_am, // <--- ΠΡΟΣΘΗΚΗ
+            category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
+            subject: t.subject,
+            submittedAt: formatDateToGreek(t.created_at),
+            completedAt: formatDateToGreek(t.resolved_at),
+            status: mapTicketStatus(t.status).label,
+            statusClass: mapTicketStatus(t.status).className,
+            assignedSecretaryName: t.first_name ? `${t.first_name} ${t.last_name}` : '-'
+        }));
             const allAssignedTickets = allAssignedRows.map(t => ({
                 id: t.ticket_id,
                 am: t.student_am,
+                category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
                 subject: t.subject,
                 submittedAt: formatDateToGreek(t.created_at),
                 completedAt: formatDateToGreek(t.resolved_at),
@@ -748,13 +767,15 @@ export const getLeaderTickets = async (req, res) => {
             }));
     
             // Render στο ΙΔΙΟ hbs αρχείο, αλλά με isLeader: true
-            return res.render('viewtickets', {
+            return res.render('pages/viewtickets', {
                 title: 'Πίνακας Ελέγχου - Προϊστάμενος',
                 bodyClass: 'ticket-list',
                 isStudent: false,
+                isSecretary: false,
                 isLeader: true, // Εμφανίζει το tab του leader
                 unassignedTickets, 
                 myTickets,
+                escalatedTickets, // <--- ΠΡΟΣΘΗΚΗ
                 allAssignedTickets          
             });
         } catch (error) {
@@ -820,6 +841,56 @@ export const assignTicket = async (req, res) => {
         }
 };
 
+////API GIA MODAL
+
+export const getTicketDetailsAPI = async (req, res) => {
+    try {
+        const ticketId = req.params.id;
+        
+        // ... (οι υπάρχουσες κλήσεις σου παραμένουν ίδιες) ...
+        const [msgRows] = await dbPool.execute(queries.getFirstMessageByTicketId, [ticketId]);
+        const message = msgRows[0] || null;
+        
+        const [studentRows] = await dbPool.execute(queries.getStudentInfoByTicketId, [ticketId]);
+        const student = studentRows[0] || null;
+
+        const [catRows] = await dbPool.execute(queries.getCategoryThemeByTicketId, [ticketId]);
+        const categoryTheme = catRows[0] || null;
+        
+        let attachments = [];
+        if (message) {
+            const [attRows] = await dbPool.execute(queries.getAttachmentsByMessageId, [message.message_id]);
+            attachments = attRows;
+        }
+
+        // ---> ΝΕΟ: Φέρνουμε το Internal Message <---
+        const [internalRows] = await dbPool.execute(queries.getInternalMessageByTicketId, [ticketId]);
+        const internalMessage = internalRows[0] || null;
+
+        res.json({
+            success: true,
+            ticketId: ticketId,
+            subject: message?.message_subject || '-',
+            description: message?.message_description || '-',
+            category: categoryTheme?.category_name || '-', 
+            studentName: student ? `${student.first_name} ${student.last_name}` : '-', 
+            studentAm: student?.student_am || '-',         
+            studentEmail: student?.email || '-',
+            enrollmentYear: student?.enrollment_year || '-',
+            date: message?.created_at ? new Date(message.created_at).toLocaleDateString('el-GR') : '-', 
+            attachments: attachments,
+            // ---> ΝΕΟ: Στέλνουμε το Internal Message <---
+            internalMessage: internalMessage ? {
+                author: `${internalMessage.first_name} ${internalMessage.last_name}`,
+                text: internalMessage.message_description
+            } : null
+        });
+    } catch (error) {
+        console.error("Σφάλμα API Modal:", error);
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+};
+
 export const searchTickets = async (req, res) => {
     try {
         const isSecretary = Boolean(req.user?.secretary_id) && (req.user.role === 'secretary' || req.user.role === 'leader');
@@ -842,5 +913,38 @@ export const searchTickets = async (req, res) => {
     } catch (error) {
         console.error('Error searching tickets:', error);
         return res.status(500).json({ success: false, message: 'Σφάλμα αναζήτησης' });
+    }
+};
+
+// O Leader παίρνει το ticket πάνω του
+export const acceptEscalatedTicket = async (req, res) => {
+    const ticketId = req.params.id;
+    const leaderSecId = req.user.secretary_id; 
+    
+    try {
+        // Αλλάζουμε το status σε in_progress ΚΑΙ το αναθέτουμε στον Leader
+        const query = `UPDATE TICKET SET for_secretary_id = ?, status = 'in_progress' WHERE ticket_id = ?`;
+        await dbPool.execute(query, [leaderSecId, ticketId]);
+        
+        res.redirect('/leader_viewtickets');
+    } catch (error) {
+        console.error("Σφάλμα κατά την αποδοχή του escalated ticket:", error);
+        res.status(500).send("Αποτυχία ανάληψης.");
+    }
+};
+
+// Ο Leader το απορρίπτει και γυρνάει στην αρχική Γραμματεία
+export const rejectEscalatedTicket = async (req, res) => {
+    const ticketId = req.params.id;
+    
+    try {
+        // ΔΕΝ αλλάζουμε το for_secretary_id (άρα μένει σε αυτόν που το είχε), απλά το γυρνάμε σε in_progress
+        const query = `UPDATE TICKET SET status = 'in_progress' WHERE ticket_id = ?`;
+        await dbPool.execute(query, [ticketId]);
+        
+        res.redirect('/leader_viewtickets');
+    } catch (error) {
+        console.error("Σφάλμα κατά την απόρριψη του escalated ticket:", error);
+        res.status(500).send("Αποτυχία απόρριψης.");
     }
 };

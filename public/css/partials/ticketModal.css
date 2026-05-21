@@ -1,0 +1,144 @@
+/* --- LEPTOMERIES TWN TICKETS ADMIN --- */
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* 100% του πλάτους της οθόνης */
+  height: 100%; /* 100% του ύψους της οθόνης */
+  background: #dadadac0; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; 
+  
+  /* krufo by default */
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---------------- POP UP CARD ---------------- */
+
+
+.modal-content{
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex; /* gia na einai 3 columns dipla dipla */
+  flex-direction: row;
+  width:1000px;
+  max-width: 95%;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  /* margin-top: 50px; */
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.modal-col {
+  flex: 1; /* kanei ta rows idio width */
+  padding: 30px 25px;
+  /* min-width: 240px; */
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 35px; /* spacing between rows */
+}
+
+
+
+.col-white { 
+  background: #ffffff; 
+}
+.col-gray { 
+  background: #EBEBEB; 
+} 
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: 'Manrope', sans-serif;
+}
+
+.label {
+  font-weight: 600;
+  color: #363B66;
+}
+
+.value {
+  color: #6C7293;
+  font-size: 0.95em;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #363B66;
+  cursor: pointer;
+  align-self: flex-start;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.status-select {
+  padding: 6px 7px;
+  border-radius: 20px;
+  border: 1px solid black; 
+  color: #10B981;
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  background: transparent;
+  width: max-content;
+  cursor: pointer;
+}
+
+.description-box {
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  height: 250px;
+  width: 240px;
+  background: #ffffff;
+}
+
+
+
+@media (max-width: 906px) {
+  
+  .modal-content {
+    flex-direction: column; 
+    max-width: 60vw;
+    height: 90vh;
+    
+    overflow-x: hidden;
+    overflow-y: auto; 
+    @media (max-width: 425px){
+          overflow-x: auto;
+    }
+  }
+  
+  .modal-col {
+    width: 100%; 
+    padding: 20px 25px; 
+    gap: 25px; 
+  }
+  .description-box {
+  width: 100%;
+  }
+}
+
+#ticketModal .btn-primary {
+    background-color: var(--main-color);
+    border: none;
+    font-weight: 600;
+}
+
+.modal-content.escalated-view { width: 1100px; }

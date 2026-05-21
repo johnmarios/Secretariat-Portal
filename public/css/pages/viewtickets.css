@@ -105,6 +105,15 @@
   background-color: #F9F9F9;
 }
 
+.requests-table tbody tr{
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.requests-table tbody tr:hover{
+  background-color: #2131411e; 
+}
+
 .col3,
 .col4 {
   text-align: center;

@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `STUDENT` (
 
 CREATE TABLE IF NOT EXISTS `TICKET` (
     `ticket_id` int AUTO_INCREMENT NOT NULL UNIQUE,
-    `status` enum('open', 'in_progress', 'pending', 'resolved', 'closed') NOT NULL DEFAULT 'open',
+    `status` enum('open', 'in_progress', 'pending', 'resolved', 'closed', 'escalated') NOT NULL DEFAULT 'open',
     `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
     `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `resolved_at` timestamp NULL DEFAULT NULL,
