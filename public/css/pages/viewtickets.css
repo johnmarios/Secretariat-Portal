@@ -122,27 +122,42 @@
 }
 
 .status {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 50px;
   font-weight: 600;
-  line-height: 1;
+  font-size: 0.85em;
+  white-space: nowrap; /* για να μην σπάει σε πολλές γραμμές το κειμενο status */
 }
 
 .status .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  margin-right: 6px;
 }
 
-.status-green { color: #27AE60; }
-.status-green .dot { background-color: #27AE60; }
+/* Πράσινο (Σε Εξέλιξη) */
+.status-in-progress { background-color: #d1fae5; color: #059669; }
+.status-in-progress .dot { background-color: #059669; }
 
-.status-orange { color: #F2994A; }
-.status-orange .dot { background-color: #F2994A; }
+/* Πορτοκαλί (Σε Αναμονή) */
+.status-pending { background-color: #ffedd5; color: #ea580c; }
+.status-pending .dot { background-color: #ea580c; }
 
-.status-red { color: #EB5757; }
-.status-red .dot { background-color: #EB5757; }
+/* Πράσινο (Προωθημένο) */
+.status-escalated { background-color: #fef3c7; color: #d97706; }
+.status-escalated .dot { background-color: #d97706; }
+
+/* Μπλε (Μη Εκχωρημένο / Resolved) */
+.status-open, .status-resolved { background-color: #dbeafe; color: #2563eb; }
+.status-open .dot, .status-resolved .dot { background-color: #2563eb; }
+
+/* Κόκκινο (Κλειστό) */
+.status-closed { background-color: #fee2e2; color: #dc2626; }
+.status-closed .dot { background-color: #dc2626; }
+
 
 .action-icon {
   width: 30px;

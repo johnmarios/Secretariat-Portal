@@ -1,6 +1,7 @@
 {{!-- {{#if title}}
   <h3>{{title}}</h3>
 {{/if}} --}}
+<link rel="stylesheet" href="/css/pages/viewtickets.css">
 
 <table class="requests-table" >
         <thead>
@@ -22,7 +23,7 @@
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>
             <td>
-                <span class="custom-badge {{this.statusClass}}">
+                <span class="status {{this.statusClass}}">
                     <span class="dot"></span> {{this.status}}
                 </span>
             </td>

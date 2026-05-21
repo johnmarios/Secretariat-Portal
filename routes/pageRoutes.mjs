@@ -24,6 +24,9 @@ router.get('/secretaryViewTicket/:id', ticketController.fetchStudentByTicketIdMi
 
 // --- Actions (POST) ---
 router.post('/tickets/assign/:id', ensureAuthenticated, ticketController.assignTicket);
+// Routes για τα Προωθημένα Αιτήματα (Leader)
+router.post('/tickets/escalated/accept/:id', ticketController.acceptEscalatedTicket);
+router.post('/tickets/escalated/reject/:id', ticketController.rejectEscalatedTicket);
 
 // Βάλε το μαζί με τα άλλα Routes της Γραμματείας:
 router.get('/api/ticket/:id', ensureAuthenticated, ticketController.getTicketDetailsAPI);

@@ -554,8 +554,9 @@ const mapTicketStatus = (status) => {
     switch (status) {
         case 'open': return { label: 'Μη Εκχωρημένο', className: 'status-open' }; 
         case 'in_progress': return { label: 'Σε Εξέλιξη', className: 'status-in-progress' }; 
+        case 'escalated': return { label: 'Προωθημένο', className: 'status-escalated' }; 
         case 'pending': return { label: 'Σε Αναμονή', className: 'status-pending' }; 
-        case 'resolved': return { label: 'Resolved', className: 'status-resolved' }; 
+        case 'resolved': return { label: 'Ολοκληρωμένο', className: 'status-resolved' }; 
         case 'closed': return { label: 'Κλειστό', className: 'status-closed' }; 
         default: return { label: status, className: 'status-default' };
     }
@@ -752,7 +753,7 @@ export const getLeaderTickets = async (req, res) => {
             }));
             const escalatedTickets = escalatedRows.map(t => ({
             id: t.ticket_id,
-            student_am: t.student_am, // <--- ΠΡΟΣΘΗΚΗ
+            am: t.student_am, // <--- ΠΡΟΣΘΗΚΗ
             category: t.category,     // <--- ΠΡΟΣΘΗΚΗ
             subject: t.subject,
             submittedAt: formatDateToGreek(t.created_at),
@@ -923,35 +924,49 @@ export const searchTickets = async (req, res) => {
     }
 };
 
-// O Leader παίρνει το ticket πάνω του
+// ==========================================
+// 8. ESCALATED TICKETS ACTIONS (Για τον Leader)
+// ==========================================
+
 export const acceptEscalatedTicket = async (req, res) => {
+    // Παίρνουμε το ID του ticket από το URL και το ID του Leader
     const ticketId = req.params.id;
     const leaderSecId = req.user.secretary_id; 
     
     try {
-        // Αλλάζουμε το status σε in_progress ΚΑΙ το αναθέτουμε στον Leader
-        const query = `UPDATE TICKET SET for_secretary_id = ?, status = 'in_progress' WHERE ticket_id = ?`;
+        // Η Ανάληψη: Αλλάζουμε τον υπεύθυνο στον Leader και το status σε in_progress
+        const query = `
+            UPDATE TICKET 
+            SET for_secretary_id = ?, status = 'in_progress' 
+            WHERE ticket_id = ?
+        `;
         await dbPool.execute(query, [leaderSecId, ticketId]);
         
+        // Μόλις το πάρει, η σελίδα κάνει ανανέωση και θα το δει στα "Τα Αιτήματά Μου"
         res.redirect('/leader_viewtickets');
     } catch (error) {
-        console.error("Σφάλμα κατά την αποδοχή του escalated ticket:", error);
+        console.error("Σφάλμα κατά την ανάληψη του προωθημένου ticket:", error);
         res.status(500).send("Αποτυχία ανάληψης.");
     }
 };
 
-// Ο Leader το απορρίπτει και γυρνάει στην αρχική Γραμματεία
 export const rejectEscalatedTicket = async (req, res) => {
     const ticketId = req.params.id;
     
     try {
-        // ΔΕΝ αλλάζουμε το for_secretary_id (άρα μένει σε αυτόν που το είχε), απλά το γυρνάμε σε in_progress
-        const query = `UPDATE TICKET SET status = 'in_progress' WHERE ticket_id = ?`;
+        // Η Απόρριψη: ΔΕΝ πειράζουμε το for_secretary_id (άρα μένει σε αυτόν που το είχε),
+        // απλά το γυρνάμε σε 'pending' (Σε Αναμονή) για να το ξαναδεί η γραμματεία.
+        const query = `
+            UPDATE TICKET 
+            SET status = 'pending' 
+            WHERE ticket_id = ?
+        `;
         await dbPool.execute(query, [ticketId]);
         
+        // Η σελίδα κάνει ανανέωση
         res.redirect('/leader_viewtickets');
     } catch (error) {
-        console.error("Σφάλμα κατά την απόρριψη του escalated ticket:", error);
+        console.error("Σφάλμα κατά την απόρριψη του προωθημένου ticket:", error);
         res.status(500).send("Αποτυχία απόρριψης.");
     }
 };

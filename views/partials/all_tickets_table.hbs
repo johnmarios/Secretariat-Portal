@@ -10,8 +10,8 @@
                 <th>ΑΜ</th>
                 <th>Θέμα</th>
                 <th>Ημερομηνία Υποβολής</th>
-                <th>Κατάσταση</th>
                 <th>Ανατέθηκε σε</th>
+                <th>Κατάσταση</th>
             </tr>
         </thead>
         <tbody>
@@ -21,11 +21,7 @@
                 <td>{{this.am}}</td>
                 <td>{{this.subject}}</td>
                 <td>{{this.submittedAt}}</td>
-                <td>
-                    <span class="custom-badge {{this.statusClass}}">
-                        <span class="dot"></span> {{this.status}}
-                    </span>
-                </td>
+                
                 <td>
                     {{#if this.assignedSecretaryName}}
                         <span class="text-muted"><i class="fas fa-user-check me-1"></i>{{this.assignedSecretaryName}}</span>
@@ -33,6 +29,13 @@
                         <span class="text-danger italic">Εκκρεμεί ανάθεση</span>
                     {{/if}}
                 </td>
+
+                <td>
+                    <span class="status {{this.statusClass}}">
+                        <span class="dot"></span> {{this.status}}
+                    </span>
+                </td>
+
             </tr>
             {{/each}}
         </tbody>

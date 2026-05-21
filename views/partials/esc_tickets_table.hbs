@@ -3,23 +3,26 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>ΑΜ</th>
+                <th>Κατηγορία</th>
                 <th>Θέμα</th>
                 <th>Ημερομηνία Υποβολής</th>
-                <th>Κατάσταση</th>
                 <th>Προωθήθηκε από</th>
             </tr>
         </thead>
         <tbody>
             {{#each tickets}}
-            <tr data-ticket-id="{{this.id}}" style="cursor: pointer;">
+            <tr data-ticket-id="{{this.id}}">
                 <td>{{this.id}}</td>
+                <td>{{this.am}}</td>
+                <td>{{this.category}}</td>
                 <td>{{this.subject}}</td>
                 <td>{{this.submittedAt}}</td>
-                <td>
-                    <span class="custom-badge {{this.statusClass}}">
+                {{!-- <td>
+                    <span class="status {{this.statusClass}}">
                         <span class="dot"></span> {{this.status}}
                     </span>
-                </td>
+                </td> --}}
                 <td>
                     {{#if this.assignedSecretaryName}}
                         <span class="text-muted"><i class="fas fa-user-check me-1"></i>{{this.assignedSecretaryName}}</span>
