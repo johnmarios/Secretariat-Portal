@@ -65,6 +65,7 @@
   flex-direction: column;
   gap: 5px;
   font-family: 'Manrope', sans-serif;
+  flex-grow: 1;
 }
 
 .label {
@@ -104,9 +105,11 @@
 .description-box {
   border: 1px solid #D1D5DB;
   border-radius: 8px;
-  height: 250px;
-  width: 240px;
+  min-height: 250px;
+  width: 100%;
   background: #ffffff;
+  flex-grow: 1; 
+  overflow-y: auto;
 }
 
 
@@ -141,4 +144,15 @@
     font-weight: 600;
 }
 
-.modal-content.escalated-view { width: 1100px; }
+#ticketModal .btn-success {
+    background-color: var(--main-color);
+    border: none;
+    font-weight: 600;
+}
+#ticketModal .btn-danger {
+    background-color: #d44d2b;
+    border: none;
+    font-weight: 600;
+}
+
+.modal-content.escalated-view { width: 1300px; }

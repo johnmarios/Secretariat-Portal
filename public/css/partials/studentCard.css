@@ -1,7 +1,7 @@
 /* Student Card Partial Styles */
 /* font sizes */
 :root {
-    --main-color: #2b3f7d;
+    --main-color: #363B66;
     --light: #fff;
     --header-size: 14px;
     --label-size: 12px;
@@ -10,7 +10,7 @@
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 14px;
-    padding: 26px 22px;
+    padding: 18px;
     box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
     display: flex;
     flex-direction: column;
@@ -25,7 +25,14 @@
     font-weight: 700;
     color: #363B66;
 }
-
+.student-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #363B66 ;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #F0F0F0;
+}
 .student-avatar {
     width: 88px;
     height: 88px;

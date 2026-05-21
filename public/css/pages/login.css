@@ -3,7 +3,7 @@
 }
 
 .login-main {
-  min-height: calc(100dvh - 60px);
+  min-height: calc(100dvh - 200px);
   display: grid;
   place-items: center;
   padding: 32px 18px 48px;
@@ -30,6 +30,8 @@
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.02em;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #F0F0F0;
 }
 
 .login-page .login-card__body {
@@ -80,7 +82,7 @@
   border: none;
   border-radius: 14px;
   padding: 14px 18px;
-  background: var(--accent-blue);
+  background: var(--main-color);
   color: #ffffff;
   font: 700 1rem/1 'Manrope', sans-serif;
   cursor: pointer;
@@ -88,7 +90,7 @@
 }
 
 .login-page .submit-btn.login-btn:hover {
-  background: #1d4ed8;
+  background: #2b3570;
   transform: translateY(-1px);
 }
 

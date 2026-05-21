@@ -1,0 +1,45 @@
+<nav class="navbar tickets-navbar viewtickets-page sticky-top navbar-expand-md">
+  <div class="container-fluid">
+
+    <!-- Brand -->
+      <a class="navbar-brand gap-1" href="/">
+        <img src="/images/logo.svg">
+        <span>Secretariat Portal</span>
+      </a>
+      
+
+      <!-- collapsed menu -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      
+      <!-- Menu -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+        <ul class="navbar-nav ms-auto align-items-md-center">
+          <!--Αιτήματα-->
+          <li class="nav-item requests">
+              <a class="nav-link text-nowrap" href="/secretary_viewtickets">
+                <img src="/images/ticket_icon.svg" alt="ticket-svg" class="nav-icon me-2">
+              <span>Αιτήματα</span>
+            </a>
+          </li>
+          <!-- User -->
+          <li class="nav-item user-icon profile-wrapper">
+            <a class="nav-link" href="#" aria-label="Profile menu">
+              {{#if @root.userInitials}}
+                <span id="avatar" class="avatar-initials">{{@root.userInitials}}</span>
+              {{else}}
+                <img src="/images/avatar-person.svg" alt="User account" class="user-icon" id="avatar">
+              {{/if}}
+            </a>
+            <div class="profile-dropdown">
+                <a href="/login"><img src="/images/exit.svg" alt="" class="nav-icon">Αποσύνδεση</a>
+            </div>
+          </li>
+        </ul>
+        
+      </div>
+    </div>
+  </nav>

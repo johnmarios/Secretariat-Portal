@@ -1,8 +1,15 @@
-{{> viewTicket_navbar}}
 
 <link rel="stylesheet" href="/css/pages/createTicket.css">
 <link rel="stylesheet" href="/css/partials/searchbar.css">
 <link rel="stylesheet" href="/css/pages/createTicketSec.css">
+
+{{#if isSecretary}}
+  {{> sec_createTicket_navbar}}
+{{/if}}
+
+{{#if isLeader}}
+  {{> sec_createTicket_navbar}}
+{{/if}}
 
 <div class="container create-ticket-page">
   <h1 class="page-title">Δημιουργία Αιτήματος</h1>
@@ -58,3 +65,4 @@
 
 <script src="/js/partials/fileAttachment.js" defer></script>
 <script src="/js/pages/createTicketSec.js" defer></script>
+

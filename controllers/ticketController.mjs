@@ -177,15 +177,22 @@ export const renderCreateTicketPage = async (req, res) => {
 
 export const renderSecretaryCreateTicketPage = async (req, res) => {
     try {
-        const isSecretary = Boolean(req.user?.secretary_id) && (req.user.role === 'secretary' || req.user.role === 'leader');
-        if (!isSecretary) {
+        // Ελέγχουμε αν έχει secretary_id
+        const hasSecretaryId = Boolean(req.user?.secretary_id);
+        // Ελέγχουμε αν είναι leader
+        const isLeader = req.user.role === 'leader' || req.user.is_leader === 1;
+        
+        if (!hasSecretaryId) {
             return res.status(403).send('Μη εξουσιοδοτημένη πρόσβαση');
         }
 
         res.render('pages/createTicketSec', {
             title: 'Νέο Αίτημα - Γραμματεία',
             bodyClass: 'secretary-create-ticket-page',
-            groupedCategories: await createOptions()
+            groupedCategories: await createOptions(),
+            // ---> ΑΥΤΑ ΕΛΕΙΠΑΝ! Τα περνάμε στο Handlebars <---
+            isSecretary: !isLeader, // Αν δεν είναι leader, είναι απλή γραμματεία
+            isLeader: isLeader
         });
     } catch (error) {
         console.error('Error rendering secretary create ticket page:', error);
@@ -660,7 +667,7 @@ export const getSecretaryTickets = async (req, res) => {
             if (isLeader) {
                 return res.redirect('/leader_viewtickets');
             }
-    
+            
             const userId = req.user.user_id || req.user.id; 
     
             // Τραβάμε ΜΟΝΟ τα δεδομένα που χρειάζεται η απλή γραμματεία
