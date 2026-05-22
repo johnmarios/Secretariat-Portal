@@ -298,6 +298,9 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
         const firstMessage = await db.getFirstMessageByTicketId(ticket_id);
         const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
         const category_name = categoryTheme?.category_theme || '-';
+        const ticketRow = await db.getTicketById(ticket_id);
+        const ticketStatusRaw = ticketRow?.status || null;
+        const ticketStatusMapped = ticketStatusRaw ? mapTicketStatus(ticketStatusRaw) : { label: '-', className: 'status-default' };
         // const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
         // first message filelist: 
         const firstMessageAttachments = firstMessage
@@ -340,6 +343,8 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
         res.render('pages/secretaryViewTicket', {
             title: 'Λεπτομέρειες Αιτήματος',
             ticket_id,
+            ticket: { status: ticketStatusMapped },
+            ticketStatusRaw,
             categoryTheme,
             category_name,
             student: buildStudent(studentRow),
@@ -410,23 +415,84 @@ export const submitSecretaryReply = async (req, res) => {
         }
         console.log(req.body);
 
-        const replyText = req.body.replyText.trim();
+        const replyText = String(req.body.replyText || '').trim();
         const files = req.files;
         const secretaryUserId = Number(req.body.secretary_id || ticket.for_secretary_id);
+        const newStatus = req.body.status;
 
-        if (!replyText) {
-            return res.status(400).send('Συμπληρώστε την απάντηση πριν την αποστολή');
+        // Allow empty reply if status change is provided
+        if (!replyText && !newStatus) {
+            return res.status(400).send('Συμπληρώστε την απάντηση ή επιλέξτε νέα κατάσταση');
         }
 
         if (!Number.isInteger(secretaryUserId) || secretaryUserId < 1) {
             return res.status(409).send('Το αίτημα δεν έχει ανατεθεί ακόμη σε γραμματεία');
         }
 
-        const message_id = await db.insertMessage({
+        // Start operations: optional status update and optional message insert
+        if (newStatus) {
+            try {
+                await dbPool.execute(`UPDATE TICKET SET status = ? WHERE ticket_id = ?`, [newStatus, ticket_id]);
+            } catch (err) {
+                console.error('Error updating ticket status:', err);
+                return res.status(500).send('Αποτυχία ενημέρωσης κατάστασης');
+            }
+        }
+
+        if (replyText) {
+            const message_id = await db.insertMessage({
+                message_subject: null,
+                message_description: replyText,
+                created_at: new Date(),
+                for_user_id: secretaryUserId,
+                for_ticket_id: ticket_id
+            });
+
+            if (files && files.length > 0) {
+                for (const file of files) {
+                    await db.saveAttachment({
+                        file_path: file.path,
+                        file_name: file.originalname,
+                        file_size: file.size,
+                        file_type: file.mimetype,
+                        file_id: file.filename,
+                        for_message_id: message_id
+                    });
+                }
+            }
+        }
+
+        // After submit, redirect to tickets table so the updated status is visible
+        return res.redirect('/secretary_viewtickets');
+    } catch (error) {
+        console.error('Error submitting secretary reply:', error);
+        return res.status(500).send('Reply failed: ' + error.message);
+    }
+};
+
+export const submitSecretaryInternalMessage = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        }
+
+        const ticket = await db.getTicketById(ticket_id);
+        if (!ticket) return res.status(404).send('Δεν βρέθηκε το αίτημα');
+
+        const internalText = String(req.body.internalText || '').trim();
+        const files = req.files;
+        const authorUserId = req.user?.user_id || req.user?.id;
+
+        if (!internalText) {
+            return res.status(400).send('Συμπληρώστε το εσωτερικό μήνυμα');
+        }
+
+        const message_id = await db.insertInternalMessage({
             message_subject: null,
-            message_description: replyText,
+            message_description: internalText,
             created_at: new Date(),
-            for_user_id: secretaryUserId,
+            for_user_id: authorUserId,
             for_ticket_id: ticket_id
         });
 
@@ -443,10 +509,20 @@ export const submitSecretaryReply = async (req, res) => {
             }
         }
 
-        return res.redirect(`/tickets/secretary-view-ticket/ticket/${ticket_id}`);
+        // Optionally mark ticket as escalated when sending to leader?
+        if (req.body.escalate === '1') {
+            try {
+                await dbPool.execute(`UPDATE TICKET SET status = 'escalated' WHERE ticket_id = ?`, [ticket_id]);
+            } catch (err) {
+                console.error('Error setting escalated status:', err);
+            }
+        }
+
+        // After submit, redirect to tickets table
+        return res.redirect('/secretary_viewtickets');
     } catch (error) {
-        console.error('Error submitting secretary reply:', error);
-        return res.status(500).send('Reply failed: ' + error.message);
+        console.error('Error submitting internal message:', error);
+        return res.status(500).send('Internal message failed: ' + error.message);
     }
 };
 

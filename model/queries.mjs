@@ -94,6 +94,11 @@ export const saveAttachment = `
     VALUES (?, ?, ?, ?, ?)
 `;  
 
+export const insertInternalMessage = `
+    INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
+    VALUES (?, ?, ?, ?, ?, 1)
+`;
+
 
 // ==========================================
 // 4. VIEW TICKETS DATA (Λεπτομέρειες Αιτήματος)

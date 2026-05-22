@@ -71,6 +71,18 @@ export async function insertMessage({message_subject, message_description, creat
     return result.insertId;
 }
 
+export async function insertInternalMessage({message_subject, message_description, created_at, for_user_id, for_ticket_id}) {
+    const [result] = await pool.query(sql.insertInternalMessage, [
+        message_subject,
+        message_description,
+        created_at,
+        for_user_id,
+        for_ticket_id
+    ]);
+    await pool.query(sql.updateTicketLastUpdated, [for_ticket_id]);
+    return result.insertId;
+}
+
 export async function getAllCategories() {
     const [rows] = await pool.query(sql.getAllCategories);
     return rows;
