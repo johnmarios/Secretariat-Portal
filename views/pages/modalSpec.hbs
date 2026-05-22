@@ -1,0 +1,82 @@
+<div class="modal-overlay open ticket-modal-overlay" id="modalSpec" role="dialog" aria-modal="true" aria-labelledby="modalSpecTitle">
+  <div class="ticket-modal-shell">
+    <div class="ticket-modal-header">
+      <div class="ticket-modal-title-block">
+        <p class="ticket-modal-id">#{{ticket_id}} - {{firstMessage.message_subject}}</p>
+      </div>
+      <button class="close-btn ticket-modal-close" id="closeModalBtn" type="button" aria-label="Κλείσιμο">×</button>
+    </div>
+
+    <div class="ticket-modal-body">
+      <section class="ticket-modal-panel ticket-modal-panel-left">
+        <div class="ticket-left-card">
+          <div class="ticket-meta-row">
+            <span class="label">ID:</span>
+            <span class="value">#{{ticket_id}}</span>
+          </div>
+          <div class="ticket-meta-row">
+            <span class="label">Ημερομηνία Υποβολής:</span>
+            <span class="value">{{firstMessage.created_at}}</span>
+          </div>
+          <div class="ticket-meta-row">
+            <span class="label">Κατηγορία:</span>
+            <span class="value">{{category_name}}</span>
+          </div>
+
+          {{> studentCard}}
+        </div>
+      </section>
+
+      <section class="ticket-modal-panel ticket-modal-panel-middle ticket-middle-panel">
+        <div class="ticket-modal-section ticket-modal-section--flat">
+          <p class="ticket-modal-kicker">Θέμα</p>
+          <h2 class="ticket-modal-heading">{{firstMessage.message_subject}}</h2>
+        </div>
+
+        <div class="ticket-modal-section ticket-modal-section--flat">
+          <p class="ticket-modal-kicker">Περιγραφή αρχικού αιτήματος</p>
+          <div class="ticket-description-box ticket-description-box--auto">
+            <div class="ticket-description-scroll">
+              {{firstMessage.message_description}}
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket-modal-section ticket-modal-section--flat">
+          <p class="ticket-modal-kicker">Επισυναπτόμενα αρχεία (αίτημα)</p>
+          <div class="ticket-attachments-shell">
+            {{> fileList attachments=firstMessageAttachments}}
+          </div>
+        </div>
+      </section>
+
+      <section class="ticket-modal-panel ticket-modal-panel-right">
+        <div class="ticket-actions-card">
+          <p class="ticket-modal-kicker">Προωθημένα Μηνύματα</p>
+          {{#if internalMessages.length}}
+            {{#each internalMessages}}
+              <div class="internal-message-card">
+                <p class="internal-kicker">Σχόλιο Γραμματείας</p>
+                <div class="internal-body">{{this.message_description}}</div>
+                <div class="mt-2">
+                  {{> fileList attachments=this.attachments}}
+                </div>
+              </div>
+            {{/each}}
+          {{else}}
+            <p class="text-muted">Δεν βρέθηκαν προωθημένα μηνύματα.</p>
+          {{/if}}
+
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <form method="POST" action="/leader-view-ticket/ticket/{{ticket_id}}/accept" style="flex:1;">
+              <button type="submit" class="btn btn-success w-100">Ανάληψη</button>
+            </form>
+            <form method="POST" action="/leader-view-ticket/ticket/{{ticket_id}}/reject" style="flex:1;">
+              <button type="submit" class="btn btn-danger w-100">Απόρριψη</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

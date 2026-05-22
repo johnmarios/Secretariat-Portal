@@ -34,25 +34,19 @@ document.addEventListener('DOMContentLoaded', function () {
             modalRoot.innerHTML = html;
             document.body.style.overflow = 'hidden';
 
-            const modal = modalRoot.querySelector('#modalGen');
-            const closeBtn = modalRoot.querySelector('#closeModalBtn');
+            // bind generic close handlers for any modal fragment (modalGen or modalSpec)
+            const modalOverlay = modalRoot.querySelector('.modal-overlay, .ticket-modal-overlay');
+            const closeBtns = modalRoot.querySelectorAll('.ticket-modal-close, #closeModalBtn');
             const cancelBtn = modalRoot.querySelector('#cancelModalBtn');
 
             const bindClose = () => closeModal();
 
-            if (closeBtn) {
-                closeBtn.addEventListener('click', bindClose);
-            }
+            closeBtns.forEach(btn => btn.addEventListener('click', bindClose));
+            if (cancelBtn) cancelBtn.addEventListener('click', bindClose);
 
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', bindClose);
-            }
-
-            if (modal) {
-                modal.addEventListener('click', (event) => {
-                    if (event.target === modal) {
-                        closeModal();
-                    }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', (event) => {
+                    if (event.target === modalOverlay) closeModal();
                 });
             }
 

@@ -122,7 +122,9 @@ const loadUnassignedTicketModalData = async (ticket_id) => {
         attachmentsMap.get(att.for_message_id).push(att);
     });
 
-    const formattedMessages = allMessages.map(message => {
+    // Exclude internal messages from the visible history
+    const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
+    const formattedMessages = visibleMessages.map(message => {
         const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
         return {
             ...message,
@@ -328,7 +330,9 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
             }
             attachmentsMap.get(att.for_message_id).push(att);
         });
-        const formattedMessages = allMessages.map(message => {
+        // Exclude internal messages from history
+        const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
+        const formattedMessages = visibleMessages.map(message => {
             const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
             return {
                 ...message,
@@ -404,7 +408,9 @@ export const renderLeaderViewTicketPage = async (req, res) => {
             attachmentsMap.get(att.for_message_id).push(att);
         });
 
-        const formattedMessages = allMessages.map(message => {
+        // Exclude internal messages from student-visible history
+        const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
+        const formattedMessages = visibleMessages.map(message => {
             const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
             return {
                 ...message,
@@ -414,6 +420,26 @@ export const renderLeaderViewTicketPage = async (req, res) => {
                 created_at: message.created_at
             };
         });
+        // prepare internal messages (those marked internal) for leader modal
+        const internalMessages = formattedMessages.filter(m => Number(m.is_internal) === 1 || m.is_internal === true);
+
+        // If the request asked for a modal fragment, render the modalSpec partial
+        if (req.query && req.query.modal) {
+            return res.render('pages/modalSpec', {
+                ticket_id,
+                ticket: { status: ticketStatusMapped },
+                ticketStatusRaw,
+                categoryTheme,
+                category_name,
+                student: buildStudent(studentRow),
+                studentId: studentRow.student_id,
+                firstMessage,
+                firstMessageAttachments,
+                messages: formattedMessages,
+                internalMessages,
+                messagesCount: formattedMessages.length + 1
+            });
+        }
 
         return res.render('pages/leaderViewTicket', {
             title: 'Λεπτομέρειες Αιτήματος - Προϊστάμενος',
@@ -1085,6 +1111,8 @@ export const acceptEscalatedTicket = async (req, res) => {
     const leaderSecId = req.user.secretary_id; 
     
     try {
+        await deleteInternalMessageData(ticketId);
+
         // Η Ανάληψη: Αλλάζουμε τον υπεύθυνο στον Leader και το status σε in_progress
         const query = `
             UPDATE TICKET 
@@ -1105,6 +1133,8 @@ export const rejectEscalatedTicket = async (req, res) => {
     const ticketId = req.params.id;
     
     try {
+        await deleteInternalMessageData(ticketId);
+
         // Η Απόρριψη: ΔΕΝ πειράζουμε το for_secretary_id (άρα μένει σε αυτόν που το είχε),
         // απλά το γυρνάμε σε 'pending' (Σε Αναμονή) για να το ξαναδεί η γραμματεία.
         const query = `
@@ -1119,5 +1149,113 @@ export const rejectEscalatedTicket = async (req, res) => {
     } catch (error) {
         console.error("Σφάλμα κατά την απόρριψη του προωθημένου ticket:", error);
         res.status(500).send("Αποτυχία απόρριψης.");
+    }
+};
+
+export const submitLeaderAccept = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        const conn = await dbPool.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            // fetch attachment file paths to delete later
+            const [attachmentRows] = await conn.execute(`SELECT A.file_path FROM ATTACHMENT A JOIN MESSAGE M ON A.for_message_id = M.message_id WHERE M.for_ticket_id = ? AND M.is_internal = 1`, [ticket_id]);
+
+            // delete attachment rows and internal messages
+            const [delAttRes] = await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticket_id]);
+            const [delMsgRes] = await conn.execute(queries.deleteInternalMessagesByTicketId, [ticket_id]);
+
+            // update ticket status
+            const [updRes] = await conn.execute(`UPDATE TICKET SET status = 'in_progress' WHERE ticket_id = ?`, [ticket_id]);
+
+            await conn.commit();
+
+            // try removing files from disk asynchronously (best-effort)
+            for (const row of attachmentRows) {
+                try {
+                    const p = row.file_path || row.filePath || row.fileName;
+                    if (!p) continue;
+                    const full = path.isAbsolute(p) ? p : path.join(process.cwd(), p);
+                    if (fs.existsSync(full)) fs.unlinkSync(full);
+                } catch (e) {
+                    console.warn('Failed to delete attachment file:', e.message);
+                }
+            }
+
+            console.log(`Leader accepted ticket ${ticket_id}: deleted attachments=${delAttRes.affectedRows}, messages=${delMsgRes.affectedRows}, updated=${updRes.affectedRows}`);
+            return res.redirect('/viewtickets');
+        } catch (err) {
+            await conn.rollback();
+            console.error('Error handling leader accept transaction:', err);
+            return res.status(500).send('Operation failed');
+        } finally {
+            conn.release();
+        }
+    } catch (err) {
+        console.error('Error accepting escalated ticket:', err);
+        return res.status(500).send('Operation failed');
+    }
+};
+
+export const submitLeaderReject = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        const conn = await dbPool.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const [attachmentRows] = await conn.execute(`SELECT A.file_path FROM ATTACHMENT A JOIN MESSAGE M ON A.for_message_id = M.message_id WHERE M.for_ticket_id = ? AND M.is_internal = 1`, [ticket_id]);
+
+            const [delAttRes] = await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticket_id]);
+            const [delMsgRes] = await conn.execute(queries.deleteInternalMessagesByTicketId, [ticket_id]);
+
+            const [updRes] = await conn.execute(`UPDATE TICKET SET status = 'pending' WHERE ticket_id = ?`, [ticket_id]);
+
+            await conn.commit();
+
+            for (const row of attachmentRows) {
+                try {
+                    const p = row.file_path || row.filePath || row.fileName;
+                    if (!p) continue;
+                    const full = path.isAbsolute(p) ? p : path.join(process.cwd(), p);
+                    if (fs.existsSync(full)) fs.unlinkSync(full);
+                } catch (e) {
+                    console.warn('Failed to delete attachment file:', e.message);
+                }
+            }
+
+            console.log(`Leader rejected ticket ${ticket_id}: deleted attachments=${delAttRes.affectedRows}, messages=${delMsgRes.affectedRows}, updated=${updRes.affectedRows}`);
+            return res.redirect('/viewtickets');
+        } catch (err) {
+            await conn.rollback();
+            console.error('Error handling leader reject transaction:', err);
+            return res.status(500).send('Operation failed');
+        } finally {
+            conn.release();
+        }
+    } catch (err) {
+        console.error('Error rejecting escalated ticket:', err);
+        return res.status(500).send('Operation failed');
+    }
+};
+
+const deleteInternalMessageData = async (ticketId) => {
+    const conn = await dbPool.getConnection();
+    try {
+        await conn.beginTransaction();
+
+        await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticketId]);
+        await conn.execute(queries.deleteInternalMessagesByTicketId, [ticketId]);
+
+        await conn.commit();
+    } catch (error) {
+        await conn.rollback();
+        console.error('Error deleting internal message data:', error);
+        throw error;
+    } finally {
+        conn.release();
     }
 };

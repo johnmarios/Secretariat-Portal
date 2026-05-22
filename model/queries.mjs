@@ -220,7 +220,7 @@ export const getTicketsBySecretaryId = `
 
 export const getEscalatedTickets = `
     SELECT 
-        t.ticket_id, 
+        DISTINCT t.ticket_id, 
         (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
@@ -232,10 +232,22 @@ export const getEscalatedTickets = `
     FROM TICKET t
     JOIN CATEGORY c ON t.for_category_id = c.category_id
     JOIN STUDENT s ON t.for_student_id = s.student_id
-    JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
-    JOIN USER u ON sec.for_id = u.user_id
-    WHERE t.status = 'escalated'
+    LEFT JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
+    LEFT JOIN USER u ON sec.for_id = u.user_id
+    WHERE EXISTS (
+        SELECT 1 FROM MESSAGE m WHERE m.for_ticket_id = t.ticket_id AND m.is_internal = 1
+    )
     ORDER BY t.created_at DESC
+`;
+
+export const deleteAttachmentsForInternalMessages = `
+    DELETE A FROM ATTACHMENT A
+    JOIN MESSAGE M ON A.for_message_id = M.message_id
+    WHERE M.for_ticket_id = ? AND M.is_internal = 1
+`;
+
+export const deleteInternalMessagesByTicketId = `
+    DELETE FROM MESSAGE WHERE for_ticket_id = ? AND is_internal = 1
 `;
 
 export const assignTicketToSecretary = `

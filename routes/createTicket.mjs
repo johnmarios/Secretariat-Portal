@@ -54,6 +54,8 @@ router.get('/search', ensureAuthenticated, ticketController.searchTickets);
 
 router.get('/secretary-view-ticket/ticket/:ticket_id', ticketController.renderSecretaryViewTicketPage);
 router.get('/leader-view-ticket/ticket/:ticket_id', ticketController.renderLeaderViewTicketPage);
+router.post('/leader-view-ticket/ticket/:ticket_id/accept', ticketController.submitLeaderAccept);
+router.post('/leader-view-ticket/ticket/:ticket_id/reject', ticketController.submitLeaderReject);
 router.post('/secretary-view-ticket/ticket/:ticket_id', upload.array('files', 10), ticketController.submitSecretaryReply);
 router.post('/secretary-view-ticket/ticket/:ticket_id/reply', upload.array('files', 10), ticketController.submitSecretaryReply);
 router.post('/secretary-view-ticket/ticket/:ticket_id/escalate', upload.array('files', 10), ticketController.submitSecretaryInternalMessage);
