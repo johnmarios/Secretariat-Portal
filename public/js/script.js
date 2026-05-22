@@ -75,12 +75,87 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="file-item-name">${escapeHtml(basename(file.file_name))}</p>
           <p class="file-item-size">${escapeHtml(formatFileSize(file.file_size))}</p>
         </div>
-        <a href="${escapeHtml(attachmentUrl(file.file_path))}" class="attachment-download" aria-label="Download attachment" target="_blank" rel="noopener noreferrer">
+        <a href="${escapeHtml(attachmentUrl(file.file_path))}" class="attachment-download" aria-label="Download attachment" download="${escapeHtml(basename(file.file_name))}" data-file-path="${escapeHtml(file.file_path)}" target="_blank" rel="noopener noreferrer">
           <img src="/images/file-download-svgrepo-com.svg" alt="Download">
         </a>
       </div>
     `).join('');
   };
+  
+  // Delegated download handler: try native download, then fetch blob fallback and try original stored path
+  document.addEventListener('click', (e) => {
+    const anchor = e.target.closest && e.target.closest('.attachment-download');
+    if (!anchor) return;
+
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return; // allow modifier keys
+    e.preventDefault();
+
+    const fileItem = anchor.closest('.file-item');
+    if (fileItem) fileItem.classList.add('downloading');
+
+    const originalUrl = anchor.href;
+    const storedPath = anchor.getAttribute('data-file-path');
+    const filename = anchor.getAttribute('download') || basename(storedPath) || 'file';
+
+    // Try native download via temporary anchor
+    try {
+      const temp = document.createElement('a');
+      temp.href = originalUrl;
+      temp.download = filename;
+      temp.style.display = 'none';
+      document.body.appendChild(temp);
+      temp.click();
+      document.body.removeChild(temp);
+      if (fileItem) fileItem.classList.remove('downloading');
+      return;
+    } catch (err) {
+      // fallback to fetch
+    }
+
+    const tryFetchAndDownload = async (url) => {
+      try {
+        const res = await fetch(url, { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('network');
+        const blob = await res.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    (async () => {
+      // try original href first
+      let ok = await tryFetchAndDownload(originalUrl);
+      if (!ok && storedPath) {
+        // try stored path as-is
+        ok = await tryFetchAndDownload(storedPath);
+      }
+      if (!ok && storedPath) {
+        // try adding leading slash and converting backslashes
+        const s = ('/' + String(storedPath).replace(/\\/g, '/')).replace(/\/\//g, '/');
+        ok = await tryFetchAndDownload(s);
+      }
+      if (!ok) {
+        // try /files/<basename>
+        const base = basename(storedPath || originalUrl);
+        if (base) ok = await tryFetchAndDownload(`/files/${base}`);
+      }
+
+      if (!ok) {
+        // last resort: open original
+        window.open(originalUrl, '_blank');
+      }
+      if (fileItem) fileItem.classList.remove('downloading');
+    })();
+  });
 1  
   // Στοχεύουμε τα tr στα Μη Εκχωρημένα και στα Προωθημένα
   const tableRows = document.querySelectorAll('#unassigned tr[data-ticket-id], #escalated-tab tr[data-ticket-id]'); 

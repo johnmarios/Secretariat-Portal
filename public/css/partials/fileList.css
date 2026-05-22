@@ -128,6 +128,13 @@
     transform: scale(0.95);
 }
 
+.file-item.downloading {
+    opacity: 0.8;
+}
+.file-item.downloading .file-item-icon::after {
+    content: "\A";
+}
+
 /* Error Message */
 .file-error-message {
     margin-top: 12px;

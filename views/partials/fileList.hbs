@@ -7,7 +7,7 @@
                 <p class="file-item-name">{{basename this.file_name}}</p>
                 <p class="file-item-size">{{formatFileSize this.file_size}}</p>
             </div>
-            <a href="{{attachmentUrl this.file_path}}" class="attachment-download" aria-label="Download attachment">
+            <a href="{{attachmentUrl this.file_path}}" class="attachment-download" aria-label="Download attachment" download="{{basename this.file_name}}" data-file-path="{{this.file_path}}">
                 <img src="/images/file-download-svgrepo-com.svg" alt="Download">
             </a>
         </div>
