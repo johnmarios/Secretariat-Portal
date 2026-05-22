@@ -20,7 +20,68 @@
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('ticketModal');
   const closeBtn = document.getElementById('closeModalBtn');
-  
+
+  const escapeHtml = (value) => String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+
+  const formatFileSize = (bytes) => {
+    if (bytes == null || Number.isNaN(Number(bytes))) return '';
+    const size = Number(bytes);
+    if (size < 1024) return `${size} B`;
+    const kb = size / 1024;
+    if (kb < 1024) return `${Math.round(kb)} KB`;
+    const mb = kb / 1024;
+    return `${mb.toFixed(1)} MB`;
+  };
+
+  const fileLabel = (fileName, fileType) => {
+    if (fileName) {
+      const ext = String(fileName).split('.').pop();
+      if (ext && ext.length <= 5) return ext.toUpperCase();
+    }
+    if (fileType) {
+      if (fileType.includes('pdf')) return 'PDF';
+      if (fileType.includes('word') || fileType.includes('msword')) return 'DOC';
+      if (fileType.includes('image')) return 'IMG';
+    }
+    return 'FILE';
+  };
+
+  const attachmentUrl = (filePath) => {
+    if (!filePath) return '#';
+    const cleanedPath = String(filePath).replace(/^\/public/, '');
+    return `/files/${cleanedPath.split('/').pop()}`;
+  };
+
+  const basename = (value) => {
+    if (!value) return '';
+    const normalized = String(value).replace(/\\/g, '/');
+    return normalized.split('/').pop();
+  };
+
+  const renderAttachmentList = (attachments) => {
+    if (!Array.isArray(attachments) || attachments.length === 0) {
+      return '<p class="file-empty-state">Δεν υπάρχουν επισυναπτόμενα αρχεία.</p>';
+    }
+
+    return attachments.map(file => `
+      <div class="file-item">
+        <div class="file-item-icon">${escapeHtml(fileLabel(file.file_name, file.file_type))}</div>
+        <div class="file-item-info">
+          <p class="file-item-name">${escapeHtml(basename(file.file_name))}</p>
+          <p class="file-item-size">${escapeHtml(formatFileSize(file.file_size))}</p>
+        </div>
+        <a href="${escapeHtml(attachmentUrl(file.file_path))}" class="attachment-download" aria-label="Download attachment" target="_blank" rel="noopener noreferrer">
+          <img src="/images/file-download-svgrepo-com.svg" alt="Download">
+        </a>
+      </div>
+    `).join('');
+  };
+1  
   // Στοχεύουμε τα tr στα Μη Εκχωρημένα και στα Προωθημένα
   const tableRows = document.querySelectorAll('#unassigned tr[data-ticket-id], #escalated-tab tr[data-ticket-id]'); 
 
@@ -37,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Εμφανίζουμε προσωρινά ένα "Loading..."
         document.getElementById('modal-id').textContent = ticketId;
         document.getElementById('modal-description').textContent = "Φόρτωση δεδομένων...";
-        document.getElementById('modal-attachments').innerHTML = "";
+        document.getElementById('modal-attachments').innerHTML = '<p class="file-empty-state">Φόρτωση αρχείων...</p>';
 
         // Ζητάμε τα δεδομένα από το API
         fetch(`/api/ticket/${ticketId}`)
@@ -56,14 +117,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
               // Εμφάνιση Συνημμένων
               if (data.attachments && data.attachments.length > 0) {
-                let attHtml = '';
-                data.attachments.forEach(file => {
-                   let cleanPath = file.file_path.replace('/public', ''); 
-                   attHtml += `<a href="${cleanPath}" target="_blank" style="display:block; margin-bottom:5px;">📎 ${file.file_name}</a>`;
-                });
-                document.getElementById('modal-attachments').innerHTML = attHtml;
+                const attachmentsContainer = document.getElementById('modal-attachments');
+                attachmentsContainer.classList.add('has-items');
+                attachmentsContainer.innerHTML = renderAttachmentList(data.attachments);
               } else {
-                document.getElementById('modal-attachments').textContent = "Κανένα αρχείο";
+                const attachmentsContainer = document.getElementById('modal-attachments');
+                attachmentsContainer.classList.add('has-items');
+                attachmentsContainer.innerHTML = renderAttachmentList([]);
               }
 
               // --- ΛΟΓΙΚΗ ΓΙΑ ΤΙΣ ΣΤΗΛΕΣ ΚΑΙ ΤΑ ΚΟΥΜΠΙΑ ---
