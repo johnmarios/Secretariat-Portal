@@ -1,0 +1,92 @@
+{{> viewTicket_navbar}}
+
+<link rel="stylesheet" href="/css/pages/secretaryViewTicket.css">
+
+<main class="ticket-details-shell">
+    <div class="ticket-header-card">
+        <div class="left-column">
+            <p class="ticket-id">TICKET ID: {{ticket_id}}</p>
+            <h1>{{category_name}}</h1>
+        </div>
+        <div class="right-column">
+            <div class="ticket-header-actions">
+                <span class="status-display">Κατάσταση: {{ticket.status.label}}</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="ticket-layout">
+        <aside class="ticket-column left-column">
+            {{>studentCard}}
+        </aside>
+
+        <section class="ticket-column center-column">
+            <article class="detail-card request-card">
+                <h2>Αρχικό Αίτημα Φοιτητή</h2>
+
+                <div class="detail-block">
+                    <span class="detail-label">ΘΕΜΑ</span>
+                    <p>{{firstMessage.message_subject}}</p>
+                </div>
+
+                <div class="detail-block">
+                    <span class="detail-label">ΠΕΡΙΓΡΑΦΗ ΑΙΤΗΜΑΤΟΣ</span>
+                    <p>{{firstMessage.message_description}}</p>
+                </div>
+
+                <div class="detail-block">
+                    <span class="detail-label">ΕΠΙΣΥΝΑΠΤΟΜΕΝΑ ΑΡΧΕΙΑ ΦΟΙΤΗΤΗ</span>
+                    {{>fileList attachments=firstMessageAttachments}}
+                </div>
+            </article>
+
+            <article class="detail-card history-card">
+                <h2>Ιστορικό Επικοινωνίας</h2>
+                {{>msgHistory messages=messages}}
+            </article>
+        </section>
+
+        <aside class="ticket-column right-column">
+            <article class="detail-card action-card">
+                <h2>Ενέργειες Προϊσταμένου</h2>
+
+                <form id="replyForm" method="post" enctype="multipart/form-data"
+                    action="/tickets/secretary-view-ticket/ticket/{{ticket_id}}/reply">
+
+                    <div class="action-block">
+                        <label for="replyText">ΑΠΑΝΤΗΣΗ ΣΤΟΝ ΦΟΙΤΗΤΗ</label>
+                        <textarea id="replyText" rows="5" name="replyText"
+                            placeholder="Γράψτε την απάντησή σας στον φοιτητή..."></textarea>
+                    </div>
+
+                    <div class="action-block">
+                        <label for="status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</label>
+                        <select id="status" name="status" class="form-control" data-current="{{ticketStatusRaw}}">
+                            <option value="in_progress">Σε Εξέλιξη</option>
+                            <option value="pending">Σε Αναμονή</option>
+                            <option value="resolved">Ολοκληρωμένο</option>
+                            <option value="closed">Κλειστό</option>
+                        </select>
+                    </div>
+
+                    <div class="card attachments-card">
+                        {{>fileAttachment}}
+                        {{>submitWrap buttonType="submit" buttonText="Αποστολή Απάντησης / Αλλαγή Κατάστασης"}}
+                    </div>
+                </form>
+            </article>
+        </aside>
+    </section>
+</main>
+<script src="/js/partials/fileAttachment.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    try{
+        const sel = document.getElementById('status');
+        if(sel){
+            const current = sel.dataset.current;
+            if(current) sel.value = current;
+        }
+    }catch(e){console.error(e)}
+});
+</script>

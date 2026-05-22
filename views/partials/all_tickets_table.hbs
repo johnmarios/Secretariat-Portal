@@ -16,7 +16,7 @@
         </thead>
         <tbody>
             {{#each tickets}}
-            <tr data-id="{{this.id}}" data-href="{{#if ../isStudent}}/tickets/student-view-ticket/ticket/{{this.id}}{{else}}/tickets/secretary-view-ticket/ticket/{{this.id}}{{/if}}">
+            <tr data-id="{{this.id}}" data-href="{{#if ../isStudent}}/tickets/student-view-ticket/ticket/{{this.id}}{{else}}{{#if ../isLeader}}/tickets/leader-view-ticket/ticket/{{this.id}}{{else}}/tickets/secretary-view-ticket/ticket/{{this.id}}{{/if}}{{/if}}">
                 <td>{{this.id}}</td>
                 <td>{{this.am}}</td>
                 <td>{{this.subject}}</td>

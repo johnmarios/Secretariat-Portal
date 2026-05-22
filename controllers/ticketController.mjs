@@ -360,6 +360,81 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
     }
 };
 
+export const renderLeaderViewTicketPage = async (req, res) => {
+    try {
+        const ticket_id = Number(req.params.ticket_id);
+
+        if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+            return res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        }
+
+        const isLeader = req.user.role === 'leader' || req.user.is_leader === 1;
+        if (!req.user?.secretary_id || !isLeader) {
+            return res.status(403).send('Η προβολή είναι διαθέσιμη μόνο για τον προϊστάμενο');
+        }
+
+        const studentRow = await db.getStudentInfoByTicketId(ticket_id);
+        if (!studentRow) {
+            return res.status(404).send('Δεν βρέθηκε το αίτημα ή ο φοιτητής');
+        }
+
+        const firstMessage = await db.getFirstMessageByTicketId(ticket_id);
+        const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
+        const category_name = categoryTheme?.category_theme || '-';
+        const ticketRow = await db.getTicketById(ticket_id);
+        const ticketStatusRaw = ticketRow?.status || null;
+        const ticketStatusMapped = ticketStatusRaw ? mapTicketStatus(ticketStatusRaw) : { label: '-', className: 'status-default' };
+        const firstMessageAttachments = firstMessage
+            ? await db.getAttachmentsByMessageId(firstMessage.message_id)
+            : [];
+
+        const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
+        const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
+        const allMessages = [...restStudentMessages, ...secretaryMessages].sort((a, b) => a.message_id - b.message_id);
+        const messageIds = allMessages.map(m => m.message_id);
+
+        const allAttachments = messageIds.length
+            ? await db.getAttachmentsByMessagesId(messageIds)
+            : [];
+        const attachmentsMap = new Map();
+        allAttachments.forEach(att => {
+            if (!attachmentsMap.has(att.for_message_id)) {
+                attachmentsMap.set(att.for_message_id, []);
+            }
+            attachmentsMap.get(att.for_message_id).push(att);
+        });
+
+        const formattedMessages = allMessages.map(message => {
+            const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            return {
+                ...message,
+                attachments: attachmentsMap.get(message.message_id) || [],
+                senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
+                bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
+                created_at: message.created_at
+            };
+        });
+
+        return res.render('pages/leaderViewTicket', {
+            title: 'Λεπτομέρειες Αιτήματος - Προϊστάμενος',
+            ticket_id,
+            ticket: { status: ticketStatusMapped },
+            ticketStatusRaw,
+            categoryTheme,
+            category_name,
+            student: buildStudent(studentRow),
+            studentId: studentRow.student_id,
+            firstMessage,
+            firstMessageAttachments,
+            messages: formattedMessages,
+            messagesCount: formattedMessages.length + 1
+        });
+    } catch (error) {
+        console.error('Error rendering leader view ticket page:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+};
+
 const getFilesFromFolder = () => {
     const directoryPath = path.join(process.cwd(), 'public', 'files');
     if (!fs.existsSync(directoryPath)) {
