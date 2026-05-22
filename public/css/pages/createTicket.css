@@ -113,7 +113,8 @@
 .create-ticket-page .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 8px;
+	margin-bottom: 12px;
 }
 
 .create-ticket-page .form-group label {
