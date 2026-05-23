@@ -3,6 +3,20 @@
 <link rel="stylesheet" href="/css/pages/studentViewTicket.css">
 
 <main class="ticket-details-shell">
+    <div class="ticket-header-card">
+        <div class="left-column">
+            {{!-- <p class="ticket-id">TICKET ID: {{ticket_id}}</p> --}}
+            <h1>{{category_name}}</h1>
+        </div>
+        <div class="right-column">
+            <div class="ticket-header-actions">
+                <span class="status-display">Κατάσταση:</span>
+                <span class="status {{ticket.status.className}}">
+                    <span class="dot"></span> {{ticket.status.label}}
+                </span>
+            </div>
+        </div>
+    </div>
 
     <section class="ticket-layout">
         <aside class="ticket-column left-column">

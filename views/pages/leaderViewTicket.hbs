@@ -10,7 +10,10 @@
         </div>
         <div class="right-column">
             <div class="ticket-header-actions">
-                <span class="status-display">Κατάσταση: {{ticket.status.label}}</span>
+                <span class="status-display">Κατάσταση:</span>
+                <span class="status {{ticket.status.className}}">
+                    <span class="dot"></span> {{ticket.status.label}}
+                </span>
             </div>
         </div>
     </div>

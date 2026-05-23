@@ -632,6 +632,11 @@ export const renderStudentViewTicketPage = async (req, res) => {
         if (!studentRow) return res.status(404).send('Δεν βρέθηκε το αίτημα');
 
         const firstMessage = await db.getFirstMessageByTicketId(ticket_id);
+        const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
+        const category_name = categoryTheme?.category_theme || '-';
+        const ticketRow = await db.getTicketById(ticket_id);
+        const ticketStatusRaw = ticketRow?.status || null;
+        const ticketStatusMapped = ticketStatusRaw ? mapTicketStatus(ticketStatusRaw) : { label: '-', className: 'status-default' };
         const firstMessageAttachments = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
 
         const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
@@ -660,6 +665,8 @@ export const renderStudentViewTicketPage = async (req, res) => {
         res.render('pages/studentViewTicket', {
             title: 'Το Αίτημά μου',
             ticket_id,
+            ticket: { status: ticketStatusMapped },
+            category_name,
             student: buildStudent(studentRow),
             studentId: studentRow.student_id,
             firstMessage,
