@@ -387,6 +387,9 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
             studentId: studentRow.student_id,
             firstMessage,
             firstMessageAttachments,
+            isStudent: false,
+            isSecretary: true,
+            isLeader: false,
             messages: formattedMessages,
             messagesCount: formattedMessages.length + 1
         });
@@ -481,6 +484,9 @@ export const renderLeaderViewTicketPage = async (req, res) => {
             studentId: studentRow.student_id,
             firstMessage,
             firstMessageAttachments,
+            isStudent: false,
+            isSecretary: false,
+            isLeader: true,
             messages: formattedMessages,
             messagesCount: formattedMessages.length + 1,
             secretaries: await db.getSecretariesForAssignment(),
@@ -678,11 +684,7 @@ export const renderStudentViewTicketPage = async (req, res) => {
         
         // --- ΚΑΘΑΡΙΣΜΟΣ 1: Αρχικά Συνημμένα ---
         const firstMessageAttachmentsRaw = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
-        const firstMessageAttachments = firstMessageAttachmentsRaw.map(att => ({
-            ...att,
-            file_name: att.file_name.replace(/-\d+-\d+(\.[^.]+)$/, '$1'), // Καθαρίζει το όνομα
-            file_path: att.file_path.replace('/public', '')              // Φτιάχνει το download
-        }));
+        const firstMessageAttachments = firstMessageAttachmentsRaw.map(formatAttachment);
 
         const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
         const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
@@ -692,7 +694,9 @@ export const renderStudentViewTicketPage = async (req, res) => {
         const allAttachments = messageIds.length ? await db.getAttachmentsByMessagesId(messageIds) : [];
         const attachmentsMap = new Map();
         allAttachments.forEach(att => {
-            if (!attachmentsMap.has(att.for_message_id)) attachmentsMap.set(att.for_message_id, []);
+            if (!attachmentsMap.has(att.for_message_id)) {
+                attachmentsMap.set(att.for_message_id, []);
+            }
             attachmentsMap.get(att.for_message_id).push(att);
         });
 
@@ -701,11 +705,7 @@ export const renderStudentViewTicketPage = async (req, res) => {
             
             // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
             const rawAtts = attachmentsMap.get(message.message_id) || [];
-            const cleanAtts = rawAtts.map(att => ({
-                ...att,
-                file_name: att.file_name.replace(/-\d+-\d+(\.[^.]+)$/, '$1'),
-                file_path: att.file_path.replace('/public', '')
-            }));
+            const cleanAtts = rawAtts.map(formatAttachment);
 
             return {
                 ...message,
@@ -725,6 +725,9 @@ export const renderStudentViewTicketPage = async (req, res) => {
             studentId: studentRow.student_id,
             firstMessage,
             firstMessageAttachments,
+            isStudent: true,
+            isSecretary: false,
+            isLeader: false,
             messages: formattedMessages,
             messagesCount: formattedMessages.length + 1
         });
