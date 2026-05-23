@@ -10,12 +10,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.mjs",
-    "watch": "nodemon index.mjs"
+    "watch": "nodemon index.mjs",
+    "seed": "node model/dbFill.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^10.4.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
