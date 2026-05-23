@@ -73,25 +73,42 @@
                     </div>
 
                     <div class="card attachments-card">
-                        {{>fileAttachment}}
+                        <!-- Drag & Drop Zone -->
+                            <span class="detail-label">ΕΠΙΣΥΝΑΨΗ ΑΡΧΕΙΟΥ</span>
+                            <div class="file-upload-zone" id="fileUploadZone">
+                                    <img class="upload-icon" src="/images/upload-cloud-icon.svg" height="87" width="100" alt="">
+                                    <p class="upload-text">Σύρετε αρχεία ή κάντε κλικ για επιλογή</p>
+                                    <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
+
+                                    <input type="file" id="fileInput" name="files" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                        class="file-input">
+                                </div>
+
+                            <!-- File List -->
+                            <div class="file-list" id="fileList"></div>
+
+                            <!-- Error Message -->
+                            <div class="file-error-message hidden" id="fileError"></div>
                         {{>submitWrap buttonType="submit" buttonText="Αποστολή Απάντησης / Αλλαγή Κατάστασης"}}
                     </div>
                 </form>
 
                 <form class="assign-form" method="post" action="/tickets/assign/{{ticket_id}}" style="margin-top: 20px;">
                     <div class="action-block">
-                        <label for="leaderSecretarySelect">Ανάθεση του αιτήματος σε</label>
+                        <h2>Ανάθεση του αιτήματος σε :</h2>
+                        {{!-- <label for="leaderSecretarySelect">Ανάθεση του αιτήματος σε</label> --}}
                         <select id="leaderSecretarySelect" name="secretary_id" class="form-control" required>
                             <option value="{{leaderSecretaryId}}" selected>{{leaderDisplayName}}</option>
                             {{#each secretaries}}
                                 <option value="{{this.secretary_id}}">{{this.first_name}} {{this.last_name}}</option>
                             {{/each}}
                         </select>
+                        <div class="card attachments-card">
+                        {{>submitWrap buttonType="submit" buttonText="Ανάθεση"}}
+                        </div>
                     </div>
 
-                    <div class="card attachments-card" style="margin-top: 12px;">
-                        {{>submitWrap buttonType="submit" buttonText="Ανάθεση"}}
-                    </div>
+                    
                 </form>
             </article>
         </aside>

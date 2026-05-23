@@ -6,6 +6,33 @@ import dbPool, * as db from '../model/db.js';
 import * as queries from '../model/queries.mjs';
 
 
+// Έξυπνος καθαριστής για τα αρχεία
+const formatAttachment = (att) => {
+    // 1. Κρατάμε το ΑΡΧΙΚΟ/ΑΣΧΗΜΟ όνομα που υπάρχει στη βάση
+    const uglyName = att.file_name; 
+    
+    // 2. Φτιάχνουμε το ΚΑΘΑΡΟ όνομα (για να το βλέπει ο χρήστης)
+    const cleanName = uglyName.replace(/-\d+-\d+(\.[^.]+)$/, '$1');
+    
+    // 3. Διορθώνουμε το μονοπάτι (slashes και public)
+    let basePath = att.file_path.replace(/\\/g, '/');
+    basePath = basePath.replace(/^\/?public/, '');
+    if (!basePath.startsWith('/')) {
+        basePath = '/' + basePath;
+    }
+    
+    // 4. Το ΜΥΣΤΙΚΟ: Κρατάμε τον φάκελο, αλλά κολλάμε το ΑΣΧΗΜΟ όνομα στο τέλος!
+    const pathParts = basePath.split('/');
+    pathParts.pop(); // Πετάμε το λάθος όνομα
+    const realDownloadUrl = pathParts.join('/') + '/' + uglyName; // Κολλάμε το σωστό!
+
+    return {
+        ...att,
+        file_name: cleanName,       // Αυτό πάει στην οθόνη
+        file_path: realDownloadUrl  // Αυτό πάει στο href για να δουλεύει το Download!
+    };
+};
+
 let buildStudent = (row) => {
     if (!row) return null;
     const fullName = [row.first_name, row.last_name].filter(Boolean).join(' ').trim(); 
@@ -305,9 +332,9 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
         const ticketStatusMapped = ticketStatusRaw ? mapTicketStatus(ticketStatusRaw) : { label: '-', className: 'status-default' };
         // const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
         // first message filelist: 
-        const firstMessageAttachments = firstMessage
-            ? await db.getAttachmentsByMessageId(firstMessage.message_id)
-            : [];
+        // --- ΚΑΘΑΡΙΣΜΟΣ 1: Αρχικά Συνημμένα ---
+        const firstMessageAttachmentsRaw = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
+        const firstMessageAttachments = firstMessageAttachmentsRaw.map(formatAttachment);
 
         // get all messages of the ticket, except of the first one,
         // ordered by message_id ascending, and for each message get its attachments,
@@ -334,9 +361,14 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
         const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
         const formattedMessages = visibleMessages.map(message => {
             const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+
+            // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
+            const rawAtts = attachmentsMap.get(message.message_id) || [];
+            const cleanAtts = rawAtts.map(formatAttachment);
+            
             return {
                 ...message,
-                attachments: attachmentsMap.get(message.message_id) || [],
+                attachments: cleanAtts, // Χρησιμοποιούμε τα καθαρά,
                 senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
                 bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
                 created_at: message.created_at
@@ -388,9 +420,10 @@ export const renderLeaderViewTicketPage = async (req, res) => {
         const ticketRow = await db.getTicketById(ticket_id);
         const ticketStatusRaw = ticketRow?.status || null;
         const ticketStatusMapped = ticketStatusRaw ? mapTicketStatus(ticketStatusRaw) : { label: '-', className: 'status-default' };
-        const firstMessageAttachments = firstMessage
-            ? await db.getAttachmentsByMessageId(firstMessage.message_id)
-            : [];
+
+        // --- ΚΑΘΑΡΙΣΜΟΣ 1: Αρχικά Συνημμένα ---
+        const firstMessageAttachmentsRaw = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
+        const firstMessageAttachments = firstMessageAttachmentsRaw.map(formatAttachment);
 
         const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
         const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
@@ -412,9 +445,14 @@ export const renderLeaderViewTicketPage = async (req, res) => {
         const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
         const formattedMessages = visibleMessages.map(message => {
             const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+
+             // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
+            const rawAtts = attachmentsMap.get(message.message_id) || [];
+            const cleanAtts = rawAtts.map(formatAttachment);
+
             return {
                 ...message,
-                attachments: attachmentsMap.get(message.message_id) || [],
+                attachments: cleanAtts, // Χρησιμοποιούμε τα καθαρά
                 senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
                 bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
                 created_at: message.created_at
@@ -637,7 +675,14 @@ export const renderStudentViewTicketPage = async (req, res) => {
         const ticketRow = await db.getTicketById(ticket_id);
         const ticketStatusRaw = ticketRow?.status || null;
         const ticketStatusMapped = ticketStatusRaw ? mapTicketStatus(ticketStatusRaw) : { label: '-', className: 'status-default' };
-        const firstMessageAttachments = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
+        
+        // --- ΚΑΘΑΡΙΣΜΟΣ 1: Αρχικά Συνημμένα ---
+        const firstMessageAttachmentsRaw = firstMessage ? await db.getAttachmentsByMessageId(firstMessage.message_id) : [];
+        const firstMessageAttachments = firstMessageAttachmentsRaw.map(att => ({
+            ...att,
+            file_name: att.file_name.replace(/-\d+-\d+(\.[^.]+)$/, '$1'), // Καθαρίζει το όνομα
+            file_path: att.file_path.replace('/public', '')              // Φτιάχνει το download
+        }));
 
         const restStudentMessages = await db.getRestStudentMessagesByTicketId(ticket_id);
         const secretaryMessages = await db.getSecretaryMessagesByTicketId(ticket_id);
@@ -653,9 +698,18 @@ export const renderStudentViewTicketPage = async (req, res) => {
 
         const formattedMessages = allMessages.map(message => {
             const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            
+            // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
+            const rawAtts = attachmentsMap.get(message.message_id) || [];
+            const cleanAtts = rawAtts.map(att => ({
+                ...att,
+                file_name: att.file_name.replace(/-\d+-\d+(\.[^.]+)$/, '$1'),
+                file_path: att.file_path.replace('/public', '')
+            }));
+
             return {
                 ...message,
-                attachments: attachmentsMap.get(message.message_id) || [],
+                attachments: cleanAtts, // Χρησιμοποιούμε τα καθαρά
                 senderDisplay: isFromStudent ? 'ΦΟΙΤΗΤΗΣ' : 'ΓΡΑΜΜΑΤΕΙΑ',
                 bubbleClass: isFromStudent ? 'student-message' : 'staff-message',
                 created_at: message.created_at
@@ -1055,7 +1109,9 @@ export const getTicketDetailsAPI = async (req, res) => {
         let attachments = [];
         if (message) {
             const [attRows] = await dbPool.execute(queries.getAttachmentsByMessageId, [message.message_id]);
-            attachments = attRows;
+            
+            // Περνάμε και τα αρχεία του Modal από τον Έξυπνο Καθαριστή!
+            attachments = attRows.map(formatAttachment);
         }
 
         // ---> ΝΕΟ: Φέρνουμε το Internal Message <---

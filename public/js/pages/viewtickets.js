@@ -31,17 +31,20 @@ document.addEventListener('DOMContentLoaded', function () {
         return 'FILE';
     };
 
-    const attachmentUrl = (filePath) => {
-        if (!filePath) return '#';
-        const cleanedPath = String(filePath).replace(/^\/public/, '');
-        return `/files/${cleanedPath.split('/').pop()}`;
-    };
-
+    // 1. Το Helper που καθαρίζει το όνομα (ακριβώς όπως στο HBS)
     const basename = (value) => {
         if (!value) return '';
         return String(value).replace(/\\/g, '/').split('/').pop();
     };
 
+    // 2. Το Helper που φτιάχνει το σωστό URL (ακριβώς όπως στο HBS)
+    const attachmentUrl = (filePath) => {
+        if (!filePath) return '#';
+        const cleanedPath = String(filePath).replace(/\\/g, '/').replace(/^\/?public/, '');
+        return `/files/${cleanedPath.split('/').pop()}`;
+    };
+
+    // 3. Η συνάρτηση που χτίζει την HTML
     const renderAttachmentList = (attachments) => {
         if (!Array.isArray(attachments) || attachments.length === 0) {
             return '<p class="file-empty-state">Δεν υπάρχουν επισυναπτόμενα αρχεία.</p>';
