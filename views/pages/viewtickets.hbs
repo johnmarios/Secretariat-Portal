@@ -29,7 +29,7 @@
 
     {{#unless isStudent}}
       <div id="unassigned" class="tab-content" style="display: block;">
-        {{> unc_tickets_table tickets=unassignedTickets title="Μη Εκχωρημένα Αιτήματα"}}
+        {{> unc_tickets_table tickets=unassignedTickets title="Μη Εκχωρημένα Αιτήματα" isLeader=isLeader secretaries=secretaries}}
       </div>
       <div id="my-tickets" class="tab-content" style="display: none;">
         {{> my_tickets_table tickets=myTickets title="Τα Αιτήματά Μου"}}
@@ -56,6 +56,6 @@
 
 </div>
 
-{{> ticketModal}}
+<div id="modalRoot"></div>
 
 <script src="/js/pages/viewtickets.js"></script>

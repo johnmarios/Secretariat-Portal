@@ -1,82 +1,86 @@
-<div class="modal-overlay open ticket-modal-overlay" id="modalSpec" role="dialog" aria-modal="true" aria-labelledby="modalSpecTitle">
-  <div class="ticket-modal-shell">
-    <div class="ticket-modal-header">
-      <div class="ticket-modal-title-block">
-        <p class="ticket-modal-id">#{{ticket_id}} - {{firstMessage.message_subject}}</p>
+<div class="modal-overlay" id="ticketModal">
+    <div class="modal-nav">
+      <button class="close-btn" id="closeModalBtn"></button>
+    </div>
+    <div class="modal-content">
+      
+      <div class="modal-col col-white">
+        
+        <div class="info-group">
+          <span class="label">ID:</span>
+          <span class="value" id="modal-id">-</span>
+        </div>
+        <div class="info-group">
+          <span class="label">Ημερομηνία Υποβολής:</span>
+          <span class="value" id="modal-date">-</span>
+        </div>
+        <div class="info-group">
+          <span class="label">Κατηγορία:</span>
+          <span class="value fw-bold" id="modal-category">-</span>
+        </div>
+        <div class="info-group">
+          <span class="label">Θέμα:</span>
+          <span class="value" id="modal-subject">-</span>
+        </div>
+        <div class="info-group">
+          <span class="label">Επισυναπτόμενα αρχεία:</span>
+          <div class="file-list student-file-list" id="modal-attachments" aria-live="polite"></div>
+        </div>
       </div>
-      <button class="close-btn ticket-modal-close" id="closeModalBtn" type="button" aria-label="Κλείσιμο">×</button>
-    </div>
 
-    <div class="ticket-modal-body">
-      <section class="ticket-modal-panel ticket-modal-panel-left">
-        <div class="ticket-left-card">
-          <div class="ticket-meta-row">
-            <span class="label">ID:</span>
-            <span class="value">#{{ticket_id}}</span>
-          </div>
-          <div class="ticket-meta-row">
-            <span class="label">Ημερομηνία Υποβολής:</span>
-            <span class="value">{{firstMessage.created_at}}</span>
-          </div>
-          <div class="ticket-meta-row">
-            <span class="label">Κατηγορία:</span>
-            <span class="value">{{category_name}}</span>
-          </div>
-
-          {{> studentCard}}
+      <div class="modal-col col-gray">
+        <div class="info-group">
+          <span class="label">Ονοματεπώνυμο:</span>
+          <span class="value" id="modal-student">-</span>
         </div>
-      </section>
-
-      <section class="ticket-modal-panel ticket-modal-panel-middle ticket-middle-panel">
-        <div class="ticket-modal-section ticket-modal-section--flat">
-          <p class="ticket-modal-kicker">Θέμα</p>
-          <h2 class="ticket-modal-heading">{{firstMessage.message_subject}}</h2>
+        <div class="info-group">
+          <span class="label">Α.Μ.:</span>
+          <span class="value" id="modal-am">-</span>
         </div>
-
-        <div class="ticket-modal-section ticket-modal-section--flat">
-          <p class="ticket-modal-kicker">Περιγραφή αρχικού αιτήματος</p>
-          <div class="ticket-description-box ticket-description-box--auto">
-            <div class="ticket-description-scroll">
-              {{firstMessage.message_description}}
-            </div>
-          </div>
+        <div class="info-group">
+          <span class="label">Email:</span>
+          <span class="value" id="modal-email">-</span>
         </div>
-
-        <div class="ticket-modal-section ticket-modal-section--flat">
-          <p class="ticket-modal-kicker">Επισυναπτόμενα αρχεία (αίτημα)</p>
-          <div class="ticket-attachments-shell">
-            {{> fileList attachments=firstMessageAttachments}}
-          </div>
+        <div class="info-group">
+          <span class="label">Σχολή / Τμήμα:</span>
+          <span class="value">Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών</span> </div>
+        <div class="info-group">
+          <span class="label">Έτος Σπουδών:</span>
+          <span class="value study-year" id="modal-year">-</span>
         </div>
-      </section>
+      </div>
 
-      <section class="ticket-modal-panel ticket-modal-panel-right">
-        <div class="ticket-actions-card">
-          <p class="ticket-modal-kicker">Προωθημένα Μηνύματα</p>
-          {{#if internalMessages.length}}
-            {{#each internalMessages}}
-              <div class="internal-message-card">
-                <p class="internal-kicker">Σχόλιο Γραμματείας</p>
-                <div class="internal-body">{{this.message_description}}</div>
-                <div class="mt-2">
-                  {{> fileList attachments=this.attachments}}
-                </div>
-              </div>
-            {{/each}}
-          {{else}}
-            <p class="text-muted">Δεν βρέθηκαν προωθημένα μηνύματα.</p>
-          {{/if}}
-
-          <div style="display:flex; gap:10px; margin-top:16px;">
-            <form method="POST" action="/leader-view-ticket/ticket/{{ticket_id}}/accept" style="flex:1;">
-              <button type="submit" class="btn btn-success w-100">Ανάληψη</button>
+      <div class="modal-col col-white">
+      
+        <div class="info-group">
+          <span class="label">Περιγραφή αιτήματος:</span>
+          <div class="description-box" id="modal-description" style="padding: 10px; overflow-y: auto;">-</div>
+        </div>
+        
+        <form id="modalAssignForm" method="POST" action="" style="display: none; margin-top: auto; padding-top: 10px;">
+          <button type="submit" class="btn btn-primary w-100" style="padding: 9px; font-weight: bold;">Ανάληψη</button>
+        </form>
+      </div>
+      
+      <div class="modal-col col-gray" id="modal-internal-col" style="display: none; border-left: 1px solid #eee; background-color: #fff9e6;">
+        <div class="info-group">
+          <span class="label">Σχόλιο Γραμματείας:</span>
+          <div class="description-box" id="modal-internal-desc" style="padding: 10px; overflow-y: auto; border-color: #ffd700;">-</div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: auto; padding-top: 20px;">
+            <form id="modalAcceptEscalatedForm" method="POST" style="flex: 1;">
+               <button type="submit" class="btn btn-success w-100" style="padding: 12px; font-weight: bold;">
+                  Ανάληψη
+               </button>
             </form>
-            <form method="POST" action="/leader-view-ticket/ticket/{{ticket_id}}/reject" style="flex:1;">
-              <button type="submit" class="btn btn-danger w-100">Απόρριψη</button>
+            <form id="modalRejectEscalatedForm" method="POST" style="flex: 1;">
+               <button type="submit" class="btn btn-danger w-100" style="padding: 12px; font-weight: bold;">
+                  Απόρριψη
+               </button>
             </form>
-          </div>
         </div>
-      </section>
+      </div>
+
     </div>
-  </div>
 </div>

@@ -420,25 +420,16 @@ export const renderLeaderViewTicketPage = async (req, res) => {
                 created_at: message.created_at
             };
         });
-        // prepare internal messages (those marked internal) for leader modal
-        const internalMessages = formattedMessages.filter(m => Number(m.is_internal) === 1 || m.is_internal === true);
+        const internalMessages = allMessages
+            .filter(m => Number(m.is_internal) === 1 || m.is_internal === true)
+            .map(message => ({
+                ...message,
+                attachments: attachmentsMap.get(message.message_id) || [],
+            }));
 
         // If the request asked for a modal fragment, render the modalSpec partial
         if (req.query && req.query.modal) {
-            return res.render('pages/modalSpec', {
-                ticket_id,
-                ticket: { status: ticketStatusMapped },
-                ticketStatusRaw,
-                categoryTheme,
-                category_name,
-                student: buildStudent(studentRow),
-                studentId: studentRow.student_id,
-                firstMessage,
-                firstMessageAttachments,
-                messages: formattedMessages,
-                internalMessages,
-                messagesCount: formattedMessages.length + 1
-            });
+            return res.render('pages/modalSpec', { layout: false });
         }
 
         return res.render('pages/leaderViewTicket', {
@@ -952,6 +943,7 @@ export const getLeaderTickets = async (req, res) => {
             }));
     
             // Render στο ΙΔΙΟ hbs αρχείο, αλλά με isLeader: true
+            const leaderDisplayName = [req.user.first_name, req.user.last_name].filter(Boolean).join(' ').trim() || 'Προϊστάμενος';
             return res.render('pages/viewtickets', {
                 title: 'Πίνακας Ελέγχου - Προϊστάμενος',
                 bodyClass: 'ticket-list',
@@ -961,7 +953,10 @@ export const getLeaderTickets = async (req, res) => {
                 unassignedTickets, 
                 myTickets,
                 escalatedTickets, // <--- ΠΡΟΣΘΗΚΗ
-                allAssignedTickets          
+                allAssignedTickets,
+                secretaries: await db.getSecretariesForAssignment(),
+                leaderSecretaryId: req.user.secretary_id,
+                leaderDisplayName
             });
         } catch (error) {
             console.error('Σφάλμα φόρτωσης:', error);
@@ -985,22 +980,27 @@ export const renderUnassignedTicketModal = async (req, res) => {
             return res.status(404).send('Δεν βρέθηκε μη εκχωρημένο αίτημα');
         }
 
-        return res.render('modalGen', {
-            layout: false,
-            title: `#${modalData.ticket_id} - ${modalData.ticket.subject}`,
-            ...modalData,
-        });
+        const isLeader = req.user?.role === 'leader' || req.user?.is_leader === 1;
+
+        if (isLeader) {
+            return res.render('pages/modalLeader', { layout: false });
+        }
+
+        return res.render('pages/modalGen', { layout: false });
     } catch (error) {
         console.error('Error loading unassigned ticket modal:', error);
         return res.status(500).send('Σφάλμα κατά τη φόρτωση του αιτήματος');
     }
 };
 
+
 export const assignTicket = async (req, res) => {
     // ... (Η λογική του router.post('/tickets/assign/:id'))
     const ticketId = req.params.id;
-        // ΕΔΩ: Χρησιμοποιούμε το secretary_id (π.χ. το 1 της Μαρίας) για την ενημέρωση του πίνακα TICKET
-        const secId = req.user.secretary_id; 
+        const selectedSecretaryId = Number(req.body.secretary_id || req.user.secretary_id);
+        if (!Number.isInteger(selectedSecretaryId) || selectedSecretaryId < 1) {
+            return res.status(400).send('Μη έγκυρη ανάθεση γραμματέα');
+        }
     
         try {
             const query = `
@@ -1010,7 +1010,7 @@ export const assignTicket = async (req, res) => {
                 WHERE ticket_id = ?
             `;
             
-            await dbPool.execute(query, [secId, ticketId]);
+            await dbPool.execute(query, [selectedSecretaryId, ticketId]);
             if (req.user.is_leader === 0){
                 res.redirect('/secretary_viewtickets');
             } 
@@ -1052,23 +1052,36 @@ export const getTicketDetailsAPI = async (req, res) => {
         const [internalRows] = await dbPool.execute(queries.getInternalMessageByTicketId, [ticketId]);
         const internalMessage = internalRows[0] || null;
 
+        const isLeader = req.user?.role === 'leader' || req.user?.is_leader === 1;
+        let secretaries = [];
+        let leaderSecretaryId = null;
+        let leaderDisplayName = null;
+
+        if (isLeader && req.user?.secretary_id) {
+            secretaries = await db.getSecretariesForAssignment();
+            leaderSecretaryId = req.user.secretary_id;
+            leaderDisplayName = [req.user.first_name, req.user.last_name].filter(Boolean).join(' ').trim() || 'Προϊστάμενος';
+        }
+
         res.json({
             success: true,
             ticketId: ticketId,
             subject: message?.message_subject || '-',
             description: message?.message_description || '-',
-            category: categoryTheme?.category_name || '-', 
-            studentName: student ? `${student.first_name} ${student.last_name}` : '-', 
-            studentAm: student?.student_am || '-',         
+            category: categoryTheme?.category_theme || categoryTheme?.category_name || '-',
+            studentName: student ? `${student.first_name} ${student.last_name}` : '-',
+            studentAm: student?.student_am || '-',
             studentEmail: student?.email || '-',
             enrollmentYear: student?.enrollment_year || '-',
-            date: message?.created_at ? new Date(message.created_at).toLocaleDateString('el-GR') : '-', 
+            date: message?.created_at ? new Date(message.created_at).toLocaleDateString('el-GR') : '-',
             attachments: attachments,
-            // ---> ΝΕΟ: Στέλνουμε το Internal Message <---
             internalMessage: internalMessage ? {
                 author: `${internalMessage.first_name} ${internalMessage.last_name}`,
                 text: internalMessage.message_description
-            } : null
+            } : null,
+            secretaries,
+            leaderSecretaryId,
+            leaderDisplayName
         });
     } catch (error) {
         console.error("Σφάλμα API Modal:", error);

@@ -144,6 +144,14 @@ export const getCategoryThemeByTicketId = `
     LIMIT 1
 `;
 
+export const getSecretariesForAssignment = `
+    SELECT sec.secretary_id, u.first_name, u.last_name
+    FROM SECRETARY sec
+    JOIN USER u ON u.user_id = sec.for_id
+    WHERE sec.is_leader = 0
+    ORDER BY u.first_name ASC, u.last_name ASC
+`;
+
 export const getAttachmentsByMessageId = `
     SELECT file_name, file_path, file_size, file_type, for_message_id FROM ATTACHMENT
     WHERE for_message_id = ?

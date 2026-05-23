@@ -12,7 +12,7 @@
         </thead>
         <tbody>
             {{#each tickets}}
-            <tr data-ticket-id="{{this.id}}" data-modal-url="/leader-view-ticket/ticket/{{this.id}}?modal=1">
+            <tr data-ticket-id="{{this.id}}" data-modal-url="/tickets/leader-view-ticket/ticket/{{this.id}}?modal=1" data-modal-type="escalated">
                 <td>{{this.id}}</td>
                 <td>{{this.am}}</td>
                 <td>{{this.category}}</td>

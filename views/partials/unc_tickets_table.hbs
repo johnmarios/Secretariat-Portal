@@ -3,31 +3,49 @@
 {{/if}} --}}
 <link rel="stylesheet" href="/css/pages/viewtickets.css">
 
-<table class="requests-table" >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Α.Μ.</th>
-            <th>Κατηγορία</th>
-            <th>Θέμα</th>
-            <th>Ημερομηνία Υποβολής</th>
-            <th>Κατάσταση</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each tickets}}
-          <tr data-ticket-id="{{this.id}}">
-            <td>{{this.id}}</td>
-            <td>{{this.am}}</td>
-            <td>{{this.category}}</td>
-            <td>{{this.subject}}</td>
-            <td>{{this.submittedAt}}</td>
-            <td>
-                <span class="status {{this.statusClass}}">
-                    <span class="dot"></span> {{this.status}}
-                </span>
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
+<table class="requests-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Α.Μ.</th>
+      <th>Κατηγορία</th>
+      <th>Θέμα</th>
+      <th>Ημερομηνία Υποβολής</th>
+      <th>Κατάσταση</th>
+      <th>Ανάθεση</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each tickets}}
+      <tr data-ticket-id="{{this.id}}" data-modal-url="{{#if ../isLeader}}/tickets/leader-unassigned-ticket-modal/{{this.id}}{{else}}/tickets/unassigned-ticket-modal/{{this.id}}{{/if}}" data-modal-type="{{#if ../isLeader}}leader{{else}}secretary{{/if}}">
+        <td>{{this.id}}</td>
+        <td>{{this.am}}</td>
+        <td>{{this.category}}</td>
+        <td>{{this.subject}}</td>
+        <td>{{this.submittedAt}}</td>
+        <td>
+          <span class="status {{this.statusClass}}">
+            <span class="dot"></span> {{this.status}}
+          </span>
+        </td>
+        <td>
+          {{#if ../isLeader}}
+            <form action="/tickets/assign/{{this.id}}" method="POST" class="d-flex gap-2 align-items-center leader-assign-form">
+              <select name="secretary_id" class="form-select form-select-sm leader-secretary-select" required>
+                <option value="{{../leaderSecretaryId}}" selected>{{../leaderDisplayName}}</option>
+                {{#each ../secretaries}}
+                  <option value="{{this.secretary_id}}">{{this.first_name}} {{this.last_name}}</option>
+                {{/each}}
+              </select>
+              <button type="submit" class="btn btn-sm btn-primary">Ανάληψη</button>
+            </form>
+          {{else}}
+            <form action="/tickets/assign/{{this.id}}" method="POST" class="d-inline">
+              <button type="submit" class="btn btn-sm btn-primary">Ανάληψη</button>
+            </form>
+          {{/if}}
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
 </table>

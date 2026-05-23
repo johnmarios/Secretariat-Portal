@@ -121,7 +121,10 @@ export async function getCategoryThemeByTicketId(ticket_id) {
     const [rows] = await pool.query(sql.getCategoryThemeByTicketId, [ticket_id]);
     return rows[0];
 }
-
+export async function getSecretariesForAssignment() {
+    const [rows] = await pool.query(sql.getSecretariesForAssignment);
+    return rows;
+}
 export async function getAttachmentsByMessageId(message_id) {
     const [rows] = await pool.query(sql.getAttachmentsByMessageId, [message_id]);
     return rows;
