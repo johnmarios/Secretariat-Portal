@@ -444,7 +444,10 @@ export const renderLeaderViewTicketPage = async (req, res) => {
             firstMessage,
             firstMessageAttachments,
             messages: formattedMessages,
-            messagesCount: formattedMessages.length + 1
+            messagesCount: formattedMessages.length + 1,
+            secretaries: await db.getSecretariesForAssignment(),
+            leaderSecretaryId: req.user.secretary_id,
+            leaderDisplayName: [req.user.first_name, req.user.last_name].filter(Boolean).join(' ').trim() || 'Προϊστάμενος'
         });
     } catch (error) {
         console.error('Error rendering leader view ticket page:', error);
