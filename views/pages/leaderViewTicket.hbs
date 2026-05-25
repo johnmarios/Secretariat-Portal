@@ -64,7 +64,7 @@
 
                     <div class="action-block">
                         <label for="status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</label>
-                        <select id="status" name="status" class="form-control" data-current="{{ticketStatusRaw}}">
+                        <select id="status" name="status" class="form-control" data-current="{{ticketStatusRaw}}" data-allow-closed-edit="1">
                             <option value="in_progress">Σε Εξέλιξη</option>
                             <option value="pending">Σε Αναμονή</option>
                             <option value="resolved">Ολοκληρωμένο</option>
@@ -115,14 +115,4 @@
     </section>
 </main>
 <script src="/js/partials/fileAttachment.js" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-    try{
-        const sel = document.getElementById('status');
-        if(sel){
-            const current = sel.dataset.current;
-            if(current) sel.value = current;
-        }
-    }catch(e){console.error(e)}
-});
-</script>
+<script src="/js/pages/viewTicket.js" defer></script>

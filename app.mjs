@@ -9,11 +9,11 @@ import session from 'express-session';
 import passport from 'passport';
 
 // 2. Τοπικά Αρχεία (Προσέχουμε τις καταλήξεις!)
-import configurePassport from './config/passport.mjs'; 
+import configurePassport from './config/passport.mjs';
 import pageRouter from './routes/pageRoutes.mjs';
 import authRouter from './routes/authRoutes.mjs';
-// import studentRoutes from './routes/studentRoutes.js'; 
-import createTicketRouter from './routes/createTicket.mjs'; 
+import dashboardRouter from './routes/dashboardRoutes.mjs';
+import ticketRouter from './routes/ticketRoutes.mjs';
 import helpers from './controllers/helpers.mjs';
 
 const __filename = fileURLToPath(import.meta.url); 
@@ -72,10 +72,10 @@ function createApp() {
     app.set('views', resolve(__dirname, 'views'));
 
     // Σύνδεση των Routes
-    app.use('/', pageRouter);
     app.use('/api', authRouter);
-    app.use('/tickets', createTicketRouter); 
-    // app.use('/api/students', studentRoutes); // Σύνδεσέ το κι αυτό αν το χρειάζεσαι κάπου!
+    app.use('/', pageRouter);
+    app.use('/', dashboardRouter);
+    app.use('/tickets', ticketRouter);
 
     return app;
 }

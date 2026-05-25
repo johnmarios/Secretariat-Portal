@@ -1,68 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modalRoot = document.getElementById('modalRoot');
+    const { renderAttachmentList } = window.AttachUtils;
     let escapeHandler = null;
-
-    const escapeHtml = (value) => String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-
-    const formatFileSize = (bytes) => {
-        if (bytes == null || Number.isNaN(Number(bytes))) return '';
-        const size = Number(bytes);
-        if (size < 1024) return `${size} B`;
-        const kb = size / 1024;
-        if (kb < 1024) return `${Math.round(kb)} KB`;
-        return `${(kb / 1024).toFixed(1)} MB`;
-    };
-
-    const fileLabel = (fileName, fileType) => {
-        if (fileName) {
-            const ext = String(fileName).split('.').pop();
-            if (ext && ext.length <= 5) return ext.toUpperCase();
-        }
-        if (fileType) {
-            if (fileType.includes('pdf')) return 'PDF';
-            if (fileType.includes('word') || fileType.includes('msword')) return 'DOC';
-            if (fileType.includes('image')) return 'IMG';
-        }
-        return 'FILE';
-    };
-
-    // 1. Το Helper που καθαρίζει το όνομα (ακριβώς όπως στο HBS)
-    const basename = (value) => {
-        if (!value) return '';
-        return String(value).replace(/\\/g, '/').split('/').pop();
-    };
-
-    // 2. Το Helper που φτιάχνει το σωστό URL (ακριβώς όπως στο HBS)
-    const attachmentUrl = (filePath) => {
-        if (!filePath) return '#';
-        const cleanedPath = String(filePath).replace(/\\/g, '/').replace(/^\/?public/, '');
-        return `/files/${cleanedPath.split('/').pop()}`;
-    };
-
-    // 3. Η συνάρτηση που χτίζει την HTML
-    const renderAttachmentList = (attachments) => {
-        if (!Array.isArray(attachments) || attachments.length === 0) {
-            return '<p class="file-empty-state">Δεν υπάρχουν επισυναπτόμενα αρχεία.</p>';
-        }
-
-        return attachments.map(file => `
-      <div class="file-item">
-        <div class="file-item-icon">${escapeHtml(fileLabel(file.file_name, file.file_type))}</div>
-        <div class="file-item-info">
-          <p class="file-item-name">${escapeHtml(basename(file.file_name))}</p>
-          <p class="file-item-size">${escapeHtml(formatFileSize(file.file_size))}</p>
-        </div>
-        <a href="${escapeHtml(attachmentUrl(file.file_path))}" class="attachment-download" aria-label="Download attachment" download="${escapeHtml(basename(file.file_name))}" data-file-path="${escapeHtml(file.file_path)}" target="_blank" rel="noopener noreferrer">
-          <img src="/images/file-download-svgrepo-com.svg" alt="Download">
-        </a>
-      </div>
-    `).join('');
-    };
 
     const closeModal = () => {
         if (escapeHandler) {

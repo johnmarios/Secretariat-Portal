@@ -1,0 +1,157 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import dbPool from '../../model/db.js';
+import * as queries from '../../model/queries.mjs';
+
+const parseTicketId = (req, res) => {
+    const ticket_id = Number(req.params.ticket_id);
+    if (!Number.isInteger(ticket_id) || ticket_id < 1) {
+        res.status(400).send('Μη έγκυρος αριθμός αιτήματος');
+        return null;
+    }
+    return ticket_id;
+};
+
+// Shared transactional helper: deletes internal messages + attachments for a
+// ticket and updates the ticket's status. Used by both leader accept and reject.
+const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
+    const conn = await dbPool.getConnection();
+    try {
+        await conn.beginTransaction();
+
+        const [attachmentRows] = await conn.execute(
+            `SELECT A.file_path FROM ATTACHMENT A
+             JOIN MESSAGE M ON A.for_message_id = M.message_id
+             WHERE M.for_ticket_id = ? AND M.is_internal = 1`,
+            [ticketId]
+        );
+
+        const [delAttRes] = await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticketId]);
+        const [delMsgRes] = await conn.execute(queries.deleteInternalMessagesByTicketId, [ticketId]);
+        const [updRes] = await conn.execute('UPDATE TICKET SET status = ? WHERE ticket_id = ?', [
+            newStatus,
+            ticketId,
+        ]);
+
+        await conn.commit();
+
+        for (const row of attachmentRows) {
+            try {
+                const p = row.file_path || row.filePath || row.fileName;
+                if (!p) continue;
+                const full = path.isAbsolute(p) ? p : path.join(process.cwd(), p);
+                if (fs.existsSync(full)) fs.unlinkSync(full);
+            } catch (e) {
+                console.warn('Failed to delete attachment file:', e.message);
+            }
+        }
+
+        console.log(
+            `${logLabel} ticket ${ticketId}: deleted attachments=${delAttRes.affectedRows}, messages=${delMsgRes.affectedRows}, updated=${updRes.affectedRows}`
+        );
+    } catch (err) {
+        await conn.rollback();
+        throw err;
+    } finally {
+        conn.release();
+    }
+};
+
+export const assignTicket = async (req, res) => {
+    const ticketId = req.params.id;
+    const selectedSecretaryId = Number(req.body.secretary_id || req.user.secretary_id);
+    if (!Number.isInteger(selectedSecretaryId) || selectedSecretaryId < 1) {
+        return res.status(400).send('Μη έγκυρη ανάθεση γραμματέα');
+    }
+
+    try {
+        await dbPool.execute(
+            `UPDATE TICKET
+             SET status = 'in_progress', for_secretary_id = ?
+             WHERE ticket_id = ?`,
+            [selectedSecretaryId, ticketId]
+        );
+
+        if (req.user.is_leader === 1) {
+            return res.redirect('/leader_viewtickets');
+        }
+        return res.redirect('/secretary_viewtickets');
+    } catch (error) {
+        console.error('Σφάλμα κατά την ανάληψη:', error);
+        res.status(500).send('Αποτυχία ανάληψης αιτήματος.');
+    }
+};
+
+export const submitLeaderAccept = async (req, res) => {
+    try {
+        const ticket_id = parseTicketId(req, res);
+        if (ticket_id === null) return;
+
+        await finalizeEscalation({
+            ticketId: ticket_id,
+            newStatus: 'in_progress',
+            logLabel: 'Leader accepted',
+        });
+        return res.redirect('/leader_viewtickets');
+    } catch (err) {
+        console.error('Error accepting escalated ticket:', err);
+        return res.status(500).send('Operation failed');
+    }
+};
+
+export const submitLeaderReject = async (req, res) => {
+    try {
+        const ticket_id = parseTicketId(req, res);
+        if (ticket_id === null) return;
+
+        await finalizeEscalation({
+            ticketId: ticket_id,
+            newStatus: 'pending',
+            logLabel: 'Leader rejected',
+        });
+        return res.redirect('/leader_viewtickets');
+    } catch (err) {
+        console.error('Error rejecting escalated ticket:', err);
+        return res.status(500).send('Operation failed');
+    }
+};
+
+const getFilesFromFolder = () => {
+    const directoryPath = path.join(process.cwd(), 'public', 'files');
+    if (!fs.existsSync(directoryPath)) return [];
+    return fs.readdirSync(directoryPath).map((fileName) => ({
+        fileName,
+        filePath: path.join(directoryPath, fileName),
+    }));
+};
+
+export const clearDuplicateFiles = async (req, res) => {
+    try {
+        const files = getFilesFromFolder();
+        const seen = new Map();
+        const deletedFiles = [];
+
+        for (const file of files) {
+            const stats = fs.statSync(file.filePath);
+            const canonicalName = file.fileName.replace(/-\d+-\d+(\.[^.]+)$/, '$1');
+            const duplicateKey = `${canonicalName}-${stats.size}`;
+
+            if (seen.has(duplicateKey)) {
+                fs.unlinkSync(file.filePath);
+                deletedFiles.push(file.fileName);
+            } else {
+                seen.set(duplicateKey, true);
+            }
+        }
+
+        return res.json({
+            ok: true,
+            scanned: files.length,
+            deleted: deletedFiles.length,
+            deletedFiles,
+        });
+    } catch (error) {
+        console.error('Error clearing duplicate files:', error);
+        return res.status(500).json({ ok: false, error: error.message });
+    }
+};
