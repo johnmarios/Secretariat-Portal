@@ -2,13 +2,14 @@
 // 1. AUTH & USER QUERIES
 // ==========================================
 
-export const getUserByEmailAndPassword = `
-    SELECT u.user_id, u.first_name, u.last_name, u.email,
+// Returns user including password hash so we can verify with bcrypt.compare.
+export const getUserByEmail = `
+    SELECT u.user_id, u.first_name, u.last_name, u.email, u.password,
            s.student_id, sec.secretary_id, sec.is_leader
     FROM USER u
     LEFT JOIN STUDENT s ON u.user_id = s.for_id
     LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
-    WHERE u.email = ? AND u.password = ?
+    WHERE u.email = ?
 `;
                 
 export const getUserById = `
@@ -111,10 +112,16 @@ export const getFirstMessageByTicketId = `
     LIMIT 1
 `;
 
+// TICKET.for_student_id is STUDENT.student_id, but MESSAGE.for_user_id is USER.user_id.
+// We have to map student_id -> user_id via the STUDENT table to compare correctly.
 export const getRestStudentMessagesByTicketId = `
     SELECT * FROM MESSAGE
     WHERE for_ticket_id = ?
-        AND for_user_id = (SELECT for_student_id FROM TICKET WHERE ticket_id = ?)
+        AND for_user_id = (
+            SELECT s.for_id
+            FROM TICKET t JOIN STUDENT s ON s.student_id = t.for_student_id
+            WHERE t.ticket_id = ?
+        )
         AND message_id > (
             SELECT message_id FROM MESSAGE WHERE for_ticket_id = ? ORDER BY message_id ASC LIMIT 1
         )
@@ -123,7 +130,12 @@ export const getRestStudentMessagesByTicketId = `
 
 export const getSecretaryMessagesByTicketId = `
     SELECT * FROM MESSAGE
-    WHERE for_ticket_id = ? AND for_user_id != (SELECT for_student_id FROM TICKET WHERE ticket_id = ?)
+    WHERE for_ticket_id = ?
+        AND for_user_id != (
+            SELECT s.for_id
+            FROM TICKET t JOIN STUDENT s ON s.student_id = t.for_student_id
+            WHERE t.ticket_id = ?
+        )
     ORDER BY message_id ASC
 `;
 

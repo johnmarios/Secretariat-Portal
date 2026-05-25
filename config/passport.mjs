@@ -1,4 +1,5 @@
 import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcryptjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -12,16 +13,22 @@ export default function configurePassport(passport) {
         { usernameField: 'email', passwordField: 'password' },
         async (email, password, done) => {
             try {
-                // Επειδή κάναμε * as queries, το καλούμε έτσι:
-                const query = sql.getUserByEmailAndPassword;
-                const [rows] = await dbPool.execute(query, [email, password]);
+                const [rows] = await dbPool.execute(sql.getUserByEmail, [email]);
 
                 if (rows.length === 0) {
                     return done(null, false, { message: 'Λάθος email ή κωδικός.' });
                 }
 
                 const user = rows[0];
-                if (user.student_id) user.role = 'student'; 
+                const passwordMatches = await bcrypt.compare(password, user.password);
+                if (!passwordMatches) {
+                    return done(null, false, { message: 'Λάθος email ή κωδικός.' });
+                }
+
+                // Don't keep the password hash on req.user / in the session.
+                delete user.password;
+
+                if (user.student_id) user.role = 'student';
                 else if (user.secretary_id) user.role = user.is_leader ? 'leader' : 'secretary';
                 else user.role = 'unknown';
 

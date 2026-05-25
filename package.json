@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.mjs",
     "watch": "nodemon index.mjs",
+    "create": "node model/dbCreate.js",
     "seed": "node model/dbFill.js"
   },
   "keywords": [],

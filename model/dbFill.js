@@ -1,4 +1,8 @@
-import { faker } from '@faker-js/faker';
+import { fakerEL as faker } from '@faker-js/faker';
+import bcrypt from 'bcryptjs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import dbPool from './db.js';
 
 faker.seed(20260523);
@@ -6,23 +10,87 @@ faker.seed(20260523);
 const TARGET_STUDENTS = 1200;
 const TARGET_TICKETS = 1000;
 
+// 8 rounds keeps seeding fast (~10s for ~1200 users) while staying compatible
+// with the 10-round hashes produced by the register controller — bcrypt.compare
+// works regardless of the cost factor used to create the hash.
+const BCRYPT_ROUNDS = 8;
+
 const ENROLLMENT_BOUNDS = {
     undergrad: { min: 2018, max: 2026 },
     postgrad: { min: 2022, max: 2026 },
     phd: { min: 2018, max: 2026 },
 };
 
-const CATEGORIES = [
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const CREDENTIALS_PATH = path.join(__dirname, '..', 'seed-credentials.txt');
+const FILES_DIR = path.join(__dirname, '..', 'public', 'files');
+
+// Conversation generation knobs
+const MAX_MESSAGES_PER_TICKET = 10;
+const INITIAL_ATTACHMENT_PROB = 0.4;
+const REPLY_ATTACHMENT_PROB = 0.2;
+
+// Filled in at startup from public/files
+let fileBank = [];
+
+async function loadFileBank() {
+    try {
+        const entries = await fs.readdir(FILES_DIR);
+        const pdfs = entries.filter((name) => name.toLowerCase().endsWith('.pdf'));
+        const stats = await Promise.all(
+            pdfs.map(async (name) => {
+                const stat = await fs.stat(path.join(FILES_DIR, name));
+                return {
+                    file_name: name,
+                    file_path: `/public/files/${name}`,
+                    file_size: stat.size,
+                    file_type: 'application/pdf',
+                };
+            })
+        );
+        console.log(`Φορτώθηκαν ${stats.length} αρχεία από το ${path.relative(process.cwd(), FILES_DIR)}.`);
+        return stats;
+    } catch (error) {
+        console.warn(`Δεν φορτώθηκαν αρχεία από ${FILES_DIR}: ${error.message}`);
+        return [];
+    }
+}
+
+// Mirrors the CATEGORY rows in model/data.sql, so a fresh `npm run seed`
+// is fully self-contained (no need to run data.sql).
+const FALLBACK_CATEGORIES = [
     ['cert_enrollment', 'Βεβαιώσεις και Πιστοποιητικά', 'Βεβαίωση Σπουδών'],
     ['cert_transcript', 'Βεβαιώσεις και Πιστοποιητικά', 'Αναλυτική Βαθμολογία'],
+    ['cert_military', 'Βεβαιώσεις και Πιστοποιητικά', 'Πιστοποιητικό για Στρατολογική Χρήση'],
+    ['cert_tax', 'Βεβαιώσεις και Πιστοποιητικά', 'Βεβαίωση για Εφορία / Επίδομα Ενοικίου'],
+    ['cert_diploma_copy', 'Βεβαιώσεις και Πιστοποιητικά', 'Αντίγραφο Πτυχίου / Διπλώματος'],
     ['acad_registration', 'Ακαδημαϊκά Θέματα', 'Πρόβλημα με την Εγγραφή / Ανανέωση'],
     ['acad_courses', 'Ακαδημαϊκά Θέματα', 'Θέματα Δηλώσεων Μαθημάτων'],
+    ['acad_regarding', 'Ακαδημαϊκά Θέματα', 'Αίτηση Αναβαθμολόγησης'],
+    ['acad_exam_review', 'Ακαδημαϊκά Θέματα', 'Επανεξέταση Μαθήματος'],
+    ['acad_graduation', 'Ακαδημαϊκά Θέματα', 'Αίτηση για Ορκωμοσία / Λήψη Πτυχίου'],
     ['status_suspension', 'Φοιτητική Κατάσταση', 'Αναστολή Σπουδών'],
+    ['status_deletion', 'Φοιτητική Κατάσταση', 'Αίτηση Διαγραφής από το Τμήμα'],
+    ['status_transfer', 'Φοιτητική Κατάσταση', 'Θέματα Μετεγγραφών'],
+    ['status_pass', 'Φοιτητική Κατάσταση', 'Πρόβλημα με την Ακαδημαϊκή Ταυτότητα (Πάσο)'],
     ['general_query', 'Λοιπά Θέματα', 'Γενικό Ερώτημα / Πληροφορίες'],
 ];
 
+// Collected during seeding so we can dump everything to seed-credentials.txt
+const credentials = {
+    leader: null,
+    secretaries: [],
+    students: [],
+};
+
+function generatePassword() {
+    return faker.internet.password({ length: 12, memorable: false }); //allows special chars for better security 
+}
+
+// random pick of item from array
 const pick = (items) => items[faker.number.int({ min: 0, max: items.length - 1 })];
 
+// picks a value from an array of { value, weight } objects based on weights
 const pickWeighted = (items) => {
     const total = items.reduce((sum, item) => sum + item.weight, 0);
     let roll = faker.number.int({ min: 1, max: total });
@@ -30,25 +98,18 @@ const pickWeighted = (items) => {
         roll -= item.weight;
         if (roll <= 0) return item.value;
     }
-    return items.at(-1).value;
+    return items.at(-1).value; // fallback, should not happen if weights are correct
 };
 
+// generates an enrollment year based on student type, using ENROLLMENT_BOUNDS to ensure realistic values
 function enrollmentYearFor(type) {
     const bounds = ENROLLMENT_BOUNDS[type] || ENROLLMENT_BOUNDS.undergrad;
     return faker.number.int({ min: bounds.min, max: bounds.max });
 }
 
-function studentEmail(firstName, lastName, index) {
-    const slug = `${firstName}.${lastName}.${index}`
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/[^a-z0-9.]+/g, '.')
-        .replace(/\.+/g, '.')
-        .replace(/^\.+|\.+$/g, '');
-    return `${slug}@seeded.uni.gr`;
+function studentEmail(am) {
+    return `up${am}@ac.upatras.gr`;
 }
-
 async function resetDatabase() {
     await dbPool.query('SET FOREIGN_KEY_CHECKS = 0');
     await dbPool.query('TRUNCATE TABLE ATTACHMENT');
@@ -61,32 +122,66 @@ async function resetDatabase() {
     await dbPool.query('SET FOREIGN_KEY_CHECKS = 1');
 }
 
-async function insertUser(firstName, lastName, email, password = '123456') {
+async function insertUser(firstName, lastName, email, plainPassword) {
+    const hashedPassword = await bcrypt.hash(plainPassword, BCRYPT_ROUNDS);
     const [result] = await dbPool.query(
         'INSERT INTO USER (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
-        [firstName, lastName, email, password]
+        [firstName, lastName, email, hashedPassword]
     );
     return result.insertId;
 }
 
 async function seedCategories() {
-    for (const [id, theme, name] of CATEGORIES) {
+    for (const [id, theme, name] of FALLBACK_CATEGORIES) {
         await dbPool.query(
             'INSERT INTO CATEGORY (category_id, category_theme, category_name) VALUES (?, ?, ?)',
             [id, theme, name]
         );
     }
+    console.log(`Εισάχθηκαν ${FALLBACK_CATEGORIES.length} κατηγορίες.`);
+
+    const [rows] = await dbPool.query(
+        'SELECT category_id, category_theme, category_name FROM CATEGORY'
+    );
+    return rows;
 }
 
 async function seedStaff() {
-    const leaderId = await insertUser('Κώστας', 'Δημητρίου', 'leader1@uni.gr');
-    const secretaryId = await insertUser('Μαρία', 'Αντωνίου', 'secretary1@uni.gr');
-    const demoStudentUserId = await insertUser('Μάνος', 'Παπαπέτρου', 'student1@uni.gr');
+    const leaderPass = generatePassword();
+    const secretaryPass = generatePassword();
+    const demoStudentPass = generatePassword();
+
+    const leaderId = await insertUser('Κώστας', 'Δημητρίου', 'leader1@uni.gr', leaderPass);
+    const secretaryId = await insertUser('Μαρία', 'Αντωνίου', 'secretary1@uni.gr', secretaryPass);
+    const demoStudentUserId = await insertUser('Μάνος', 'Παπαπέτρου', 'student1@uni.gr', demoStudentPass);
+    // inserted a student here for debugging reasons 
+
+    credentials.leader = {
+        firstName: 'Κώστας',
+        lastName: 'Δημητρίου',
+        email: 'leader1@uni.gr',
+        password: leaderPass,
+    };
+    credentials.secretaries.push({
+        firstName: 'Μαρία',
+        lastName: 'Αντωνίου',
+        email: 'secretary1@uni.gr',
+        password: secretaryPass,
+    });
+    credentials.students.push({
+        firstName: 'Μάνος',
+        lastName: 'Παπαπέτρου',
+        email: 'student1@uni.gr',
+        password: demoStudentPass,
+        studentAm: '1091234',
+        type: 'undergrad',
+        enrollmentYear: 2019,
+    });
 
     await dbPool.query('INSERT INTO SECRETARY (is_leader, for_id) VALUES (?, ?)', [1, leaderId]);
     await dbPool.query('INSERT INTO SECRETARY (is_leader, for_id) VALUES (?, ?)', [0, secretaryId]);
 
-  await dbPool.query(
+    await dbPool.query(
         'INSERT INTO STUDENT (student_am, type, enrollment_year, for_id) VALUES (?, ?, ?, ?)',
         ['1091234', 'undergrad', 2019, demoStudentUserId]
     );
@@ -98,12 +193,15 @@ async function seedStaff() {
 
     const staff = [];
     for (const [firstName, lastName, email] of extraSecretaries) {
-        const userId = await insertUser(firstName, lastName, email, 'password123');
+        const password = generatePassword();
+        const userId = await insertUser(firstName, lastName, email, password);
         const [result] = await dbPool.query(
             'INSERT INTO SECRETARY (is_leader, for_id) VALUES (?, ?)',
             [0, userId]
         );
         staff.push({ secretary_id: result.insertId, for_id: userId });
+
+        credentials.secretaries.push({ firstName, lastName, email, password });
     }
 
     const [leaderRow] = await dbPool.query(
@@ -127,7 +225,10 @@ async function seedStudents(count) {
     for (let i = 0; i < count; i += 1) {
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
-        const userId = await insertUser(firstName, lastName, studentEmail(firstName, lastName, i + 1), 'password123');
+        const studentAm = String(1091235 + i);
+        const email = studentEmail(studentAm);
+        const password = generatePassword();
+        const userId = await insertUser(firstName, lastName, email, password);
 
         const type = pickWeighted([
             { value: 'undergrad', weight: 85 },
@@ -136,7 +237,6 @@ async function seedStudents(count) {
         ]);
 
         const enrollmentYear = enrollmentYearFor(type);
-        const studentAm = String(20250001 + i);
 
         const [result] = await dbPool.query(
             'INSERT INTO STUDENT (student_am, type, enrollment_year, for_id) VALUES (?, ?, ?, ?)',
@@ -150,6 +250,16 @@ async function seedStudents(count) {
             enrollment_year: enrollmentYear,
         });
 
+        credentials.students.push({
+            firstName,
+            lastName,
+            email,
+            password,
+            studentAm,
+            type,
+            enrollmentYear,
+        });
+
         if ((i + 1) % 200 === 0 || i + 1 === count) {
             console.log(`Φοιτητές: ${i + 1}/${count}`);
         }
@@ -158,8 +268,58 @@ async function seedStudents(count) {
     return students;
 }
 
-async function seedTickets(count, students, staff) {
-    const categoryIds = CATEGORIES.map(([id]) => id);
+// Returns `count` Date objects in ascending order between start and end,
+// roughly evenly spaced with some jitter. First element equals start.
+//start: starting date, end: ending date, count: number of timestamps to generate
+function generateMessageTimestamps(start, end, count) {
+    if (count <= 1) return [start];
+
+    const startMs = start.getTime();
+    const endMs = Math.max(end.getTime(), startMs + 1); // defensive check to avoid zero or negative span
+    const span = endMs - startMs;
+    const step = span / count;
+
+    const timestamps = [start];
+    for (let k = 1; k < count; k += 1) {
+        const base = startMs + step * k;
+        const jitter = faker.number.float({ min: -0.3, max: 0.3 }) * step;
+        const clamped = Math.max(startMs + 1, Math.min(endMs, base + jitter));
+        timestamps.push(new Date(clamped));
+    }
+    timestamps.sort((a, b) => a - b);
+    return timestamps;
+}
+
+async function insertMessageWithAttachment({
+    subject,
+    description,
+    createdAt,
+    userId,
+    ticketId,
+    isInternal,
+    attachProb,
+}) {
+    const [result] = await dbPool.query(
+        `INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [subject, description, createdAt, userId, ticketId, isInternal ? 1 : 0]
+    );
+    const messageId = result.insertId;
+
+    if (fileBank.length > 0 && faker.number.float({ min: 0, max: 1 }) < attachProb) {
+        const file = pick(fileBank);
+        await dbPool.query(
+            `INSERT INTO ATTACHMENT (file_name, file_path, file_size, file_type, for_message_id)
+             VALUES (?, ?, ?, ?, ?)`,
+            [file.file_name, file.file_path, file.file_size, file.file_type, messageId]
+        );
+    }
+
+    return messageId;
+}
+
+async function seedTickets(count, students, staff, categories) {
+    const categoryIds = categories.map((c) => c.category_id);
     const nonLeaderSecretaries = staff.secretaries;
 
     for (let i = 0; i < count; i += 1) {
@@ -176,40 +336,75 @@ async function seedTickets(count, students, staff) {
             { value: 'escalated', weight: 5 },
         ]);
 
+        // Only non-open tickets are assigned to a secretary
         const secretary = status === 'open' ? null : pick(nonLeaderSecretaries);
+
         const resolvedAt = ['resolved', 'closed'].includes(status)
             ? faker.date.between({ from: createdAt, to: new Date() })
             : null;
 
+        // ticket creation 
         const [ticketResult] = await dbPool.query(
             `INSERT INTO TICKET (status, created_at, resolved_at, for_student_id, for_secretary_id, for_category_id)
              VALUES (?, ?, ?, ?, ?, ?)`,
             [status, createdAt, resolvedAt, student.student_id, secretary?.secretary_id ?? null, categoryId]
         );
-
         const ticketId = ticketResult.insertId;
-        const subject = `Αίτημα για ${faker.lorem.words(3)}`;
-        const description = `${faker.lorem.sentences({ min: 2, max: 4 })}`;
 
-        await dbPool.query(
-            `INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [subject, description, createdAt, student.for_id, ticketId, 0]
-        );
+        // Conversation: initial student message, then alternating student/secretary replies.
+        // 'open' tickets have only the initial message since no secretary has picked them up.
 
+        //if status open: secretary: null
+        const messageCount = secretary
+            ? faker.number.int({ min: 1, max: MAX_MESSAGES_PER_TICKET })
+            : 1;
+
+        const conversationEnd = resolvedAt ?? new Date();
+        const timestamps = generateMessageTimestamps(createdAt, conversationEnd, messageCount);
+
+        for (let m = 0; m < messageCount; m += 1) {
+            // the first (m=0 is from student, the next from secretary, then alternating. This creates more natural conversations)
+            const isFromStudent = m % 2 === 0; // true/false 
+            // based on this we configure the author of the message 
+            const authorUserId = isFromStudent ? student.for_id : secretary.for_id;
+            const ts = timestamps[m]; // every message has its own timestamp
+
+            let subject;
+            let description;
+            let attachProb;
+
+            if (m === 0) {
+                subject = `Αίτημα για ${faker.lorem.words(3)}`;
+                description = faker.lorem.sentences({ min: 2, max: 4 });
+                attachProb = INITIAL_ATTACHMENT_PROB;
+            } else {
+                subject = null;
+                description = faker.lorem.sentences({ min: 1, max: 3 });
+                attachProb = REPLY_ATTACHMENT_PROB;
+            }
+
+            await insertMessageWithAttachment({
+                subject,
+                description,
+                createdAt: ts,
+                userId: authorUserId,
+                ticketId,
+                isInternal: false,
+                attachProb,
+            });
+        }
+
+        // Escalated tickets get an additional internal note from the secretary
         if (status === 'escalated' && secretary) {
-            await dbPool.query(
-                `INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
-                 VALUES (?, ?, ?, ?, ?, ?)`,
-                [
-                    'Εσωτερικό σχόλιο',
-                    faker.lorem.paragraph(),
-                    faker.date.soon({ days: 5, refDate: createdAt }),
-                    secretary.for_id,
-                    ticketId,
-                    1,
-                ]
-            );
+            await insertMessageWithAttachment({
+                subject: 'Εσωτερικό σχόλιο',
+                description: faker.lorem.paragraph(),
+                createdAt: faker.date.soon({ days: 5, refDate: createdAt }),
+                userId: secretary.for_id,
+                ticketId,
+                isInternal: true,
+                attachProb: REPLY_ATTACHMENT_PROB,
+            });
         }
 
         if ((i + 1) % 200 === 0 || i + 1 === count) {
@@ -227,6 +422,8 @@ async function printSummary() {
     const [[escalated]] = await dbPool.query(
         `SELECT COUNT(DISTINCT for_ticket_id) AS n FROM MESSAGE WHERE is_internal = 1`
     );
+    const [[messages]] = await dbPool.query('SELECT COUNT(*) AS n FROM MESSAGE');
+    const [[attachments]] = await dbPool.query('SELECT COUNT(*) AS n FROM ATTACHMENT');
 
     const [byType] = await dbPool.query(`
         SELECT type, MIN(enrollment_year) AS min_y, MAX(enrollment_year) AS max_y, COUNT(*) AS n
@@ -235,24 +432,57 @@ async function printSummary() {
 
     console.log('\n--- Σύνοψη ---');
     console.log(`Φοιτητές: ${students.n}, Αιτήματα: ${tickets.n}`);
-    console.log(`Μη εκχωρημένα: ${unassigned.n}, Προωθημένα (εσωτερικό μήνυμα): ${escalated.n}`);
-    console.log('Enrollment year ανά τύπο:');
+    console.log(`Μη εκχωρημένα: ${unassigned.n}, Προωθημένα: ${escalated.n}`);
+    console.log(`Μηνύματα: ${messages.n}, Επισυναπτόμενα: ${attachments.n}`);
+    console.log('Έτος εισαγωγής ανά είδος φοιτητή:');
     for (const row of byType) {
         const bounds = ENROLLMENT_BOUNDS[row.type];
-        console.log(`  ${row.type}: ${row.n} (${row.min_y}-${row.max_y}, όρια ${bounds.min}-${bounds.max})`);
+        console.log(`  ${row.type}: ${row.n} (${row.min_y}-${row.max_y}, αναμενόμενο: ${bounds.min}-${bounds.max})`);
     }
-    console.log('\nDemo logins (password: 123456):');
-    console.log('  student1@uni.gr | secretary1@uni.gr | leader1@uni.gr');
+    console.log(`\nΟι κωδικοί έχουν αποθηκευτεί στο: ${CREDENTIALS_PATH}`);
+}
+
+function formatSection(title, count) {
+    const heading = `${title} (${count})`;
+    const underline = '='.repeat(heading.length);
+    return `\n${heading}\n${underline}\n`;
+}
+
+async function writeCredentialsFile() {
+    const lines = [];
+    lines.push('Format: First Name | Last Name | email | password | AM | type | enrollment');
+
+    lines.push(formatSection('LEADER', credentials.leader ? 1 : 0));
+    if (credentials.leader) {
+        const { firstName, lastName, email, password } = credentials.leader;
+        lines.push(`${firstName} ${lastName} | ${email} | ${password}`);
+    }
+
+    lines.push(formatSection('SECRETARIES', credentials.secretaries.length));
+    for (const s of credentials.secretaries) {
+        lines.push(`${s.firstName} ${s.lastName} | ${s.email} | ${s.password}`);
+    }
+
+    lines.push(formatSection('STUDENTS', credentials.students.length));
+    for (const s of credentials.students) {
+        lines.push(
+            `${s.firstName} ${s.lastName} | ${s.email} | ${s.password} | AM: ${s.studentAm} | ${s.type} | enroll: ${s.enrollmentYear}`
+        );
+    }
+
+    await fs.writeFile(CREDENTIALS_PATH, lines.join('\n') + '\n', 'utf8');
 }
 
 async function main() {
     console.log('Αρχικοποίηση βάσης...\n');
 
     await resetDatabase();
-    await seedCategories();
+    fileBank = await loadFileBank();
+    const categories = await seedCategories();
     const staff = await seedStaff();
     const students = await seedStudents(TARGET_STUDENTS);
-    await seedTickets(TARGET_TICKETS, students, staff);
+    await seedTickets(TARGET_TICKETS, students, staff, categories);
+    await writeCredentialsFile();
     await printSummary();
 
     console.log('\nΟλοκληρώθηκε.');

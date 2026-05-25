@@ -152,7 +152,7 @@ const loadUnassignedTicketModalData = async (ticket_id) => {
     // Exclude internal messages from the visible history
     const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
     const formattedMessages = visibleMessages.map(message => {
-        const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+        const isFromStudent = Number(message.for_user_id) === Number(studentRow.user_id);
         return {
             ...message,
             attachments: attachmentsMap.get(message.message_id) || [],
@@ -360,7 +360,7 @@ export const renderSecretaryViewTicketPage = async (req, res) => {
         // Exclude internal messages from history
         const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
         const formattedMessages = visibleMessages.map(message => {
-            const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            const isFromStudent = Number(message.for_user_id) === Number(studentRow.user_id);
 
             // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
             const rawAtts = attachmentsMap.get(message.message_id) || [];
@@ -447,7 +447,7 @@ export const renderLeaderViewTicketPage = async (req, res) => {
         // Exclude internal messages from student-visible history
         const visibleMessages = allMessages.filter(m => !(Number(m.is_internal) === 1 || m.is_internal === true));
         const formattedMessages = visibleMessages.map(message => {
-            const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            const isFromStudent = Number(message.for_user_id) === Number(studentRow.user_id);
 
              // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
             const rawAtts = attachmentsMap.get(message.message_id) || [];
@@ -701,7 +701,7 @@ export const renderStudentViewTicketPage = async (req, res) => {
         });
 
         const formattedMessages = allMessages.map(message => {
-            const isFromStudent = Number(message.for_user_id) === Number(studentRow.student_id);
+            const isFromStudent = Number(message.for_user_id) === Number(studentRow.user_id);
             
             // --- ΚΑΘΑΡΙΣΜΟΣ 2: Συνημμένα Ιστορικού Μηνυμάτων ---
             const rawAtts = attachmentsMap.get(message.message_id) || [];
