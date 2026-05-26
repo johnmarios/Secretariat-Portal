@@ -74,7 +74,7 @@ section {
 #info .container {
   align-items: center;
   justify-self: center;
-  height: 500px;
+  min-height: 500px;
 }
 
 #info .custom-hr {
