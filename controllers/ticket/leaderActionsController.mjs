@@ -20,15 +20,15 @@ const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
         await conn.beginTransaction();
 
         const [attachmentRows] = await conn.execute(
-            `SELECT A.file_path FROM ATTACHMENT A
-             JOIN MESSAGE M ON A.for_message_id = M.message_id
+            `SELECT A.file_path FROM attachment A
+             JOIN message M ON A.for_message_id = M.message_id
              WHERE M.for_ticket_id = ? AND M.is_internal = 1`,
             [ticketId]
         );
 
         const [delAttRes] = await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticketId]);
         const [delMsgRes] = await conn.execute(queries.deleteInternalMessagesByTicketId, [ticketId]);
-        const [updRes] = await conn.execute('UPDATE TICKET SET status = ? WHERE ticket_id = ?', [
+        const [updRes] = await conn.execute('UPDATE ticket SET status = ? WHERE ticket_id = ?', [
             newStatus,
             ticketId,
         ]);
@@ -66,7 +66,7 @@ export const assignTicket = async (req, res) => {
 
     try {
         await dbPool.execute(
-            `UPDATE TICKET
+            `UPDATE ticket
              SET status = 'in_progress', for_secretary_id = ?
              WHERE ticket_id = ?`,
             [selectedSecretaryId, ticketId]

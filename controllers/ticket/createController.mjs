@@ -90,7 +90,7 @@ export const submitCreateTicket = async (req, res) => {
             return res.status(400).send('Συμπληρώστε όλα τα υποχρεωτικά πεδία');
         }
 
-        // MESSAGE.for_user_id is a FK to USER.user_id, not STUDENT.student_id.
+        // message.for_user_id is a FK to user.user_id, not student.student_id.
         // We must look up the student's underlying user_id before inserting,
         // otherwise the first message gets attributed to an unrelated user
         // (or to nobody) 

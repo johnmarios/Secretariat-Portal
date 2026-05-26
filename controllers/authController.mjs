@@ -32,7 +32,7 @@ export const login = (req, res, next) => {
                 console.log("🔍 Ψάχνω τον ρόλο για το ID:", userId);
 
                 // Έλεγχος για Γραμματεία
-                const [secRows] = await dbPool.execute('SELECT secretary_id FROM SECRETARY WHERE for_id = ?', [userId]);
+                const [secRows] = await dbPool.execute('SELECT secretary_id FROM secretary WHERE for_id = ?', [userId]);
                 if (secRows.length > 0) {
                     req.user.secretary_id = secRows[0].secretary_id;
                     req.user.role = 'secretary';
@@ -41,7 +41,7 @@ export const login = (req, res, next) => {
                 } 
 
                 // Έλεγχος για Φοιτητή
-                const [studentRows] = await dbPool.execute('SELECT student_id FROM STUDENT WHERE for_id = ?', [userId]);
+                const [studentRows] = await dbPool.execute('SELECT student_id FROM student WHERE for_id = ?', [userId]);
                 if (studentRows.length > 0) {
                     req.user.student_id = studentRows[0].student_id;
                     req.user.role = 'student';
@@ -80,7 +80,7 @@ export const register = async (req, res) => {
     const { firstName, lastName, email, password, role, isHead } = req.body;
 
     try {
-        const [existing] = await dbPool.execute('SELECT email FROM USER WHERE email = ?', [email]);
+        const [existing] = await dbPool.execute('SELECT email FROM user WHERE email = ?', [email]);
         if (existing.length > 0) {
             return res.status(400).json({ success: false, message: 'Το email χρησιμοποιείται ήδη.' });
         }
@@ -88,15 +88,15 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const insertUserQuery = 'INSERT INTO USER (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
+        const insertUserQuery = 'INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
         const [userResult] = await dbPool.execute(insertUserQuery, [firstName, lastName, email, hashedPassword]);
         const newUserId = userResult.insertId;
 
         if (role === 'student') {
-            await dbPool.execute('INSERT INTO STUDENT (for_id) VALUES (?)', [newUserId]);
+            await dbPool.execute('INSERT INTO student (for_id) VALUES (?)', [newUserId]);
         } else if (role === 'secretary') {
             const isLeaderValue = isHead ? 1 : 0; 
-            await dbPool.execute('INSERT INTO SECRETARY (for_id, is_leader) VALUES (?, ?)', [newUserId, isLeaderValue]);
+            await dbPool.execute('INSERT INTO secretary (for_id, is_leader) VALUES (?, ?)', [newUserId, isLeaderValue]);
         } else {
             return res.status(400).json({ success: false, message: 'Μη έγκυρος ρόλος χρήστη.' });
         }

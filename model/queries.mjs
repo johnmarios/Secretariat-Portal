@@ -6,26 +6,26 @@
 export const getUserByEmail = `
     SELECT u.user_id, u.first_name, u.last_name, u.email, u.password,
            s.student_id, sec.secretary_id, sec.is_leader
-    FROM USER u
-    LEFT JOIN STUDENT s ON u.user_id = s.for_id
-    LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
+    FROM user u
+    LEFT JOIN student s ON u.user_id = s.for_id
+    LEFT JOIN secretary sec ON u.user_id = sec.for_id
     WHERE u.email = ?
 `;
                 
 export const getUserById = `
     SELECT u.user_id, u.first_name, u.last_name, u.email,
            s.student_id, sec.secretary_id, sec.is_leader
-    FROM USER u
-    LEFT JOIN STUDENT s ON u.user_id = s.for_id
-    LEFT JOIN SECRETARY sec ON u.user_id = sec.for_id
+    FROM user u
+    LEFT JOIN student s ON u.user_id = s.for_id
+    LEFT JOIN secretary sec ON u.user_id = sec.for_id
     WHERE u.user_id = ?
 `;
 
 export const getStudentInfo = `
     SELECT u.user_id, u.first_name, u.last_name, u.email,
            s.student_id, s.student_am, s.enrollment_year, s.type
-    FROM USER u
-    JOIN STUDENT s ON u.user_id = s.for_id
+    FROM user u
+    JOIN student s ON u.user_id = s.for_id
     WHERE s.student_id = ?
 `;
 
@@ -38,8 +38,8 @@ export const searchStudents = `
         u.first_name,
         u.last_name,
         u.email
-    FROM STUDENT s
-    JOIN USER u ON u.user_id = s.for_id
+    FROM student s
+    JOIN user u ON u.user_id = s.for_id
     WHERE
         s.student_am LIKE CONCAT('%', ?, '%')
         OR u.last_name LIKE CONCAT('%', ?, '%')
@@ -63,39 +63,39 @@ export const searchStudents = `
 // ==========================================
 
 export const getCategoryIdByName = `
-    SELECT category_id FROM CATEGORY WHERE category_name = ? LIMIT 1
+    SELECT category_id FROM category WHERE category_name = ? LIMIT 1
 `;
 
 export const getAllCategories = `
-    SELECT category_id AS id, category_theme AS theme, category_name AS name FROM CATEGORY
+    SELECT category_id AS id, category_theme AS theme, category_name AS name FROM category
 `;
 
 
 // ==========================================
-// 3. TICKET CREATION & MESSAGES 
+// 3. ticket CREATION & MESSAGES 
 // ==========================================
 
 export const insertTicket = `
-    INSERT INTO TICKET (created_at, for_student_id, for_category_id)
+    INSERT INTO ticket (created_at, for_student_id, for_category_id)
     VALUES (?, ?, ?)
 `;
 
 export const insertMessage = `
-    INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id)
+    INSERT INTO message (message_subject, message_description, created_at, for_user_id, for_ticket_id)
     VALUES (?, ?, ?, ?, ?)
 `;
 
 export const updateTicketLastUpdated = `
-    UPDATE TICKET SET last_updated = NOW() WHERE ticket_id = ?
+    UPDATE ticket SET last_updated = NOW() WHERE ticket_id = ?
 `;
 
 export const saveAttachment = `
-    INSERT INTO ATTACHMENT (file_name, file_path, file_size, file_type, for_message_id)
+    INSERT INTO attachment (file_name, file_path, file_size, file_type, for_message_id)
     VALUES (?, ?, ?, ?, ?)
 `;  
 
 export const insertInternalMessage = `
-    INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
+    INSERT INTO message (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
     VALUES (?, ?, ?, ?, ?, 1)
 `;
 
@@ -105,34 +105,34 @@ export const insertInternalMessage = `
 // ==========================================
 
 export const getFirstMessageByTicketId = `
-    SELECT * FROM MESSAGE   
+    SELECT * FROM message   
     WHERE for_ticket_id = ?
     ORDER BY message_id ASC
     LIMIT 1
 `;
 
-// TICKET.for_student_id is STUDENT.student_id, but MESSAGE.for_user_id is USER.user_id.
-// We have to map student_id -> user_id via the STUDENT table to compare correctly.
+// ticket.for_student_id is student.student_id, but message.for_user_id is user.user_id.
+// We have to map student_id -> user_id via the student table to compare correctly.
 export const getRestStudentMessagesByTicketId = `
-    SELECT * FROM MESSAGE
+    SELECT * FROM message
     WHERE for_ticket_id = ?
         AND for_user_id = (
             SELECT s.for_id
-            FROM TICKET t JOIN STUDENT s ON s.student_id = t.for_student_id
+            FROM ticket t JOIN student s ON s.student_id = t.for_student_id
             WHERE t.ticket_id = ?
         )
         AND message_id > (
-            SELECT message_id FROM MESSAGE WHERE for_ticket_id = ? ORDER BY message_id ASC LIMIT 1
+            SELECT message_id FROM message WHERE for_ticket_id = ? ORDER BY message_id ASC LIMIT 1
         )
     ORDER BY message_id ASC
 `;
 
 export const getSecretaryMessagesByTicketId = `
-    SELECT * FROM MESSAGE
+    SELECT * FROM message
     WHERE for_ticket_id = ?
         AND for_user_id != (
             SELECT s.for_id
-            FROM TICKET t JOIN STUDENT s ON s.student_id = t.for_student_id
+            FROM ticket t JOIN student s ON s.student_id = t.for_student_id
             WHERE t.ticket_id = ?
         )
     ORDER BY message_id ASC
@@ -141,42 +141,42 @@ export const getSecretaryMessagesByTicketId = `
 export const getStudentInfoByTicketId = `
     SELECT u.user_id, u.first_name, u.last_name, u.email,
            s.student_id, s.student_am, s.enrollment_year, s.type
-    FROM TICKET t
-    JOIN STUDENT s ON s.student_id = t.for_student_id
-    JOIN USER u ON u.user_id = s.for_id
+    FROM ticket t
+    JOIN student s ON s.student_id = t.for_student_id
+    JOIN user u ON u.user_id = s.for_id
     WHERE t.ticket_id = ?
     LIMIT 1
 `;
 
 export const getCategoryThemeByTicketId = `
-    SELECT c.category_theme, c.category_name FROM TICKET t
-    JOIN CATEGORY c ON c.category_id = t.for_category_id
+    SELECT c.category_theme, c.category_name FROM ticket t
+    JOIN category c ON c.category_id = t.for_category_id
     WHERE t.ticket_id = ?
     LIMIT 1
 `;
 
 export const getSecretariesForAssignment = `
     SELECT sec.secretary_id, u.first_name, u.last_name
-    FROM SECRETARY sec
-    JOIN USER u ON u.user_id = sec.for_id
+    FROM secretary sec
+    JOIN user u ON u.user_id = sec.for_id
     WHERE sec.is_leader = 0
     ORDER BY u.first_name ASC, u.last_name ASC
 `;
 
 export const getAttachmentsByMessageId = `
-    SELECT file_name, file_path, file_size, file_type, for_message_id FROM ATTACHMENT
+    SELECT file_name, file_path, file_size, file_type, for_message_id FROM attachment
     WHERE for_message_id = ?
 `;
 
 export const getAttachmentsByMessagesId = `
-    SELECT file_name, file_path, file_size, file_type, for_message_id FROM ATTACHMENT
+    SELECT file_name, file_path, file_size, file_type, for_message_id FROM attachment
     WHERE for_message_id IN (?)
 `;
 
 // --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ] ---
 export const getTicketById = `
     SELECT ticket_id, status, created_at, last_updated, resolved_at, for_student_id, for_secretary_id, for_category_id
-    FROM TICKET
+    FROM ticket
     WHERE ticket_id = ?
     LIMIT 1
 `;
@@ -191,15 +191,15 @@ export const getTicketById = `
 export const getTicketsByStudentId = `
     SELECT 
         t.ticket_id,
-        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status,
         t.created_at,
         t.resolved_at,
         c.category_name AS category,
         s.student_am
-    FROM TICKET t
-    JOIN CATEGORY c ON t.for_category_id = c.category_id
-    JOIN STUDENT s ON t.for_student_id = s.student_id
+    FROM ticket t
+    JOIN category c ON t.for_category_id = c.category_id
+    JOIN student s ON t.for_student_id = s.student_id
     WHERE t.for_student_id = ?
     ORDER BY t.created_at DESC
 `;
@@ -207,15 +207,15 @@ export const getTicketsByStudentId = `
 export const getUnassignedTickets = `
     SELECT 
         t.ticket_id, 
-        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
         t.resolved_at,
         c.category_name AS category,
         s.student_am
-    FROM TICKET t
-    JOIN CATEGORY c ON t.for_category_id = c.category_id
-    JOIN STUDENT s ON t.for_student_id = s.student_id
+    FROM ticket t
+    JOIN category c ON t.for_category_id = c.category_id
+    JOIN student s ON t.for_student_id = s.student_id
     WHERE t.for_secretary_id IS NULL
     ORDER BY t.created_at DESC
 `;
@@ -223,16 +223,16 @@ export const getUnassignedTickets = `
 export const getTicketsBySecretaryId = `
     SELECT 
         t.ticket_id, 
-        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
         t.resolved_at,
         c.category_name AS category,
         s.student_am
-    FROM TICKET t
-    JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
-    JOIN CATEGORY c ON t.for_category_id = c.category_id
-    JOIN STUDENT s ON t.for_student_id = s.student_id
+    FROM ticket t
+    JOIN secretary sec ON t.for_secretary_id = sec.secretary_id
+    JOIN category c ON t.for_category_id = c.category_id
+    JOIN student s ON t.for_student_id = s.student_id
     WHERE sec.for_id = ?
     ORDER BY t.created_at DESC
 `;
@@ -240,7 +240,7 @@ export const getTicketsBySecretaryId = `
 export const getEscalatedTickets = `
     SELECT 
         DISTINCT t.ticket_id, 
-        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
         t.created_at, 
         t.resolved_at,
@@ -248,30 +248,30 @@ export const getEscalatedTickets = `
         s.student_am,
         u.first_name,
         u.last_name
-    FROM TICKET t
-    JOIN CATEGORY c ON t.for_category_id = c.category_id
-    JOIN STUDENT s ON t.for_student_id = s.student_id
-    LEFT JOIN SECRETARY sec ON t.for_secretary_id = sec.secretary_id
-    LEFT JOIN USER u ON sec.for_id = u.user_id
+    FROM ticket t
+    JOIN category c ON t.for_category_id = c.category_id
+    JOIN student s ON t.for_student_id = s.student_id
+    LEFT JOIN secretary sec ON t.for_secretary_id = sec.secretary_id
+    LEFT JOIN user u ON sec.for_id = u.user_id
     WHERE EXISTS (
-        SELECT 1 FROM MESSAGE m WHERE m.for_ticket_id = t.ticket_id AND m.is_internal = 1
+        SELECT 1 FROM message m WHERE m.for_ticket_id = t.ticket_id AND m.is_internal = 1
     )
     ORDER BY t.created_at DESC
 `;
 
 export const deleteAttachmentsForInternalMessages = `
-    DELETE A FROM ATTACHMENT A
-    JOIN MESSAGE M ON A.for_message_id = M.message_id
+    DELETE A FROM attachment A
+    JOIN message M ON A.for_message_id = M.message_id
     WHERE M.for_ticket_id = ? AND M.is_internal = 1
 `;
 
 export const deleteInternalMessagesByTicketId = `
-    DELETE FROM MESSAGE WHERE for_ticket_id = ? AND is_internal = 1
+    DELETE FROM message WHERE for_ticket_id = ? AND is_internal = 1
 `;
 
 export const assignTicketToSecretary = `
-    UPDATE TICKET 
-    SET for_secretary_id = (SELECT secretary_id FROM SECRETARY WHERE for_id = ?),
+    UPDATE ticket 
+    SET for_secretary_id = (SELECT secretary_id FROM secretary WHERE for_id = ?),
         status = 'in_progress'
     WHERE ticket_id = ? AND for_secretary_id IS NULL
 `;
@@ -279,7 +279,7 @@ export const assignTicketToSecretary = `
 export const getAllAssignedTicketsForLeader = `
     SELECT 
         T.ticket_id, 
-        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = T.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        (SELECT message_subject FROM message WHERE for_ticket_id = T.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         T.status, 
         T.created_at, 
         T.resolved_at,
@@ -287,11 +287,11 @@ export const getAllAssignedTicketsForLeader = `
         ST.student_am,
         U.first_name, 
         U.last_name 
-    FROM TICKET T
-    JOIN CATEGORY C ON T.for_category_id = C.category_id
-    JOIN STUDENT ST ON T.for_student_id = ST.student_id
-    JOIN SECRETARY S ON T.for_secretary_id = S.secretary_id
-    JOIN USER U ON S.for_id = U.user_id
+    FROM ticket T
+    JOIN category C ON T.for_category_id = C.category_id
+    JOIN student ST ON T.for_student_id = ST.student_id
+    JOIN secretary S ON T.for_secretary_id = S.secretary_id
+    JOIN user U ON S.for_id = U.user_id
     WHERE T.for_secretary_id IS NOT NULL
     ORDER BY T.created_at DESC
 `;
@@ -300,15 +300,15 @@ export const getAllAssignedTicketsForLeader = `
 export const searchTicketsByStudentTerm = `
     SELECT 
         t.ticket_id,
-        (SELECT message_subject FROM MESSAGE WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
+        (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status,
         t.created_at,
         s.student_am,
         u.first_name,
         u.last_name
-    FROM TICKET t
-    JOIN STUDENT s ON s.student_id = t.for_student_id
-    JOIN USER u ON s.for_id = u.user_id
+    FROM ticket t
+    JOIN student s ON s.student_id = t.for_student_id
+    JOIN user u ON s.for_id = u.user_id
     WHERE s.student_am LIKE CONCAT('%', ?, '%')
        OR u.first_name LIKE CONCAT('%', ?, '%')
        OR u.last_name LIKE CONCAT('%', ?, '%')
@@ -319,8 +319,8 @@ export const searchTicketsByStudentTerm = `
 
 export const getInternalMessageByTicketId = `
     SELECT m.message_description, m.created_at, u.first_name, u.last_name
-    FROM MESSAGE m
-    JOIN USER u ON m.for_user_id = u.user_id
+    FROM message m
+    JOIN user u ON m.for_user_id = u.user_id
     WHERE m.for_ticket_id = ? AND m.is_internal = 1
     ORDER BY m.created_at DESC LIMIT 1
 `;
