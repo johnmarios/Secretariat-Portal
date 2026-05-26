@@ -1,0 +1,28 @@
+<img class="student-avatar" src="/images/avatar-person.svg" alt="Student Avatar">
+
+<p class="student-name" id="studentCardName">{{student.fullName}}</p>
+
+<div class="info-row">
+    <span class="label">ΑΜ:</span>
+    <span class="value" id="studentCardAm">{{student.studentAm}}</span>
+</div>
+
+<div class="info-row">
+    <span class="label">ΤΜΗΜΑ:</span>
+    <span class="value" id="studentCardDepartment">{{#if student.department}}{{student.department}}{{else}}Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών{{/if}}</span>
+</div>
+
+<div class="info-row">
+    <span class="label">EMAIL:</span>
+    <span class="value" id="studentCardEmail">{{student.email}}</span>
+</div>
+
+<div class="info-row">
+    <span class="label">ΕΤΟΣ ΣΠΟΥΔΩΝ:</span>
+    <span class="value"><span id="studentCardStudyYear">{{student.studyYear}}</span>ο</span>
+</div>
+
+<div class="info-row">
+    <span class="label">ΕΙΔΟΣ:</span>
+    <span class="value" id="studentCardType">{{student.type}}</span>
+</div>

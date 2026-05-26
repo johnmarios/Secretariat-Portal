@@ -22,28 +22,5 @@
 
 <div class="selected-student-card" id="selectedStudentCard" hidden>
 	<button type="button" class="selected-student-card__change" id="changeStudentButton">Αλλαγή</button>
-
-	<img class="student-avatar" src="/images/avatar-person.svg" alt="Student Avatar">
-
-	<p class="student-name" id="selectedStudentName"></p>
-
-	<div class="info-row">
-		<span class="label">ΑΜ:</span>
-		<span class="value" id="selectedStudentAm"></span>
-	</div>
-
-	<div class="info-row">
-		<span class="label">ΤΜΗΜΑ:</span>
-		<span class="value" id="selectedStudentDepartment"></span>
-	</div>
-
-	<div class="info-row">
-		<span class="label">EMAIL:</span>
-		<span class="value" id="selectedStudentEmail"></span>
-	</div>
-
-	<div class="info-row">
-		<span class="label">ΕΤΟΣ ΣΠΟΥΔΩΝ:</span>
-		<span class="value" id="selectedStudentStudyYear"></span>
-	</div>
+	{{>studentCardContent}}
 </div>

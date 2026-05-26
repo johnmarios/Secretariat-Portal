@@ -48,11 +48,13 @@ export const renderSecretaryCreateTicketPage = async (req, res) => {
 
 export const searchStudents = async (req, res) => {
     try {
+        // checks if the user has secretary privileges
         if (!isSecretaryUser(req.user)) {
             return res.status(403).json({ success: false, message: 'Μη εξουσιοδοτημένη πρόσβαση' });
         }
-
+        // term is the search query entered by the user in the input field, used to find matching students
         const term = String(req.query.q || '').trim();
+        // if the search term is less than 2 characters, we return an empty result set to avoid unnecessary database queries 
         if (term.length < 2) {
             return res.json({ success: true, results: [] });
         }
@@ -72,7 +74,9 @@ export const submitCreateTicket = async (req, res) => {
     try {
         const { subject, description, category_id } = req.body;
         const files = req.files;
-        const studentIdValue = req.params.student_id || req.body.for_student_id;
+        const studentIdValue = req.params.student_id || req.body.for_student_id; // || because 
+        // the same function handles both student and secretary flows, in the secretary flow,
+        // the student ID comes from the form body in searchbar input (for_student_id), not from the URL param.
         const student_id = Number(studentIdValue);
         const isSecretaryFlow = !req.params.student_id && Boolean(req.body.for_student_id);
 
@@ -89,7 +93,7 @@ export const submitCreateTicket = async (req, res) => {
         // MESSAGE.for_user_id is a FK to USER.user_id, not STUDENT.student_id.
         // We must look up the student's underlying user_id before inserting,
         // otherwise the first message gets attributed to an unrelated user
-        // (or to nobody) and the conversation view later misclassifies it.
+        // (or to nobody) 
         const studentRow = await db.getStudentInfo(student_id);
         if (!studentRow) {
             return res.status(404).send('Δεν βρέθηκε ο φοιτητής');

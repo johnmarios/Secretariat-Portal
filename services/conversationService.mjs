@@ -5,9 +5,7 @@ const isInternalMessage = (m) =>
     Number(m.is_internal) === 1 || m.is_internal === true;
 
 // Loads the entire conversation thread for a ticket and returns
-// everything the view templates need in one shot. Replaces the
-// 4 near-identical message-fetch blocks that used to live in
-// ticketController.mjs.
+// everything the view templates need in one shot.
 export async function buildTicketConversation(ticketId, studentRow) {
     const numericTicketId = Number(ticketId);
 

@@ -1,4 +1,13 @@
-// Builds the slim student object used by Handlebars cards.
+// Maps STUDENT.type enum values ('undergrad' | 'postgrad' | 'phd') to the
+// human-readable Greek labels used across the UI.
+const STUDENT_TYPE_LABELS = {
+    undergrad: 'Προπτυχιακός',
+    postgrad: 'Μεταπτυχιακός',
+    phd: 'Διδακτορικός',
+};
+
+const formatStudentType = (type) => STUDENT_TYPE_LABELS[type] || '-';
+
 export const buildStudent = (row) => {
     if (!row) return null;
     const fullName = [row.first_name, row.last_name].filter(Boolean).join(' ').trim();
@@ -12,10 +21,10 @@ export const buildStudent = (row) => {
         studentAm: row.student_am,
         email: row.email,
         studyYear: String(studyYear),
+        type: formatStudentType(row.type),
     };
 };
 
-// Builds the richer student object used by the secretary's student-search dropdown.
 export const buildStudentSearchResult = (row) => {
     if (!row) return null;
 
@@ -31,7 +40,8 @@ export const buildStudentSearchResult = (row) => {
         fullName,
         studentAm: row.student_am,
         email: row.email,
-        studyYear: studyYear ? `${studyYear}ο Έτος Σπουδών` : '-',
+        studyYear: studyYear ? String(studyYear) : '-',
         department: 'Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών',
+        type: formatStudentType(row.type),
     };
 };

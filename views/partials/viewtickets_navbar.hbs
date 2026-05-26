@@ -29,7 +29,7 @@
         <ul class="navbar-nav ms-auto align-items-md-center">
           <!--Αιτήματα-->
           <li class="nav-item requests">
-              <a class="nav-link text-nowrap" href="{{#if @root.currentUser.secretary_id}}/tickets/secretary_createTicket{{else}}/tickets/create-ticket/student/{{@root.studentId}}{{/if}}">
+              <a class="nav-link text-nowrap" href="{{#if @root.currentUser.secretary_id}}/tickets/create-ticket/secretary{{else}}/tickets/create-ticket/student/{{@root.studentId}}{{/if}}">
                 <img src="../images/ticket_icon.svg" alt="ticket-svg" class="nav-icon me-2">
               <span>Νέο Αίτημα</span>
             </a>

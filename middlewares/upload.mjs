@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import multer from 'multer';
 
 const uploadDirectory = path.join('public', 'files');
-fs.mkdirSync(uploadDirectory, { recursive: true });
+fs.mkdirSync(uploadDirectory, { recursive: true }); 
+// makes sure the upload directory exists, creating it if necessary. This prevents errors when saving files.
 
 function buildUniqueFileName(originalName) {
     const extension = path.extname(originalName);
@@ -14,6 +15,18 @@ function buildUniqueFileName(originalName) {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     return `${baseName}-${uniqueSuffix}${extension}`;
 }
+// document.pdf
+// baseName: "document"
+// uniqueSuffix: "1634567890123-123456789"
+// Αποτέλεσμα: "document-1634567890123-123456789.pdf"
+
+// Η αναφορά μου!.docx
+// baseName: "Η_αναφορά_μου_" (ειδικοί χαρακτήρες γίνονται _)
+// Αποτέλεσμα: "Η_αναφορά_μου-1634567890123-123456789.docx"
+
+// !!!.jpg
+// baseName: "" -> "upload"
+// Αποτέλεσμα: "upload-1634567890123-123456789.jpg"
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDirectory),
@@ -40,5 +53,5 @@ export const upload = multer({
     },
 });
 
-// Convenience: a pre-built middleware for "files" field, up to 10 files
+// middleware to handle file uploads in routes, allowing up to 10 files per request
 export const uploadFiles = upload.array('files', 10);

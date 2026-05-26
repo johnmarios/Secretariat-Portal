@@ -29,7 +29,6 @@ export const getStudentInfo = `
     WHERE s.student_id = ?
 `;
 
-// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ]: Αναζήτηση Φοιτητών ---
 export const searchStudents = `
     SELECT
         s.student_id,

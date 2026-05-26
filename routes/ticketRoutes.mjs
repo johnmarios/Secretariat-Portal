@@ -16,8 +16,6 @@ router.get('/create-ticket/student/:student_id', ensureAuthenticated, createCont
 router.post('/create-ticket/student/:student_id', ensureAuthenticated, uploadFiles, createController.submitCreateTicket);
 router.get('/create-ticket/secretary', ensureAuthenticated, createController.renderSecretaryCreateTicketPage);
 router.post('/create-ticket/secretary', ensureAuthenticated, uploadFiles, createController.submitCreateTicket);
-// Legacy alias kept for the secretary createTicket page link
-router.get('/secretary_createTicket', ensureAuthenticated, createController.renderSecretaryCreateTicketPage);
 
 // ----- Search (JSON) -----
 router.get('/students/search', ensureAuthenticated, createController.searchStudents);
@@ -33,10 +31,8 @@ router.get('/unassigned-ticket-modal/:ticket_id', ensureAuthenticated, dashboard
 router.get('/leader-unassigned-ticket-modal/:ticket_id', ensureAuthenticated, dashboardController.renderUnassignedTicketModal);
 
 // ----- Replies -----
-router.post('/student-view-ticket/ticket/:ticket_id', ensureAuthenticated, uploadFiles, replyController.submitStudentReply);
 router.post('/student-view-ticket/ticket/:ticket_id/reply', ensureAuthenticated, uploadFiles, replyController.submitStudentReply);
 
-router.post('/secretary-view-ticket/ticket/:ticket_id', ensureAuthenticated, uploadFiles, replyController.submitSecretaryReply);
 router.post('/secretary-view-ticket/ticket/:ticket_id/reply', ensureAuthenticated, uploadFiles, replyController.submitSecretaryReply);
 router.post('/secretary-view-ticket/ticket/:ticket_id/escalate', ensureAuthenticated, uploadFiles, replyController.submitSecretaryInternalMessage);
 

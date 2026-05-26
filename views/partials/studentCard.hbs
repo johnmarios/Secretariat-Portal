@@ -1,28 +1,4 @@
 <div class="student-card">
     <h3 class="student-card-title">Στοιχεία Φοιτητή</h3>
-
-    <img class="student-avatar" src="/images/avatar-person.svg" alt="Student Avatar">
-
-    <p class="student-name">{{student.fullName}}</p>
-
-    <div class="info-row">
-        <span class="label">ΑΜ:</span>
-        <span class="value">{{student.studentAm}}</span>
-    </div>
-
-    <div class="info-row">
-        <span class="label">ΤΜΗΜΑ:</span>
-        <span class="value">Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών</span>
-    </div>
-
-    <div class="info-row">
-        <span class="label">EMAIL:</span>
-        <span class="value">{{student.email}}</span>
-    </div>
-
-    <div class="info-row">
-        <span class="label">ΕΤΟΣ ΣΠΟΥΔΩΝ:</span>
-        <span class="value">{{student.studyYear}}ο </span>
-    </div>
-    
+    {{>studentCardContent}}
 </div>
