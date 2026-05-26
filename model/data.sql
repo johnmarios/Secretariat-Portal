@@ -1,17 +1,17 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-TRUNCATE TABLE `attachment`;
-TRUNCATE TABLE `message`;
-TRUNCATE TABLE `ticket`;
-TRUNCATE TABLE `student`;
-TRUNCATE TABLE `secretary`;
-TRUNCATE TABLE `category`;
-TRUNCATE TABLE `user`;
+TRUNCATE TABLE `ATTACHMENT`;
+TRUNCATE TABLE `MESSAGE`;
+TRUNCATE TABLE `TICKET`;
+TRUNCATE TABLE `STUDENT`;
+TRUNCATE TABLE `SECRETARY`;
+TRUNCATE TABLE `CATEGORY`;
+TRUNCATE TABLE `USER`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO
-    `user` (
+    `USER` (
         `first_name`,
         `last_name`,
         `email`,
@@ -37,7 +37,7 @@ VALUES (
     );
 
 INSERT INTO
-    `student` (
+    `STUDENT` (
         `student_am`,
         `type`,
         `enrollment_year`,
@@ -45,12 +45,12 @@ INSERT INTO
     )
 VALUES ('1091234', 'undergrad', '2019', 1); 
 
-INSERT INTO `secretary` (`is_leader`, `for_id`) VALUES (FALSE, 2); 
+INSERT INTO `SECRETARY` (`is_leader`, `for_id`) VALUES (FALSE, 2); 
 
-INSERT INTO `secretary` (`is_leader`, `for_id`) VALUES (TRUE, 3);
+INSERT INTO `SECRETARY` (`is_leader`, `for_id`) VALUES (TRUE, 3);
 
 INSERT INTO
-    `category` (
+    `CATEGORY` (
         `category_id`,
         `category_theme`,
         `category_name`
@@ -79,7 +79,7 @@ VALUES
 
 -- student: 
 INSERT INTO
-    `ticket` (
+    `TICKET` (
         `for_student_id`,
         `for_secretary_id`,
         `for_category_id`
@@ -90,7 +90,7 @@ VALUES (
         'cert_enrollment'
     );
 INSERT INTO 
-    `message` (
+    `MESSAGE` (
         `message_subject`,
         `message_description`,
         `is_internal`,
@@ -107,10 +107,10 @@ VALUES (
         1
     );
 -- update ticket after message to update last_updated timestamp
-UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1; 
+UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1; 
 
 INSERT INTO
-    `attachment` (
+    `ATTACHMENT` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -125,7 +125,7 @@ VALUES (
         1
     );
 INSERT INTO
-    `attachment` (
+    `ATTACHMENT` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -143,7 +143,7 @@ VALUES (
 -- secretary:
 
 INSERT INTO 
-    `message` (
+    `MESSAGE` (
         `message_subject`,
         `message_description`,
         `is_internal`,
@@ -159,10 +159,10 @@ VALUES (
         2,
         1
     );
-UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
 
 INSERT INTO
-    `attachment` (
+    `ATTACHMENT` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -177,7 +177,7 @@ VALUES (
         2
     );
 INSERT INTO
-    `attachment` (
+    `ATTACHMENT` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -194,7 +194,7 @@ VALUES (
 
 -- student response : 
 INSERT INTO 
-    `message` (
+    `MESSAGE` (
         `message_subject`,
         `message_description`,
         `is_internal`,
@@ -210,9 +210,9 @@ VALUES (
         1,
         1
     );
-UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
 INSERT INTO
-    `attachment` (
+    `ATTACHMENT` (
         `file_name`,
         `file_path`,
         `file_size`,

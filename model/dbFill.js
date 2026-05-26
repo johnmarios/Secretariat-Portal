@@ -7,11 +7,8 @@ import dbPool from './db.js';
 
 faker.seed(20260523);
 
-// const TARGET_STUDENTS = 1200;
-// const TARGET_TICKETS = 1000;
-
-const TARGET_STUDENTS = 500;  
-const TARGET_TICKETS = 250;   
+const TARGET_STUDENTS = 1200;
+const TARGET_TICKETS = 1000;
 
 // 8 rounds keeps seeding fast (~10s for ~1200 users) while staying compatible
 // with the 10-round hashes produced by the register controller — bcrypt.compare
@@ -59,7 +56,7 @@ async function loadFileBank() {
     }
 }
 
-// Mirrors the category rows in model/data.sql, so a fresh `npm run seed`
+// Mirrors the CATEGORY rows in model/data.sql, so a fresh `npm run seed`
 // is fully self-contained (no need to run data.sql).
 const FALLBACK_CATEGORIES = [
     ['cert_enrollment', 'Βεβαιώσεις και Πιστοποιητικά', 'Βεβαίωση Σπουδών'],
@@ -115,20 +112,20 @@ function studentEmail(am) {
 }
 async function resetDatabase() {
     await dbPool.query('SET FOREIGN_KEY_CHECKS = 0');
-    await dbPool.query('TRUNCATE TABLE attachment');
-    await dbPool.query('TRUNCATE TABLE message');
-    await dbPool.query('TRUNCATE TABLE ticket');
-    await dbPool.query('TRUNCATE TABLE student');
-    await dbPool.query('TRUNCATE TABLE secretary');
-    await dbPool.query('TRUNCATE TABLE category');
-    await dbPool.query('TRUNCATE TABLE user');
+    await dbPool.query('TRUNCATE TABLE ATTACHMENT');
+    await dbPool.query('TRUNCATE TABLE MESSAGE');
+    await dbPool.query('TRUNCATE TABLE TICKET');
+    await dbPool.query('TRUNCATE TABLE STUDENT');
+    await dbPool.query('TRUNCATE TABLE SECRETARY');
+    await dbPool.query('TRUNCATE TABLE CATEGORY');
+    await dbPool.query('TRUNCATE TABLE USER');
     await dbPool.query('SET FOREIGN_KEY_CHECKS = 1');
 }
 
 async function insertUser(firstName, lastName, email, plainPassword) {
     const hashedPassword = await bcrypt.hash(plainPassword, BCRYPT_ROUNDS);
     const [result] = await dbPool.query(
-        'INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
+        'INSERT INTO USER (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
         [firstName, lastName, email, hashedPassword]
     );
     return result.insertId;
@@ -137,14 +134,14 @@ async function insertUser(firstName, lastName, email, plainPassword) {
 async function seedCategories() {
     for (const [id, theme, name] of FALLBACK_CATEGORIES) {
         await dbPool.query(
-            'INSERT INTO category (category_id, category_theme, category_name) VALUES (?, ?, ?)',
+            'INSERT INTO CATEGORY (category_id, category_theme, category_name) VALUES (?, ?, ?)',
             [id, theme, name]
         );
     }
     console.log(`Εισάχθηκαν ${FALLBACK_CATEGORIES.length} κατηγορίες.`);
 
     const [rows] = await dbPool.query(
-        'SELECT category_id, category_theme, category_name FROM category'
+        'SELECT category_id, category_theme, category_name FROM CATEGORY'
     );
     return rows;
 }
@@ -181,11 +178,11 @@ async function seedStaff() {
         enrollmentYear: 2019,
     });
 
-    await dbPool.query('INSERT INTO secretary (is_leader, for_id) VALUES (?, ?)', [1, leaderId]);
-    await dbPool.query('INSERT INTO secretary (is_leader, for_id) VALUES (?, ?)', [0, secretaryId]);
+    await dbPool.query('INSERT INTO SECRETARY (is_leader, for_id) VALUES (?, ?)', [1, leaderId]);
+    await dbPool.query('INSERT INTO SECRETARY (is_leader, for_id) VALUES (?, ?)', [0, secretaryId]);
 
     await dbPool.query(
-        'INSERT INTO student (student_am, type, enrollment_year, for_id) VALUES (?, ?, ?, ?)',
+        'INSERT INTO STUDENT (student_am, type, enrollment_year, for_id) VALUES (?, ?, ?, ?)',
         ['1091234', 'undergrad', 2019, demoStudentUserId]
     );
 
@@ -199,7 +196,7 @@ async function seedStaff() {
         const password = generatePassword();
         const userId = await insertUser(firstName, lastName, email, password);
         const [result] = await dbPool.query(
-            'INSERT INTO secretary (is_leader, for_id) VALUES (?, ?)',
+            'INSERT INTO SECRETARY (is_leader, for_id) VALUES (?, ?)',
             [0, userId]
         );
         staff.push({ secretary_id: result.insertId, for_id: userId });
@@ -208,11 +205,11 @@ async function seedStaff() {
     }
 
     const [leaderRow] = await dbPool.query(
-        'SELECT secretary_id, for_id FROM secretary WHERE for_id = ?',
+        'SELECT secretary_id, for_id FROM SECRETARY WHERE for_id = ?',
         [leaderId]
     );
     const [secretaryRow] = await dbPool.query(
-        'SELECT secretary_id, for_id FROM secretary WHERE for_id = ?',
+        'SELECT secretary_id, for_id FROM SECRETARY WHERE for_id = ?',
         [secretaryId]
     );
 
@@ -242,7 +239,7 @@ async function seedStudents(count) {
         const enrollmentYear = enrollmentYearFor(type);
 
         const [result] = await dbPool.query(
-            'INSERT INTO student (student_am, type, enrollment_year, for_id) VALUES (?, ?, ?, ?)',
+            'INSERT INTO STUDENT (student_am, type, enrollment_year, for_id) VALUES (?, ?, ?, ?)',
             [studentAm, type, enrollmentYear, userId]
         );
 
@@ -303,7 +300,7 @@ async function insertMessageWithAttachment({
     attachProb,
 }) {
     const [result] = await dbPool.query(
-        `INSERT INTO message (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
+        `INSERT INTO MESSAGE (message_subject, message_description, created_at, for_user_id, for_ticket_id, is_internal)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [subject, description, createdAt, userId, ticketId, isInternal ? 1 : 0]
     );
@@ -312,7 +309,7 @@ async function insertMessageWithAttachment({
     if (fileBank.length > 0 && faker.number.float({ min: 0, max: 1 }) < attachProb) {
         const file = pick(fileBank);
         await dbPool.query(
-            `INSERT INTO attachment (file_name, file_path, file_size, file_type, for_message_id)
+            `INSERT INTO ATTACHMENT (file_name, file_path, file_size, file_type, for_message_id)
              VALUES (?, ?, ?, ?, ?)`,
             [file.file_name, file.file_path, file.file_size, file.file_type, messageId]
         );
@@ -348,7 +345,7 @@ async function seedTickets(count, students, staff, categories) {
 
         // ticket creation 
         const [ticketResult] = await dbPool.query(
-            `INSERT INTO ticket (status, created_at, resolved_at, for_student_id, for_secretary_id, for_category_id)
+            `INSERT INTO TICKET (status, created_at, resolved_at, for_student_id, for_secretary_id, for_category_id)
              VALUES (?, ?, ?, ?, ?, ?)`,
             [status, createdAt, resolvedAt, student.student_id, secretary?.secretary_id ?? null, categoryId]
         );
@@ -381,7 +378,7 @@ async function seedTickets(count, students, staff, categories) {
                 description = faker.lorem.sentences({ min: 2, max: 4 });
                 attachProb = INITIAL_ATTACHMENT_PROB;
             } else {
-                subject = '';  // Βάζουμε ένα κενό string αντί για null
+                subject = null;
                 description = faker.lorem.sentences({ min: 1, max: 3 });
                 attachProb = REPLY_ATTACHMENT_PROB;
             }
@@ -417,20 +414,20 @@ async function seedTickets(count, students, staff, categories) {
 }
 
 async function printSummary() {
-    const [[students]] = await dbPool.query('SELECT COUNT(*) AS n FROM student');
-    const [[tickets]] = await dbPool.query('SELECT COUNT(*) AS n FROM ticket');
+    const [[students]] = await dbPool.query('SELECT COUNT(*) AS n FROM STUDENT');
+    const [[tickets]] = await dbPool.query('SELECT COUNT(*) AS n FROM TICKET');
     const [[unassigned]] = await dbPool.query(
-        'SELECT COUNT(*) AS n FROM ticket WHERE for_secretary_id IS NULL'
+        'SELECT COUNT(*) AS n FROM TICKET WHERE for_secretary_id IS NULL'
     );
     const [[escalated]] = await dbPool.query(
-        `SELECT COUNT(DISTINCT for_ticket_id) AS n FROM message WHERE is_internal = 1`
+        `SELECT COUNT(DISTINCT for_ticket_id) AS n FROM MESSAGE WHERE is_internal = 1`
     );
-    const [[messages]] = await dbPool.query('SELECT COUNT(*) AS n FROM message');
-    const [[attachments]] = await dbPool.query('SELECT COUNT(*) AS n FROM attachment');
+    const [[messages]] = await dbPool.query('SELECT COUNT(*) AS n FROM MESSAGE');
+    const [[attachments]] = await dbPool.query('SELECT COUNT(*) AS n FROM ATTACHMENT');
 
     const [byType] = await dbPool.query(`
         SELECT type, MIN(enrollment_year) AS min_y, MAX(enrollment_year) AS max_y, COUNT(*) AS n
-        FROM student GROUP BY type
+        FROM STUDENT GROUP BY type
     `);
 
     console.log('\n--- Σύνοψη ---');

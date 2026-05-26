@@ -21,10 +21,10 @@ try {
 
     const [counts] = await dbPool.query(`
         SELECT
-            (SELECT COUNT(*) FROM user) AS users,
-            (SELECT COUNT(*) FROM student) AS students,
-            (SELECT COUNT(*) FROM secretary) AS secretaries,
-            (SELECT COUNT(*) FROM ticket) AS tickets
+            (SELECT COUNT(*) FROM USER) AS users,
+            (SELECT COUNT(*) FROM STUDENT) AS students,
+            (SELECT COUNT(*) FROM SECRETARY) AS secretaries,
+            (SELECT COUNT(*) FROM TICKET) AS tickets
     `);
     console.log('Counts:', counts[0]);
 } catch (err) {
