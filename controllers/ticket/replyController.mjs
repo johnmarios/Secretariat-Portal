@@ -32,7 +32,7 @@ export const submitSecretaryReply = async (req, res) => {
 
         if (newStatus) {
             try {
-                await dbPool.execute('UPDATE TICKET SET status = ? WHERE ticket_id = ?', [
+                await dbPool.execute('UPDATE ticket SET status = ? WHERE ticket_id = ?', [
                     newStatus,
                     ticket_id,
                 ]);
@@ -89,7 +89,7 @@ export const submitSecretaryInternalMessage = async (req, res) => {
         if (req.body.escalate === '1') {
             try {
                 await dbPool.execute(
-                    "UPDATE TICKET SET status = 'escalated' WHERE ticket_id = ?",
+                    "UPDATE ticket SET status = 'escalated' WHERE ticket_id = ?",
                     [ticket_id]
                 );
             } catch (err) {

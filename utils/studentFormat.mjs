@@ -1,4 +1,4 @@
-// Maps STUDENT.type enum values ('undergrad' | 'postgrad' | 'phd') to the
+// Maps student.type enum values ('undergrad' | 'postgrad' | 'phd') to the
 // human-readable Greek labels used across the UI.
 const STUDENT_TYPE_LABELS = {
     undergrad: 'Προπτυχιακός',
