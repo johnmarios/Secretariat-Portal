@@ -73,9 +73,9 @@ export const assignTicket = async (req, res) => {
         );
 
         if (req.user.is_leader === 1) {
-            return res.redirect('/leader_viewtickets');
+            return res.redirect('/leader-viewtickets');
         }
-        return res.redirect('/secretary_viewtickets');
+        return res.redirect('/secretary-viewtickets');
     } catch (error) {
         console.error('Σφάλμα κατά την ανάληψη:', error);
         res.status(500).send('Αποτυχία ανάληψης αιτήματος.');
@@ -92,7 +92,7 @@ export const submitLeaderAccept = async (req, res) => {
             newStatus: 'in_progress',
             logLabel: 'Leader accepted',
         });
-        return res.redirect('/leader_viewtickets');
+        return res.redirect('/leader-viewtickets');
     } catch (err) {
         console.error('Error accepting escalated ticket:', err);
         return res.status(500).send('Operation failed');
@@ -109,7 +109,7 @@ export const submitLeaderReject = async (req, res) => {
             newStatus: 'pending',
             logLabel: 'Leader rejected',
         });
-        return res.redirect('/leader_viewtickets');
+        return res.redirect('/leader-viewtickets');
     } catch (err) {
         console.error('Error rejecting escalated ticket:', err);
         return res.status(500).send('Operation failed');

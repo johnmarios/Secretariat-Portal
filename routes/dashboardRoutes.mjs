@@ -6,9 +6,9 @@ import { ensureAuthenticated } from '../middlewares/authMiddleware.mjs';
 const router = express.Router();
 
 // Dashboards
-router.get('/user_viewtickets', ensureAuthenticated, dashboardController.getUserTickets);
-router.get('/secretary_viewtickets', ensureAuthenticated, dashboardController.getSecretaryTickets);
-router.get('/leader_viewtickets', ensureAuthenticated, dashboardController.getLeaderTickets);
+router.get('/student-viewtickets', ensureAuthenticated, dashboardController.getStudentTickets);
+router.get('/secretary-viewtickets', ensureAuthenticated, dashboardController.getSecretaryTickets);
+router.get('/leader-viewtickets', ensureAuthenticated, dashboardController.getLeaderTickets);
 
 // JSON endpoint used by the dashboard modal
 router.get('/api/ticket/:id', ensureAuthenticated, dashboardController.getTicketDetailsAPI);

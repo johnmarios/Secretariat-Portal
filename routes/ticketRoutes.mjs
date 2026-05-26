@@ -26,10 +26,6 @@ router.get('/student-view-ticket/ticket/:ticket_id', ensureAuthenticated, viewCo
 router.get('/secretary-view-ticket/ticket/:ticket_id', ensureAuthenticated, viewController.renderSecretaryViewTicketPage);
 router.get('/leader-view-ticket/ticket/:ticket_id', ensureAuthenticated, viewController.renderLeaderViewTicketPage);
 
-// ----- Modal shells (rendered without layout, populated via /api/ticket/:id) -----
-router.get('/unassigned-ticket-modal/:ticket_id', ensureAuthenticated, dashboardController.renderUnassignedTicketModal);
-router.get('/leader-unassigned-ticket-modal/:ticket_id', ensureAuthenticated, dashboardController.renderUnassignedTicketModal);
-
 // ----- Replies -----
 router.post('/student-view-ticket/ticket/:ticket_id/reply', ensureAuthenticated, uploadFiles, replyController.submitStudentReply);
 

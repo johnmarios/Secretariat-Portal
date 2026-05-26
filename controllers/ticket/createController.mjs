@@ -116,7 +116,7 @@ export const submitCreateTicket = async (req, res) => {
         await saveAttachmentsForMessage(message_id, files);
 
         if (isSecretaryFlow) {
-            return res.redirect('/secretary_viewtickets');
+            return res.redirect('/secretary-viewtickets');
         }
         return res.redirect(`/tickets/create-ticket/student/${student_id}`);
     } catch (error) {

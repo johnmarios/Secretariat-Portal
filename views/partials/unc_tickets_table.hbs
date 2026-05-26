@@ -1,6 +1,4 @@
-{{!-- {{#if title}}
-  <h3>{{title}}</h3>
-{{/if}} --}}
+{{!-- unclaimed tickets table --}}
 <link rel="stylesheet" href="/css/pages/viewtickets.css">
 
 <table class="requests-table">
@@ -16,8 +14,29 @@
     </tr>
   </thead>
   <tbody>
+    {{!-- Expected context shape:
+      {
+        "tickets": [
+          {
+            "id": 1,
+            "am": "20200123",
+            "category": "IT",
+            "subject": "Πρόβλημα σύνδεσης",
+            "submittedAt": "2026-05-25",
+            "status": "Unclaimed",
+            "statusClass": "unc"
+          }
+        ],
+        "isLeader": true,
+        "secretaries": [
+          { "secretary_id": 5, "displayName": "Άννα Κ" }
+        ],
+        "leaderSecretaryId": 5,
+        "leaderDisplayName": "Άννα Κ"
+      }
+    --}}
     {{#each tickets}}
-      <tr data-ticket-id="{{this.id}}" data-modal-url="{{#if ../isLeader}}/tickets/leader-unassigned-ticket-modal/{{this.id}}{{else}}/tickets/unassigned-ticket-modal/{{this.id}}{{/if}}" data-modal-type="{{#if ../isLeader}}leader{{else}}secretary{{/if}}">
+      <tr data-ticket-id="{{this.id}}" data-modal-type="{{#if ../isLeader}}leader{{else}}secretary{{/if}}">
         <td>{{this.id}}</td>
         <td>{{this.am}}</td>
         <td>{{this.category}}</td>
@@ -34,7 +53,7 @@
               <select name="secretary_id" class="form-select form-select-sm leader-secretary-select" required>
                 <option value="{{../leaderSecretaryId}}" selected>{{../leaderDisplayName}}</option>
                 {{#each ../secretaries}}
-                  <option value="{{this.secretary_id}}">{{this.first_name}} {{this.last_name}}</option>
+                  <option value="{{this.secretary_id}}">{{this.displayName}}</option>
                 {{/each}}
               </select>
               <button type="submit" class="btn btn-sm btn-primary">Ανάληψη</button>

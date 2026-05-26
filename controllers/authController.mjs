@@ -37,7 +37,7 @@ export const login = (req, res, next) => {
                     req.user.secretary_id = secRows[0].secretary_id;
                     req.user.role = 'secretary';
                     console.log("🚀 Είναι Γραμματεία! Πάμε στα Tabs!");
-                    return res.redirect('/secretary_viewtickets');
+                    return res.redirect('/secretary-viewtickets');
                 } 
 
                 // Έλεγχος για Φοιτητή
@@ -46,7 +46,7 @@ export const login = (req, res, next) => {
                     req.user.student_id = studentRows[0].student_id;
                     req.user.role = 'student';
                     console.log("🎓 Είναι Φοιτητής! Πάμε στα δικά του Tickets!");
-                    return res.redirect('/user_viewtickets');
+                    return res.redirect('/student-viewtickets');
                 }
 
                 res.send("Ο χρήστης συνδέθηκε, αλλά δεν υπάρχει ούτε σαν Γραμματεία ούτε σαν Φοιτητής!");

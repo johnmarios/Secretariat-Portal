@@ -14,7 +14,7 @@ import pageRouter from './routes/pageRoutes.mjs';
 import authRouter from './routes/authRoutes.mjs';
 import dashboardRouter from './routes/dashboardRoutes.mjs';
 import ticketRouter from './routes/ticketRoutes.mjs';
-import helpers from './controllers/helpers.mjs';
+import helpers from './controllers/hbsHelpers.mjs';
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 

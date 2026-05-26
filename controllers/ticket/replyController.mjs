@@ -53,7 +53,7 @@ export const submitSecretaryReply = async (req, res) => {
             await saveAttachmentsForMessage(message_id, files);
         }
 
-        return res.redirect('/secretary_viewtickets');
+        return res.redirect('/secretary-viewtickets');
     } catch (error) {
         console.error('Error submitting secretary reply:', error);
         return res.status(500).send('Reply failed: ' + error.message);
@@ -97,7 +97,7 @@ export const submitSecretaryInternalMessage = async (req, res) => {
             }
         }
 
-        return res.redirect('/secretary_viewtickets');
+        return res.redirect('/secretary-viewtickets');
     } catch (error) {
         console.error('Error submitting internal message:', error);
         return res.status(500).send('Internal message failed: ' + error.message);

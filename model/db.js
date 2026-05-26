@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import * as sql from '../model/queries.mjs';
+import { formatUserDisplayName } from '../utils/displayName.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -123,7 +124,12 @@ export async function getCategoryThemeByTicketId(ticket_id) {
 }
 export async function getSecretariesForAssignment() {
     const [rows] = await pool.query(sql.getSecretariesForAssignment);
-    return rows;
+    // Pre-compute the display name once here so every consumer (assign
+    // dropdown, leader view ticket, modal) uses the same shape.
+    return rows.map((row) => ({
+        secretary_id: row.secretary_id,
+        displayName: formatUserDisplayName(row, ''),
+    }));
 }
 export async function getAttachmentsByMessageId(message_id) {
     const [rows] = await pool.query(sql.getAttachmentsByMessageId, [message_id]);
