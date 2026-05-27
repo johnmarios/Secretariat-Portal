@@ -9,6 +9,7 @@
 // The companion file rowNav.js handles `data-href` rows (full-page view
 // navigation) and is loaded for every role.
 document.addEventListener('DOMContentLoaded', () => {
+    // get <div> where modals will be injected 
     const modalRoot = document.getElementById('modalRoot');
     const { renderAttachmentList } = window.AttachUtils;
     let escapeHandler = null;
