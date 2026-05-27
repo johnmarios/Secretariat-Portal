@@ -1,21 +1,21 @@
-
 export const formatAttachment = (att) => {
-    const uglyName = att.file_name;
-    const cleanName = uglyName.replace(/-\d+-\d+(\.[^.]+)$/, '$1');
 
-    let basePath = att.file_path.replace(/\\/g, '/');
-    basePath = basePath.replace(/^\/?public/, '');
-    if (!basePath.startsWith('/')) {
-        basePath = '/' + basePath;
+    const isPathInNameColumn = att.file_name.includes('/') || att.file_name.includes('\\');
+    
+    const realPath = isPathInNameColumn ? att.file_name : att.file_path; // Π.χ. "public\files\41-123.docx"
+    const realName = isPathInNameColumn ? att.file_path : att.file_name; // Π.χ. "Ομαδική εργασία.docx"
+
+    let downloadUrl = realPath.replace(/\\/g, '/');
+    downloadUrl = downloadUrl.replace(/^\/?public/, '');
+    if (!downloadUrl.startsWith('/')) {
+        downloadUrl = '/' + downloadUrl;
     }
 
-    const pathParts = basePath.split('/');
-    pathParts.pop();
-    const realDownloadUrl = pathParts.join('/') + '/' + uglyName;
+    const cleanName = realName.replace(/-\d+-\d+(\.[^.]+)$/, '$1');
 
     return {
         ...att,
-        file_name: cleanName,
-        file_path: realDownloadUrl,
+        file_name: cleanName,      
+        file_path: downloadUrl     
     };
 };

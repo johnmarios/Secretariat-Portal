@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
+import flash from 'connect-flash';
 
 // 2. Τοπικά Αρχεία (Προσέχουμε τις καταλήξεις!)
 import configurePassport from './config/passport.mjs';
@@ -34,6 +35,15 @@ function createApp() {
         saveUninitialized: false,
         cookie: { maxAge: 1000 * 60 * 60 * 24 }
     }));
+
+    //for the login error messages
+    app.use(flash());
+    app.use((req, res, next) => {
+    let err = req.flash('error');
+    res.locals.errorMessage = err.length > 0 ? err[0] : null; 
+    next();
+    });
+    //
 
     app.use(passport.initialize());
     app.use(passport.session());

@@ -66,7 +66,7 @@ export const logout = (req, res, next) => {
     });
 };
 
-// USER INFO 
+// user INFO 
 export const getMe = (req, res) => {
     if (req.isAuthenticated()) {
         res.json({ authenticated: true, user: req.user });

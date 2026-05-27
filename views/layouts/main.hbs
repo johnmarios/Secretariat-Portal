@@ -26,8 +26,14 @@
   
   <main>
     {{{body}}} 
+    {{!-- to fix a login page background img bug --}}
+    {{#if isLoginPage}} 
+      {{> footer}}
+    {{/if}}
   </main>
-  {{> footer}}
+  {{#unless isLoginPage}}
+    {{> footer}}
+  {{/unless}}
 
   <script src="/js/utils/attachments.js" defer></script>
   <script src="/js/partials/navbar.js" defer></script>
