@@ -17,7 +17,13 @@ const parseTicketId = (req, res) => {
 const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
     const conn = await dbPool.getConnection();
     try {
+        
+        // need to update the ticket status to pending or in_progress depending on the action (reject or accept)
+        // and then delete the internal messages and their attachments that were created for the escalation;
+
         await conn.beginTransaction();
+        // wrap the delete and update operations in a transaction to ensure data integrity;
+        // if any of the operations fail, we can roll back to the previous consistent state
 
         const [attachmentRows] = await conn.execute(
             `SELECT A.file_path FROM ATTACHMENT A
@@ -58,6 +64,7 @@ const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
 };
 
 export const assignTicket = async (req, res) => {
+    // changes status and becomes in progress 
     const ticketId = req.params.id;
     const selectedSecretaryId = Number(req.body.secretary_id || req.user.secretary_id);
     if (!Number.isInteger(selectedSecretaryId) || selectedSecretaryId < 1) {

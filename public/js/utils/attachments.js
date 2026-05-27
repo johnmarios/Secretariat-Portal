@@ -19,6 +19,7 @@
     };
 
     const fileLabel = (fileName, fileType) => {
+        // checks first file name and then file type
         if (fileName) {
             const ext = String(fileName).split('.').pop();
             if (ext && ext.length <= 5) return ext.toUpperCase();
@@ -32,11 +33,14 @@
     };
 
     const basename = (value) => {
+        // if value is a file path, extract the file name; otherwise return an empty string
+        // C:\uploads\files\maths.pdf -> maths.pdf
         if (!value) return '';
         return String(value).replace(/\\/g, '/').split('/').pop();
     };
 
     const attachmentUrl = (filePath) => {
+        // creates the link to download the attachment; if filePath is invalid, returns '#' to avoid broken links
         if (!filePath) return '#';
         const cleanedPath = String(filePath).replace(/\\/g, '/').replace(/^\/?public/, '');
         return `/files/${cleanedPath.split('/').pop()}`;
@@ -70,6 +74,6 @@
         renderAttachmentList,
     };
 
-    // Backwards compatibility: existing inline scripts may call window.renderAttachmentList directly.
+    // Expose the main render function directly on window for convenience
     window.renderAttachmentList = renderAttachmentList;
 })();
