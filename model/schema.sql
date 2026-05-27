@@ -77,3 +77,12 @@ CREATE TABLE IF NOT EXISTS `ATTACHMENT` (
     CONSTRAINT `ATTACHMENT_fk_message` FOREIGN KEY (`for_message_id`) REFERENCES `MESSAGE`(`message_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Trigger: update ticket.last_updated when a new message is inserted
+DROP TRIGGER IF EXISTS `trg_message_after_insert`;
+CREATE TRIGGER `trg_message_after_insert`
+AFTER INSERT ON `MESSAGE`
+FOR EACH ROW
+BEGIN
+    UPDATE `TICKET` SET last_updated = NOW() WHERE ticket_id = NEW.for_ticket_id;
+END;
+

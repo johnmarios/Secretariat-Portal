@@ -169,6 +169,11 @@ export async function getTicketById(ticket_id) {
     return rows[0];
 }
 
+export async function closeStaleCompletedTickets() {
+    const [result] = await pool.query(sql.closeStaleCompletedTickets);
+    return result;
+}
+
 export async function searchTicketsByStudentTerm(term) {
     const t = String(term || '').trim();
     if (!t) return [];

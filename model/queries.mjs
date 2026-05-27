@@ -313,6 +313,12 @@ export const updateTicketStatusById = `
     UPDATE TICKET SET status = ? WHERE ticket_id = ?
 `;
 
+export const closeStaleCompletedTickets = `
+    UPDATE TICKET
+    SET status = 'closed', resolved_at = NOW()
+    WHERE status = 'resolved' AND last_updated < DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+`;
+
 export const getSecretaryIdByForId = `
     SELECT secretary_id FROM SECRETARY WHERE for_id = ?
 `;

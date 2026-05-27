@@ -107,7 +107,7 @@ VALUES (
         1
     );
 -- update ticket after message to update last_updated timestamp
-UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1; 
+-- UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1; 
 
 INSERT INTO
     `ATTACHMENT` (
@@ -159,7 +159,7 @@ VALUES (
         2,
         1
     );
-UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+-- UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
 
 INSERT INTO
     `ATTACHMENT` (
@@ -210,7 +210,7 @@ VALUES (
         1,
         1
     );
-UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+-- UPDATE `TICKET` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
 INSERT INTO
     `ATTACHMENT` (
         `file_name`,
