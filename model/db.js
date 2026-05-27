@@ -103,9 +103,18 @@ export async function getAllCategories() {
 }
 
 export async function saveAttachment({ for_message_id, file_path, file_name, file_size, file_type }) {
+
+    // Διόρθωση ονόματος αρχείου για Ελληνικά (αν χρειάζεται)
+    let correctName = file_name;
+    try {
+        correctName = Buffer.from(file_name, 'latin1').toString('utf8');
+    } catch (error) {
+        console.error('Σφάλμα κατά τη μετατροπή των Ελληνικών:', error);
+    }
+
     const [result] = await pool.query(sql.saveAttachment, [
-        file_path,
-        file_name,
+        correctName,
+        file_path,      
         file_size,
         file_type,
         for_message_id

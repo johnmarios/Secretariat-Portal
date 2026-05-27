@@ -7,11 +7,11 @@ import dbPool from './db.js';
 
 faker.seed(20260523);
 
-// const TARGET_STUDENTS = 1200;
-// const TARGET_TICKETS = 1000;
+const TARGET_STUDENTS = 1200;
+const TARGET_TICKETS = 1000;
 
-const TARGET_STUDENTS = 500;  
-const TARGET_TICKETS = 250;   
+// const TARGET_STUDENTS = 500;  
+// const TARGET_TICKETS = 250;   
 
 // 8 rounds keeps seeding fast (~10s for ~1200 users) while staying compatible
 // with the 10-round hashes produced by the register controller — bcrypt.compare
