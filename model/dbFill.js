@@ -11,8 +11,8 @@ const TARGET_STUDENTS = 1200;
 const TARGET_TICKETS = 1000;
 
 // 8 rounds keeps seeding fast (~10s for ~1200 users) while staying compatible
-// with the 10-round hashes produced by the register controller — bcrypt.compare
-// works regardless of the cost factor used to create the hash.
+// with the 10-round hashes produced by the register controller 
+
 const BCRYPT_ROUNDS = 8;
 
 const ENROLLMENT_BOUNDS = {
@@ -25,7 +25,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CREDENTIALS_PATH = path.join(__dirname, '..', 'seed-credentials.txt');
 const FILES_DIR = path.join(__dirname, '..', 'public', 'files');
 
-// Conversation generation knobs
+
 const MAX_MESSAGES_PER_TICKET = 10;
 const INITIAL_ATTACHMENT_PROB = 0.4;
 const REPLY_ATTACHMENT_PROB = 0.2;

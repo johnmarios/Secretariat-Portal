@@ -14,7 +14,6 @@ const parseTicketId = (req, res) => {
     return ticket_id;
 };
 
-// Common ticket header data (status + category) shared by all three view variants.
 const loadTicketHeader = async (ticket_id) => {
     const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
     const ticketRow = await db.getTicketById(ticket_id);

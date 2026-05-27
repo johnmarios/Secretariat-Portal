@@ -1,12 +1,9 @@
-{{!-- {{#if title}}
-  <h3>{{title}}</h3>
-{{/if}} --}}
-
 <table class="requests-table">
     <thead>
             <tr>
             <th>ID</th>
             {{#unless isStudent}}<th>ΑΜ</th>{{/unless}}
+            <th>Κατηγορία</th>
             <th>Θέμα</th>
             <th>Ημερομηνία Υποβολής</th>
             <th>Κατάσταση</th>
@@ -17,6 +14,7 @@
         <tr data-id="{{this.id}}" data-href="{{#if ../isStudent}}/tickets/student-view-ticket/ticket/{{this.id}}{{else}}{{#if ../isLeader}}/tickets/leader-view-ticket/ticket/{{this.id}}{{else}}/tickets/secretary-view-ticket/ticket/{{this.id}}{{/if}}{{/if}}">
             <td>{{this.id}}</td>
             {{#unless ../isStudent}}<td>{{this.am}}</td>{{/unless}}
+            <td>{{this.category}}</td>
             <td>{{this.subject}}</td>
             <td>{{this.submittedAt}}</td>
             <td>

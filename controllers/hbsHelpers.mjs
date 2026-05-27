@@ -1,11 +1,5 @@
 import path from 'path';
 
-// Handlebars view helpers registered with the express-handlebars engine in
-// app.mjs. Available inside any .hbs template by name, e.g. {{fallback x}},
-// {{#if (eq a b)}}, etc.
-//
-// These do NOT handle HTTP requests — they are pure view-layer formatting.
-
 function isBlank(value) {
 	return value === undefined || value === null || String(value).trim() === '';
 }

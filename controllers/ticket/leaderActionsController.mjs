@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import dbPool from '../../model/db.js';
 import * as queries from '../../model/queries.mjs';
+import { isLeaderUser } from './helpers.mjs';
 
 const parseTicketId = (req, res) => {
     const ticket_id = Number(req.params.ticket_id);
@@ -12,9 +13,7 @@ const parseTicketId = (req, res) => {
     return ticket_id;
 };
 
-// Shared transactional helper: deletes internal messages + attachments for a
-// ticket and updates the ticket's status. Used by both leader accept and reject.
-const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
+const finalizeEscalation = async ({ ticketId, newStatus, logLabel, assignSecretaryId = null }) => {
     const conn = await dbPool.getConnection();
     try {
         
@@ -26,18 +25,22 @@ const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
         // if any of the operations fail, we can roll back to the previous consistent state
 
         const [attachmentRows] = await conn.execute(
-            `SELECT A.file_path FROM ATTACHMENT A
-             JOIN MESSAGE M ON A.for_message_id = M.message_id
-             WHERE M.for_ticket_id = ? AND M.is_internal = 1`,
+            queries.getAttachmentFilePathsForInternalMessagesByTicketId,
             [ticketId]
         );
 
         const [delAttRes] = await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticketId]);
         const [delMsgRes] = await conn.execute(queries.deleteInternalMessagesByTicketId, [ticketId]);
-        const [updRes] = await conn.execute('UPDATE TICKET SET status = ? WHERE ticket_id = ?', [
-            newStatus,
-            ticketId,
-        ]);
+        let updRes;
+        if (assignSecretaryId) {
+            [updRes] = await conn.execute(queries.updateTicketStatusWithSecretary, [
+                newStatus,
+                assignSecretaryId,
+                ticketId,
+            ]);
+        } else {
+            [updRes] = await conn.execute(queries.updateTicketStatusById, [newStatus, ticketId]);
+        }
 
         await conn.commit();
 
@@ -72,14 +75,9 @@ export const assignTicket = async (req, res) => {
     }
 
     try {
-        await dbPool.execute(
-            `UPDATE TICKET
-             SET status = 'in_progress', for_secretary_id = ?
-             WHERE ticket_id = ?`,
-            [selectedSecretaryId, ticketId]
-        );
+        await dbPool.execute(queries.updateTicketStatusWithSecretary, ['in_progress', selectedSecretaryId, ticketId]);
 
-        if (req.user.is_leader === 1) {
+        if (isLeaderUser(req.user)) {
             return res.redirect('/leader-viewtickets');
         }
         return res.redirect('/secretary-viewtickets');
@@ -98,6 +96,7 @@ export const submitLeaderAccept = async (req, res) => {
             ticketId: ticket_id,
             newStatus: 'in_progress',
             logLabel: 'Leader accepted',
+            assignSecretaryId: req.user?.secretary_id || null,
         });
         return res.redirect('/leader-viewtickets');
     } catch (err) {

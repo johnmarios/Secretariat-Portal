@@ -7,7 +7,8 @@
         <span>Secretariat Portal</span>
       </a>
       
-      <!-- searchbar -->
+      <!-- searchbar (hidden for students) -->
+      {{#unless @root.isStudent}}
       <div class="search-bar">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0A0A0" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
@@ -16,6 +17,7 @@
         <input id="ticketsSearchInput" type="text" placeholder="Αναζήτηση ΑΜ ή Ονοματεπώνυμου...">
         <div class="search-results" id="ticketsSearchResults" aria-live="polite"></div>
       </div>
+      {{/unless}}
       
       <!-- collapsed menu -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

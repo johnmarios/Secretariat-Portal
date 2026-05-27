@@ -11,32 +11,32 @@ import { uploadFiles } from '../middlewares/upload.mjs';
 
 const router = express.Router();
 
-// ----- Create ticket -----
+//Create ticket
 router.get('/create-ticket/student/:student_id', ensureAuthenticated, createController.renderCreateTicketPage);
 router.post('/create-ticket/student/:student_id', ensureAuthenticated, uploadFiles, createController.submitCreateTicket);
 router.get('/create-ticket/secretary', ensureAuthenticated, createController.renderSecretaryCreateTicketPage);
 router.post('/create-ticket/secretary', ensureAuthenticated, uploadFiles, createController.submitCreateTicket);
 
-// ----- Search (JSON) -----
+//Search 
 router.get('/students/search', ensureAuthenticated, createController.searchStudents);
 router.get('/search', ensureAuthenticated, dashboardController.searchTickets);
 
-// ----- View ticket pages -----
+// View ticket pages 
 router.get('/student-view-ticket/ticket/:ticket_id', ensureAuthenticated, viewController.renderStudentViewTicketPage);
 router.get('/secretary-view-ticket/ticket/:ticket_id', ensureAuthenticated, viewController.renderSecretaryViewTicketPage);
 router.get('/leader-view-ticket/ticket/:ticket_id', ensureAuthenticated, viewController.renderLeaderViewTicketPage);
 
-// ----- Replies -----
+// Replies
 router.post('/student-view-ticket/ticket/:ticket_id/reply', ensureAuthenticated, uploadFiles, replyController.submitStudentReply);
 
 router.post('/secretary-view-ticket/ticket/:ticket_id/reply', ensureAuthenticated, uploadFiles, replyController.submitSecretaryReply);
 router.post('/secretary-view-ticket/ticket/:ticket_id/escalate', ensureAuthenticated, uploadFiles, replyController.submitSecretaryInternalMessage);
 
-// ----- Leader-only escalation actions -----
+// Leader-only escalation actions 
 router.post('/leader-view-ticket/ticket/:ticket_id/accept', ensureAuthenticated, leaderActions.submitLeaderAccept);
 router.post('/leader-view-ticket/ticket/:ticket_id/reject', ensureAuthenticated, leaderActions.submitLeaderReject);
 
-// ----- Admin -----
+// Admin
 router.get('/clear-duplicate-uploads/', ensureAuthenticated, leaderActions.clearDuplicateFiles);
 
 export default router;

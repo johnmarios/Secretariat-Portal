@@ -14,7 +14,6 @@ async function main() {
 
     const schema = await fs.readFile(SCHEMA_PATH, 'utf8');
 
-    // multipleStatements allows running the whole schema file in one query
     const connection = await mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,

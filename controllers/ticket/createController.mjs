@@ -90,10 +90,6 @@ export const submitCreateTicket = async (req, res) => {
             return res.status(400).send('Συμπληρώστε όλα τα υποχρεωτικά πεδία');
         }
 
-        // MESSAGE.for_user_id is a FK to USER.user_id, not STUDENT.student_id.
-        // We must look up the student's underlying user_id before inserting,
-        // otherwise the first message gets attributed to an unrelated user
-        // (or to nobody) 
         const studentRow = await db.getStudentInfo(student_id);
         if (!studentRow) {
             return res.status(404).send('Δεν βρέθηκε ο φοιτητής');

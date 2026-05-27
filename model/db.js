@@ -23,6 +23,31 @@ export async function getStudentInfo(student_id) {
     }
 }
 
+export async function getSecretaryIdByForId(for_id) {
+    const [rows] = await pool.query(sql.getSecretaryIdByForId, [for_id]);
+    return rows[0];
+}
+
+export async function getStudentIdByForId(for_id) {
+    const [rows] = await pool.query(sql.getStudentIdByForId, [for_id]);
+    return rows[0];
+}
+
+export async function insertUser({ first_name, last_name, email, password }) {
+    const [result] = await pool.query(sql.insertUser, [first_name, last_name, email, password]);
+    return result.insertId;
+}
+
+export async function insertStudentForUser(for_id) {
+    const [result] = await pool.query(sql.insertStudent, [for_id]);
+    return result.insertId;
+}
+
+export async function insertSecretaryForUser(for_id, is_leader = 0) {
+    const [result] = await pool.query(sql.insertSecretary, [for_id, is_leader]);
+    return result.insertId;
+}
+
 export async function searchStudents(searchTerm) {
     try {
         const normalizedTerm = String(searchTerm || '').trim();
@@ -124,8 +149,7 @@ export async function getCategoryThemeByTicketId(ticket_id) {
 }
 export async function getSecretariesForAssignment() {
     const [rows] = await pool.query(sql.getSecretariesForAssignment);
-    // Pre-compute the display name once here so every consumer (assign
-    // dropdown, leader view ticket, modal) uses the same shape.
+    
     return rows.map((row) => ({
         secretary_id: row.secretary_id,
         displayName: formatUserDisplayName(row, ''),
@@ -153,9 +177,5 @@ export async function searchTicketsByStudentTerm(term) {
     return rows;
 }
 
-// export async function getMessagesByTicketId(ticket_id) {
-//     const [rows] = await pool.query(sql.getMessagesByTicketId, [ticket_id]);
-//     return rows;
-// }
 
 export default pool;

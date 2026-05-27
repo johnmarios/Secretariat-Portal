@@ -1,8 +1,3 @@
-// ==========================================
-// 1. AUTH & USER QUERIES
-// ==========================================
-
-// Returns user including password hash so we can verify with bcrypt.compare.
 export const getUserByEmail = `
     SELECT u.user_id, u.first_name, u.last_name, u.email, u.password,
            s.student_id, sec.secretary_id, sec.is_leader
@@ -58,10 +53,6 @@ export const searchStudents = `
 `;
 
 
-// ==========================================
-// 2. CATEGORIES QUERIES
-// ==========================================
-
 export const getCategoryIdByName = `
     SELECT category_id FROM CATEGORY WHERE category_name = ? LIMIT 1
 `;
@@ -70,10 +61,6 @@ export const getAllCategories = `
     SELECT category_id AS id, category_theme AS theme, category_name AS name FROM CATEGORY
 `;
 
-
-// ==========================================
-// 3. TICKET CREATION & MESSAGES 
-// ==========================================
 
 export const insertTicket = `
     INSERT INTO TICKET (created_at, for_student_id, for_category_id)
@@ -100,10 +87,6 @@ export const insertInternalMessage = `
 `;
 
 
-// ==========================================
-// 4. VIEW TICKETS DATA (Λεπτομέρειες Αιτήματος)
-// ==========================================
-
 export const getFirstMessageByTicketId = `
     SELECT * FROM MESSAGE   
     WHERE for_ticket_id = ?
@@ -111,8 +94,6 @@ export const getFirstMessageByTicketId = `
     LIMIT 1
 `;
 
-// TICKET.for_student_id is STUDENT.student_id, but MESSAGE.for_user_id is USER.user_id.
-// We have to map student_id -> user_id via the STUDENT table to compare correctly.
 export const getRestStudentMessagesByTicketId = `
     SELECT * FROM MESSAGE
     WHERE for_ticket_id = ?
@@ -173,7 +154,6 @@ export const getAttachmentsByMessagesId = `
     WHERE for_message_id IN (?)
 `;
 
-// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ] ---
 export const getTicketById = `
     SELECT ticket_id, status, created_at, last_updated, resolved_at, for_student_id, for_secretary_id, for_category_id
     FROM TICKET
@@ -181,12 +161,6 @@ export const getTicketById = `
     LIMIT 1
 `;
 
-
-// ==========================================
-// 5. DASHBOARDS (Για Φοιτητή, Γραμματεία, Προϊστάμενο)
-// ==========================================
-
-// --- [ΔΙΚΕΣ ΣΟΥ ΑΛΛΑΓΕΣ]: Joins για Κατηγορία και ΑΜ σε όλα τα tables! ---
 
 export const getTicketsByStudentId = `
     SELECT 
@@ -296,7 +270,6 @@ export const getAllAssignedTicketsForLeader = `
     ORDER BY T.created_at DESC
 `;
 
-// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ]: Αναζήτηση στα Tickets ---
 export const searchTicketsByStudentTerm = `
     SELECT 
         t.ticket_id,
@@ -323,4 +296,39 @@ export const getInternalMessageByTicketId = `
     JOIN USER u ON m.for_user_id = u.user_id
     WHERE m.for_ticket_id = ? AND m.is_internal = 1
     ORDER BY m.created_at DESC LIMIT 1
+`;
+
+// Additional queries moved from controllers for centralization
+export const getAttachmentFilePathsForInternalMessagesByTicketId = `
+    SELECT A.file_path FROM ATTACHMENT A
+    JOIN MESSAGE M ON A.for_message_id = M.message_id
+    WHERE M.for_ticket_id = ? AND M.is_internal = 1
+`;
+
+export const updateTicketStatusWithSecretary = `
+    UPDATE TICKET SET status = ?, for_secretary_id = ? WHERE ticket_id = ?
+`;
+
+export const updateTicketStatusById = `
+    UPDATE TICKET SET status = ? WHERE ticket_id = ?
+`;
+
+export const getSecretaryIdByForId = `
+    SELECT secretary_id FROM SECRETARY WHERE for_id = ?
+`;
+
+export const getStudentIdByForId = `
+    SELECT student_id FROM STUDENT WHERE for_id = ?
+`;
+
+export const insertUser = `
+    INSERT INTO USER (first_name, last_name, email, password) VALUES (?, ?, ?, ?)
+`;
+
+export const insertStudent = `
+    INSERT INTO STUDENT (for_id) VALUES (?)
+`;
+
+export const insertSecretary = `
+    INSERT INTO SECRETARY (for_id, is_leader) VALUES (?, ?)
 `;
