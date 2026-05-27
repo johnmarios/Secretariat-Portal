@@ -90,10 +90,6 @@ export const submitCreateTicket = async (req, res) => {
             return res.status(400).send('Συμπληρώστε όλα τα υποχρεωτικά πεδία');
         }
 
-        // message.for_user_id is a FK to user.user_id, not student.student_id.
-        // We must look up the student's underlying user_id before inserting,
-        // otherwise the first message gets attributed to an unrelated user
-        // (or to nobody) 
         const studentRow = await db.getStudentInfo(student_id);
         if (!studentRow) {
             return res.status(404).send('Δεν βρέθηκε ο φοιτητής');
@@ -116,7 +112,7 @@ export const submitCreateTicket = async (req, res) => {
         await saveAttachmentsForMessage(message_id, files);
 
         if (isSecretaryFlow) {
-            return res.redirect('/secretary_viewtickets');
+            return res.redirect('/secretary-viewtickets');
         }
         return res.redirect(`/tickets/create-ticket/student/${student_id}`);
     } catch (error) {

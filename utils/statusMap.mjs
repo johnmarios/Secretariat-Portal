@@ -1,4 +1,4 @@
-// Maps the raw DB enum value of ticket.status into a display label + CSS class.
+// Maps the raw DB enum value of TICKET.status into a display label + CSS class.
 export const mapTicketStatus = (status) => {
     switch (status) {
         case 'open': return { label: 'Μη Εκχωρημένο', className: 'status-open' };

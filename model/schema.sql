@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `attachment`, `message`, `ticket`, `student`, `secretary`, `user`, `category`;
+DROP TABLE IF EXISTS `attachment	`, `message`, `ticket`, `student`, `secretary`, `user`, `category`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `message` (
     CONSTRAINT `MESSAGE_fk_ticket` FOREIGN KEY (`for_ticket_id`) REFERENCES `ticket`(`ticket_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS `attachment` (
+CREATE TABLE IF NOT EXISTS `attachment	` (
     `file_id` int AUTO_INCREMENT NOT NULL UNIQUE,
     `file_name` varchar(255) NOT NULL,
     `file_path` varchar(255) NOT NULL, 
@@ -76,4 +76,13 @@ CREATE TABLE IF NOT EXISTS `attachment` (
     PRIMARY KEY (`file_id`),
     CONSTRAINT `ATTACHMENT_fk_message` FOREIGN KEY (`for_message_id`) REFERENCES `message`(`message_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+-- Trigger: update ticket.last_updated when a new message is inserted
+DROP TRIGGER IF EXISTS `trg_message_after_insert`;
+CREATE TRIGGER `trg_message_after_insert`
+AFTER INSERT ON `message`
+FOR EACH ROW
+BEGIN
+    UPDATE `ticket` SET last_updated = NOW() WHERE ticket_id = NEW.for_ticket_id;
+END;
 

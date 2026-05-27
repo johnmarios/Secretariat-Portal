@@ -3,6 +3,7 @@ export const getHomePage = (req, res) => {
         title: 'Αρχική - Secretariat Portal',
         bodyClass: 'index-page',
         isLoginPage: false
+
     });
 };
 
@@ -11,5 +12,6 @@ export const getLoginPage = (req, res) => {
         title: 'Σύνδεση',
         bodyClass: 'login-page',
         isLoginPage: true
+
     });
 };

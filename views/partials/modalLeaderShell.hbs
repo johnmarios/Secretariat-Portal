@@ -1,0 +1,67 @@
+
+<div class="modal-overlay" id="ticketModal">
+    <div class="modal-nav">
+        <button class="close-btn" id="closeModalBtn" type="button" aria-label="Κλείσιμο"></button>
+    </div>
+
+    <div class="modal-content">
+        <div class="modal-col col-white">
+            <div class="info-group">
+                <span class="label">ID:</span>
+                <span class="value" id="modal-id">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Ημερομηνία Υποβολής:</span>
+                <span class="value" id="modal-date">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Κατηγορία:</span>
+                <span class="value fw-bold" id="modal-category">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Θέμα:</span>
+                <span class="value" id="modal-subject">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Επισυναπτόμενα αρχεία:</span>
+                <div class="file-list student-file-list" id="modal-attachments" aria-live="polite"></div>
+            </div>
+        </div>
+
+        <div class="modal-col col-gray">
+            <div class="info-group">
+                <span class="label">Ονοματεπώνυμο:</span>
+                <span class="value" id="modal-student">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Α.Μ.:</span>
+                <span class="value" id="modal-am">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Email:</span>
+                <span class="value" id="modal-email">-</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Σχολή / Τμήμα:</span>
+                <span class="value">Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Έτος Σπουδών:</span>
+                <span class="value study-year" id="modal-year">-</span>
+            </div>
+        </div>
+
+        <div class="modal-col col-white">
+            <div class="info-group">
+                <span class="label">Περιγραφή αιτήματος:</span>
+                <div class="description-box" id="modal-description" style="padding: 10px; overflow-y: auto;">-</div>
+            </div>
+
+            <form id="modalAssignForm" method="POST" action="" style="margin-top: auto; padding-top: 10px;">
+                <label for="modal-secretary-select" class="label">Ανάθεση σε</label>
+                <select name="secretary_id" id="modal-secretary-select" class="form-select mb-2" required></select>
+                <button type="submit" class="btn btn-primary w-100" style="padding: 9px; font-weight: bold;">Ανάληψη Αιτήματος</button>
+            </form>
+        </div>
+    </div>
+</div>

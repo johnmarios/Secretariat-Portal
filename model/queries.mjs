@@ -1,8 +1,3 @@
-// ==========================================
-// 1. AUTH & USER QUERIES
-// ==========================================
-
-// Returns user including password hash so we can verify with bcrypt.compare.
 export const getUserByEmail = `
     SELECT u.user_id, u.first_name, u.last_name, u.email, u.password,
            s.student_id, sec.secretary_id, sec.is_leader
@@ -58,10 +53,6 @@ export const searchStudents = `
 `;
 
 
-// ==========================================
-// 2. CATEGORIES QUERIES
-// ==========================================
-
 export const getCategoryIdByName = `
     SELECT category_id FROM category WHERE category_name = ? LIMIT 1
 `;
@@ -70,10 +61,6 @@ export const getAllCategories = `
     SELECT category_id AS id, category_theme AS theme, category_name AS name FROM category
 `;
 
-
-// ==========================================
-// 3. ticket CREATION & MESSAGES 
-// ==========================================
 
 export const insertTicket = `
     INSERT INTO ticket (created_at, for_student_id, for_category_id)
@@ -90,7 +77,7 @@ export const updateTicketLastUpdated = `
 `;
 
 export const saveAttachment = `
-    INSERT INTO attachment (file_name, file_path, file_size, file_type, for_message_id)
+    INSERT INTO attachment	 (file_name, file_path, file_size, file_type, for_message_id)
     VALUES (?, ?, ?, ?, ?)
 `;  
 
@@ -100,10 +87,6 @@ export const insertInternalMessage = `
 `;
 
 
-// ==========================================
-// 4. VIEW TICKETS DATA (Λεπτομέρειες Αιτήματος)
-// ==========================================
-
 export const getFirstMessageByTicketId = `
     SELECT * FROM message   
     WHERE for_ticket_id = ?
@@ -111,8 +94,6 @@ export const getFirstMessageByTicketId = `
     LIMIT 1
 `;
 
-// ticket.for_student_id is student.student_id, but message.for_user_id is user.user_id.
-// We have to map student_id -> user_id via the student table to compare correctly.
 export const getRestStudentMessagesByTicketId = `
     SELECT * FROM message
     WHERE for_ticket_id = ?
@@ -164,16 +145,15 @@ export const getSecretariesForAssignment = `
 `;
 
 export const getAttachmentsByMessageId = `
-    SELECT file_name, file_path, file_size, file_type, for_message_id FROM attachment
+    SELECT file_name, file_path, file_size, file_type, for_message_id FROM attachment	
     WHERE for_message_id = ?
 `;
 
 export const getAttachmentsByMessagesId = `
-    SELECT file_name, file_path, file_size, file_type, for_message_id FROM attachment
+    SELECT file_name, file_path, file_size, file_type, for_message_id FROM attachment	
     WHERE for_message_id IN (?)
 `;
 
-// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ] ---
 export const getTicketById = `
     SELECT ticket_id, status, created_at, last_updated, resolved_at, for_student_id, for_secretary_id, for_category_id
     FROM ticket
@@ -181,12 +161,6 @@ export const getTicketById = `
     LIMIT 1
 `;
 
-
-// ==========================================
-// 5. DASHBOARDS (Για Φοιτητή, Γραμματεία, Προϊστάμενο)
-// ==========================================
-
-// --- [ΔΙΚΕΣ ΣΟΥ ΑΛΛΑΓΕΣ]: Joins για Κατηγορία και ΑΜ σε όλα τα tables! ---
 
 export const getTicketsByStudentId = `
     SELECT 
@@ -260,7 +234,7 @@ export const getEscalatedTickets = `
 `;
 
 export const deleteAttachmentsForInternalMessages = `
-    DELETE A FROM attachment A
+    DELETE A FROM attachment	 A
     JOIN message M ON A.for_message_id = M.message_id
     WHERE M.for_ticket_id = ? AND M.is_internal = 1
 `;
@@ -296,7 +270,6 @@ export const getAllAssignedTicketsForLeader = `
     ORDER BY T.created_at DESC
 `;
 
-// --- [ΠΡΟΣΘΗΚΗ ΣΥΝΕΡΓΑΤΗ]: Αναζήτηση στα Tickets ---
 export const searchTicketsByStudentTerm = `
     SELECT 
         t.ticket_id,
@@ -323,4 +296,45 @@ export const getInternalMessageByTicketId = `
     JOIN user u ON m.for_user_id = u.user_id
     WHERE m.for_ticket_id = ? AND m.is_internal = 1
     ORDER BY m.created_at DESC LIMIT 1
+`;
+
+// Additional queries moved from controllers for centralization
+export const getAttachmentFilePathsForInternalMessagesByTicketId = `
+    SELECT A.file_path FROM attachment	 A
+    JOIN message M ON A.for_message_id = M.message_id
+    WHERE M.for_ticket_id = ? AND M.is_internal = 1
+`;
+
+export const updateTicketStatusWithSecretary = `
+    UPDATE ticket SET status = ?, for_secretary_id = ? WHERE ticket_id = ?
+`;
+
+export const updateTicketStatusById = `
+    UPDATE ticket SET status = ? WHERE ticket_id = ?
+`;
+
+export const closeStaleCompletedTickets = `
+    UPDATE ticket
+    SET status = 'closed', resolved_at = NOW()
+    WHERE status = 'resolved' AND last_updated < DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+`;
+
+export const getSecretaryIdByForId = `
+    SELECT secretary_id FROM secretary WHERE for_id = ?
+`;
+
+export const getStudentIdByForId = `
+    SELECT student_id FROM student WHERE for_id = ?
+`;
+
+export const insertUser = `
+    INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, ?)
+`;
+
+export const insertStudent = `
+    INSERT INTO student (for_id) VALUES (?)
+`;
+
+export const insertSecretary = `
+    INSERT INTO secretary (for_id, is_leader) VALUES (?, ?)
 `;

@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import * as sql from '../model/queries.mjs';
+import { formatUserDisplayName } from '../utils/displayName.mjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -34,6 +35,31 @@ export async function getStudentInfo(student_id) {
         console.error('Error fetching student info:', error);
         throw error;
     }
+}
+
+export async function getSecretaryIdByForId(for_id) {
+    const [rows] = await pool.query(sql.getSecretaryIdByForId, [for_id]);
+    return rows[0];
+}
+
+export async function getStudentIdByForId(for_id) {
+    const [rows] = await pool.query(sql.getStudentIdByForId, [for_id]);
+    return rows[0];
+}
+
+export async function insertUser({ first_name, last_name, email, password }) {
+    const [result] = await pool.query(sql.insertUser, [first_name, last_name, email, password]);
+    return result.insertId;
+}
+
+export async function insertStudentForUser(for_id) {
+    const [result] = await pool.query(sql.insertStudent, [for_id]);
+    return result.insertId;
+}
+
+export async function insertSecretaryForUser(for_id, is_leader = 0) {
+    const [result] = await pool.query(sql.insertSecretary, [for_id, is_leader]);
+    return result.insertId;
 }
 
 export async function searchStudents(searchTerm) {
@@ -146,7 +172,11 @@ export async function getCategoryThemeByTicketId(ticket_id) {
 }
 export async function getSecretariesForAssignment() {
     const [rows] = await pool.query(sql.getSecretariesForAssignment);
-    return rows;
+    
+    return rows.map((row) => ({
+        secretary_id: row.secretary_id,
+        displayName: formatUserDisplayName(row, ''),
+    }));
 }
 export async function getAttachmentsByMessageId(message_id) {
     const [rows] = await pool.query(sql.getAttachmentsByMessageId, [message_id]);
@@ -162,6 +192,11 @@ export async function getTicketById(ticket_id) {
     return rows[0];
 }
 
+export async function closeStaleCompletedTickets() {
+    const [result] = await pool.query(sql.closeStaleCompletedTickets);
+    return result;
+}
+
 export async function searchTicketsByStudentTerm(term) {
     const t = String(term || '').trim();
     if (!t) return [];
@@ -170,9 +205,5 @@ export async function searchTicketsByStudentTerm(term) {
     return rows;
 }
 
-// export async function getMessagesByTicketId(ticket_id) {
-//     const [rows] = await pool.query(sql.getMessagesByTicketId, [ticket_id]);
-//     return rows;
-// }
 
 export default pool;

@@ -23,23 +23,18 @@
 </head>
 
 <body class="{{bodyClass}}">
-  {{!-- {{> navbar}} --}}
   
   <main>
     {{{body}}} 
-    
     {{!-- to fix a login page background img bug --}}
     {{#if isLoginPage}} 
       {{> footer}}
     {{/if}}
-    
   </main>
-  
   {{#unless isLoginPage}}
     {{> footer}}
   {{/unless}}
 
-  {{!-- {{{body}}} --}}
   <script src="/js/utils/attachments.js" defer></script>
   <script src="/js/partials/navbar.js" defer></script>
   <script src="/js/script.js" defer></script>

@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-TRUNCATE TABLE `attachment`;
+TRUNCATE TABLE `attachment	`;
 TRUNCATE TABLE `message`;
 TRUNCATE TABLE `ticket`;
 TRUNCATE TABLE `student`;
@@ -107,10 +107,10 @@ VALUES (
         1
     );
 -- update ticket after message to update last_updated timestamp
-UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1; 
+-- UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1; 
 
 INSERT INTO
-    `attachment` (
+    `attachment	` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -125,7 +125,7 @@ VALUES (
         1
     );
 INSERT INTO
-    `attachment` (
+    `attachment	` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -159,10 +159,10 @@ VALUES (
         2,
         1
     );
-UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+-- UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
 
 INSERT INTO
-    `attachment` (
+    `attachment	` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -177,7 +177,7 @@ VALUES (
         2
     );
 INSERT INTO
-    `attachment` (
+    `attachment	` (
         `file_name`,
         `file_path`,
         `file_size`,
@@ -210,9 +210,9 @@ VALUES (
         1,
         1
     );
-UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
+-- UPDATE `ticket` SET `ticket_id` = 1 WHERE `ticket_id` = 1;
 INSERT INTO
-    `attachment` (
+    `attachment	` (
         `file_name`,
         `file_path`,
         `file_size`,

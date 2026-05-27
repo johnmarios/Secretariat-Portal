@@ -1,4 +1,5 @@
 import dbPool, * as db from '../../model/db.js';
+import * as queries from '../../model/queries.mjs';
 import { saveAttachmentsForMessage } from '../../services/attachmentService.mjs';
 
 const parseTicketId = (req, res) => {
@@ -32,10 +33,7 @@ export const submitSecretaryReply = async (req, res) => {
 
         if (newStatus) {
             try {
-                await dbPool.execute('UPDATE ticket SET status = ? WHERE ticket_id = ?', [
-                    newStatus,
-                    ticket_id,
-                ]);
+                await dbPool.execute(queries.updateTicketStatusById, [newStatus, ticket_id]);
             } catch (err) {
                 console.error('Error updating ticket status:', err);
                 return res.status(500).send('Αποτυχία ενημέρωσης κατάστασης');
@@ -53,7 +51,7 @@ export const submitSecretaryReply = async (req, res) => {
             await saveAttachmentsForMessage(message_id, files);
         }
 
-        return res.redirect('/secretary_viewtickets');
+        return res.redirect('/secretary-viewtickets');
     } catch (error) {
         console.error('Error submitting secretary reply:', error);
         return res.status(500).send('Reply failed: ' + error.message);
@@ -88,16 +86,13 @@ export const submitSecretaryInternalMessage = async (req, res) => {
 
         if (req.body.escalate === '1') {
             try {
-                await dbPool.execute(
-                    "UPDATE ticket SET status = 'escalated' WHERE ticket_id = ?",
-                    [ticket_id]
-                );
+                await dbPool.execute(queries.updateTicketStatusById, ['escalated', ticket_id]);
             } catch (err) {
                 console.error('Error setting escalated status:', err);
             }
         }
 
-        return res.redirect('/secretary_viewtickets');
+        return res.redirect('/secretary-viewtickets');
     } catch (error) {
         console.error('Error submitting internal message:', error);
         return res.status(500).send('Internal message failed: ' + error.message);

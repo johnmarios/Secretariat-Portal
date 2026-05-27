@@ -1,4 +1,6 @@
-// Maps student.type enum values ('undergrad' | 'postgrad' | 'phd') to the
+import { formatUserDisplayName } from './displayName.mjs';
+
+// Maps STUDENT.type enum values ('undergrad' | 'postgrad' | 'phd') to the
 // human-readable Greek labels used across the UI.
 const STUDENT_TYPE_LABELS = {
     undergrad: 'Προπτυχιακός',
@@ -10,7 +12,7 @@ const formatStudentType = (type) => STUDENT_TYPE_LABELS[type] || '-';
 
 export const buildStudent = (row) => {
     if (!row) return null;
-    const fullName = [row.first_name, row.last_name].filter(Boolean).join(' ').trim();
+    const fullName = formatUserDisplayName(row, '');
 
     const enrollmentYear = row.enrollment_year;
     const currentYear = new Date().getFullYear();
@@ -28,7 +30,7 @@ export const buildStudent = (row) => {
 export const buildStudentSearchResult = (row) => {
     if (!row) return null;
 
-    const fullName = [row.first_name, row.last_name].filter(Boolean).join(' ').trim();
+    const fullName = formatUserDisplayName(row, '');
     const enrollmentYear = Number(row.enrollment_year);
     const currentYear = new Date().getFullYear();
     const studyYear = Number.isFinite(enrollmentYear)

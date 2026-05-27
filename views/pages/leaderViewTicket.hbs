@@ -100,7 +100,7 @@
                         <select id="leaderSecretarySelect" name="secretary_id" class="form-control" required>
                             <option value="{{leaderSecretaryId}}" selected>{{leaderDisplayName}}</option>
                             {{#each secretaries}}
-                                <option value="{{this.secretary_id}}">{{this.first_name}} {{this.last_name}}</option>
+                                <option value="{{this.secretary_id}}">{{this.displayName}}</option>
                             {{/each}}
                         </select>
                         <div class="card attachments-card">

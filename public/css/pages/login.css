@@ -31,13 +31,6 @@ body.login-page {
   z-index: -1; 
 }
 
-/* .login-main {
-  min-height: calc(100dvh - 200px);
-  display: grid;
-  place-items: center;
-  padding: 32px 18px 48px;
-  
-} */
 
 .login-page .login-card {
   width: min(100%, 460px);
@@ -109,7 +102,6 @@ body.login-page {
 .login-page .submit-btn.login-btn {
   width: 100%;
   margin-top: 4px;
-  margin-bottom: 4px;
   border: none;
   border-radius: 14px;
   padding: 14px 18px;

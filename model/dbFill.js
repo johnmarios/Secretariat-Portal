@@ -10,12 +10,9 @@ faker.seed(20260523);
 const TARGET_STUDENTS = 1200;
 const TARGET_TICKETS = 1000;
 
-// const TARGET_STUDENTS = 500;  
-// const TARGET_TICKETS = 250;   
-
 // 8 rounds keeps seeding fast (~10s for ~1200 users) while staying compatible
-// with the 10-round hashes produced by the register controller — bcrypt.compare
-// works regardless of the cost factor used to create the hash.
+// with the 10-round hashes produced by the register controller 
+
 const BCRYPT_ROUNDS = 8;
 
 const ENROLLMENT_BOUNDS = {
@@ -28,7 +25,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CREDENTIALS_PATH = path.join(__dirname, '..', 'seed-credentials.txt');
 const FILES_DIR = path.join(__dirname, '..', 'public', 'files');
 
-// Conversation generation knobs
+
 const MAX_MESSAGES_PER_TICKET = 10;
 const INITIAL_ATTACHMENT_PROB = 0.4;
 const REPLY_ATTACHMENT_PROB = 0.2;
@@ -115,7 +112,7 @@ function studentEmail(am) {
 }
 async function resetDatabase() {
     await dbPool.query('SET FOREIGN_KEY_CHECKS = 0');
-    await dbPool.query('TRUNCATE TABLE attachment');
+    await dbPool.query('TRUNCATE TABLE attachment	');
     await dbPool.query('TRUNCATE TABLE message');
     await dbPool.query('TRUNCATE TABLE ticket');
     await dbPool.query('TRUNCATE TABLE student');
@@ -312,7 +309,7 @@ async function insertMessageWithAttachment({
     if (fileBank.length > 0 && faker.number.float({ min: 0, max: 1 }) < attachProb) {
         const file = pick(fileBank);
         await dbPool.query(
-            `INSERT INTO attachment (file_name, file_path, file_size, file_type, for_message_id)
+            `INSERT INTO attachment	 (file_name, file_path, file_size, file_type, for_message_id)
              VALUES (?, ?, ?, ?, ?)`,
             [file.file_name, file.file_path, file.file_size, file.file_type, messageId]
         );
@@ -381,7 +378,7 @@ async function seedTickets(count, students, staff, categories) {
                 description = faker.lorem.sentences({ min: 2, max: 4 });
                 attachProb = INITIAL_ATTACHMENT_PROB;
             } else {
-                subject = '';  // Βάζουμε ένα κενό string αντί για null
+                subject = null;
                 description = faker.lorem.sentences({ min: 1, max: 3 });
                 attachProb = REPLY_ATTACHMENT_PROB;
             }
@@ -426,7 +423,7 @@ async function printSummary() {
         `SELECT COUNT(DISTINCT for_ticket_id) AS n FROM message WHERE is_internal = 1`
     );
     const [[messages]] = await dbPool.query('SELECT COUNT(*) AS n FROM message');
-    const [[attachments]] = await dbPool.query('SELECT COUNT(*) AS n FROM attachment');
+    const [[attachments]] = await dbPool.query('SELECT COUNT(*) AS n FROM attachment	');
 
     const [byType] = await dbPool.query(`
         SELECT type, MIN(enrollment_year) AS min_y, MAX(enrollment_year) AS max_y, COUNT(*) AS n

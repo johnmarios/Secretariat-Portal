@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import dbPool from '../../model/db.js';
 import * as queries from '../../model/queries.mjs';
+import { isLeaderUser } from './helpers.mjs';
 
 const parseTicketId = (req, res) => {
     const ticket_id = Number(req.params.ticket_id);
@@ -12,26 +13,34 @@ const parseTicketId = (req, res) => {
     return ticket_id;
 };
 
-// Shared transactional helper: deletes internal messages + attachments for a
-// ticket and updates the ticket's status. Used by both leader accept and reject.
-const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
+const finalizeEscalation = async ({ ticketId, newStatus, logLabel, assignSecretaryId = null }) => {
     const conn = await dbPool.getConnection();
     try {
+        
+        // need to update the ticket status to pending or in_progress depending on the action (reject or accept)
+        // and then delete the internal messages and their attachments that were created for the escalation;
+
         await conn.beginTransaction();
+        // wrap the delete and update operations in a transaction to ensure data integrity;
+        // if any of the operations fail, we can roll back to the previous consistent state
 
         const [attachmentRows] = await conn.execute(
-            `SELECT A.file_path FROM attachment A
-             JOIN message M ON A.for_message_id = M.message_id
-             WHERE M.for_ticket_id = ? AND M.is_internal = 1`,
+            queries.getAttachmentFilePathsForInternalMessagesByTicketId,
             [ticketId]
         );
 
         const [delAttRes] = await conn.execute(queries.deleteAttachmentsForInternalMessages, [ticketId]);
         const [delMsgRes] = await conn.execute(queries.deleteInternalMessagesByTicketId, [ticketId]);
-        const [updRes] = await conn.execute('UPDATE ticket SET status = ? WHERE ticket_id = ?', [
-            newStatus,
-            ticketId,
-        ]);
+        let updRes;
+        if (assignSecretaryId) {
+            [updRes] = await conn.execute(queries.updateTicketStatusWithSecretary, [
+                newStatus,
+                assignSecretaryId,
+                ticketId,
+            ]);
+        } else {
+            [updRes] = await conn.execute(queries.updateTicketStatusById, [newStatus, ticketId]);
+        }
 
         await conn.commit();
 
@@ -58,6 +67,7 @@ const finalizeEscalation = async ({ ticketId, newStatus, logLabel }) => {
 };
 
 export const assignTicket = async (req, res) => {
+    // changes status and becomes in progress 
     const ticketId = req.params.id;
     const selectedSecretaryId = Number(req.body.secretary_id || req.user.secretary_id);
     if (!Number.isInteger(selectedSecretaryId) || selectedSecretaryId < 1) {
@@ -65,17 +75,12 @@ export const assignTicket = async (req, res) => {
     }
 
     try {
-        await dbPool.execute(
-            `UPDATE ticket
-             SET status = 'in_progress', for_secretary_id = ?
-             WHERE ticket_id = ?`,
-            [selectedSecretaryId, ticketId]
-        );
+        await dbPool.execute(queries.updateTicketStatusWithSecretary, ['in_progress', selectedSecretaryId, ticketId]);
 
-        if (req.user.is_leader === 1) {
-            return res.redirect('/leader_viewtickets');
+        if (isLeaderUser(req.user)) {
+            return res.redirect('/leader-viewtickets');
         }
-        return res.redirect('/secretary_viewtickets');
+        return res.redirect('/secretary-viewtickets');
     } catch (error) {
         console.error('Σφάλμα κατά την ανάληψη:', error);
         res.status(500).send('Αποτυχία ανάληψης αιτήματος.');
@@ -91,8 +96,9 @@ export const submitLeaderAccept = async (req, res) => {
             ticketId: ticket_id,
             newStatus: 'in_progress',
             logLabel: 'Leader accepted',
+            assignSecretaryId: req.user?.secretary_id || null,
         });
-        return res.redirect('/leader_viewtickets');
+        return res.redirect('/leader-viewtickets');
     } catch (err) {
         console.error('Error accepting escalated ticket:', err);
         return res.status(500).send('Operation failed');
@@ -109,7 +115,7 @@ export const submitLeaderReject = async (req, res) => {
             newStatus: 'pending',
             logLabel: 'Leader rejected',
         });
-        return res.redirect('/leader_viewtickets');
+        return res.redirect('/leader-viewtickets');
     } catch (err) {
         console.error('Error rejecting escalated ticket:', err);
         return res.status(500).send('Operation failed');

@@ -1,6 +1,7 @@
 import * as db from '../../model/db.js';
 import { buildStudent } from '../../utils/studentFormat.mjs';
 import { mapTicketStatus } from '../../utils/statusMap.mjs';
+import { formatUserDisplayName } from '../../utils/displayName.mjs';
 import { buildTicketConversation } from '../../services/conversationService.mjs';
 import { isLeaderUser } from './helpers.mjs';
 
@@ -13,7 +14,6 @@ const parseTicketId = (req, res) => {
     return ticket_id;
 };
 
-// Common ticket header data (status + category) shared by all three view variants.
 const loadTicketHeader = async (ticket_id) => {
     const categoryTheme = await db.getCategoryThemeByTicketId(ticket_id);
     const ticketRow = await db.getTicketById(ticket_id);
@@ -107,11 +107,6 @@ export const renderLeaderViewTicketPage = async (req, res) => {
             return res.status(403).send('Η προβολή είναι διαθέσιμη μόνο για τον προϊστάμενο');
         }
 
-        // The modal shell is a static partial populated via /api/ticket/:id.
-        if (req.query?.modal) {
-            return res.render('pages/modalSpec', { layout: false });
-        }
-
         const studentRow = await db.getStudentInfoByTicketId(ticket_id);
         if (!studentRow) return res.status(404).send('Δεν βρέθηκε το αίτημα ή ο φοιτητής');
 
@@ -137,9 +132,7 @@ export const renderLeaderViewTicketPage = async (req, res) => {
             messagesCount: conversation.messagesCount,
             secretaries: await db.getSecretariesForAssignment(),
             leaderSecretaryId: req.user.secretary_id,
-            leaderDisplayName:
-                [req.user.first_name, req.user.last_name].filter(Boolean).join(' ').trim() ||
-                'Προϊστάμενος',
+            leaderDisplayName: formatUserDisplayName(req.user, 'Προϊστάμενος'),
         });
     } catch (error) {
         console.error('Error rendering leader view ticket page:', error);

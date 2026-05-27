@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// ΝΕΟ IMPORT: Παίρνουμε το pool (για σένα) ΚΑΙ τα functions (για τον συνεργάτη)
 import dbPool, * as db from '../model/db.js';
 import * as sql from '../model/queries.mjs';
 

@@ -1,8 +1,3 @@
-// Server-side attachment normalizer:
-// - Keeps the raw (timestamped) file_name on disk for the download URL
-// - Returns a cleaned-up file_name for display (strips multer's timestamp suffix)
-// - Rewrites file_path so it works as a public download URL
-
 export const formatAttachment = (att) => {
 
     const isPathInNameColumn = att.file_name.includes('/') || att.file_name.includes('\\');

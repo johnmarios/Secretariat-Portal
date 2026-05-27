@@ -1,14 +1,12 @@
 import { mapTicketStatus } from './statusMap.mjs';
 import { formatDateToGreek } from './dateFormat.mjs';
+import { formatUserDisplayName } from './displayName.mjs';
 
-// Shapes a raw ticket row from the various list queries into the
-// uniform object the dashboard tables expect.
+// for displaying the ticket rows in the dashboard tables, we need to format the date and status, 
+// and also get the assigned secretary's name if applicable
 export const formatTicketRow = (row) => {
     const status = mapTicketStatus(row.status);
-    const assignedName =
-        row.first_name || row.last_name
-            ? `${row.first_name || ''} ${row.last_name || ''}`.trim()
-            : null;
+    const assignedName = formatUserDisplayName(row);
 
     return {
         id: row.ticket_id,
@@ -19,6 +17,6 @@ export const formatTicketRow = (row) => {
         completedAt: formatDateToGreek(row.resolved_at),
         status: status.label,
         statusClass: status.className,
-        ...(assignedName ? { assignedSecretaryName: assignedName } : {}),
+        assignedSecretaryName: assignedName,
     };
 };

@@ -1,3 +1,5 @@
+{{!-- this page shows the tables for each role --}}
+
 {{> viewtickets_navbar}}
 <link rel="stylesheet" href="/css/pages/viewtickets.css">
 
@@ -24,9 +26,8 @@
 
   </div>
 
-  {{!-- Κρατάμε την κλάση secretary μόνο αν δεν είναι φοιτητής, σε περίπτωση που έχεις ειδικό CSS --}}
   <div class="{{#unless isStudent}}secretary{{/unless}} table-card p-4">
-
+  {{!-- when the user isn't student we have unclaimed tickets --}}
     {{#unless isStudent}}
       <div id="unassigned" class="tab-content" style="display: block;">
         {{> unc_tickets_table tickets=unassignedTickets title="Μη Εκχωρημένα Αιτήματα" isLeader=isLeader secretaries=secretaries}}
@@ -48,7 +49,7 @@
       </div>
 
       <div id="leader-tab" class="tab-content" style="display:none;">
-          {{> all_tickets_table tickets=allAssignedTickets title="Πανόραμα: Όλα τα Εκχωρημένα Αιτήματα"}}
+          {{> all_tickets_table tickets=allAssignedTickets title="Όλα τα Εκχωρημένα Αιτήματα"}}
       </div>
     {{/if}}
 
@@ -56,6 +57,26 @@
 
 </div>
 
-<div id="modalRoot"></div>
+{{!-- Modal templates  --}}
+{{#unless isStudent}}
+  <div id="modalRoot"></div>
 
-<script src="/js/pages/viewtickets.js"></script>
+  {{#if isSecretary}}
+    <template id="modal-template-secretary">{{> modalSecretaryShell}}</template>
+  {{/if}}
+
+  {{#if isLeader}}
+    <template id="modal-template-leader">{{> modalLeaderShell}}</template>
+    <template id="modal-template-escalated">{{> modalEscalatedShell}}</template>
+  {{/if}}
+{{/unless}}
+
+{{!--
+  rowNav.js powers click-to-navigate on [data-href] rows (used by every
+  role). viewtickets.js powers the inline modals on [data-modal-type] rows,
+  so it's only needed when the user can actually open a modal.
+--}}
+<script src="/js/pages/rowNav.js"></script>
+{{#unless isStudent}}
+  <script src="/js/pages/viewtickets.js"></script>
+{{/unless}}

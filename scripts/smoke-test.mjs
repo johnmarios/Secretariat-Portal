@@ -54,43 +54,37 @@ async function main() {
         pass('login', `redirect ${session.location || '-'}`);
 
         if (account.label === 'secretary') {
-            const page = await get('/secretary_viewtickets', session.cookie);
-            if (page.status === 200 && page.text.includes('modalRoot')) pass('secretary_viewtickets');
-            else fail('secretary_viewtickets', `status ${page.status}`);
+            const page = await get('/secretary-viewtickets', session.cookie);
+            const hasShell = page.text.includes('id="modal-template-secretary"');
+            if (page.status === 200 && page.text.includes('modalRoot') && hasShell) {
+                pass('secretary-viewtickets', 'inline secretary modal template present');
+            } else {
+                fail('secretary-viewtickets', `status ${page.status}, shell=${hasShell}`);
+            }
 
             const api = await get('/api/ticket/1', session.cookie);
             if (api.status === 200 && api.text.includes('"success":true')) pass('GET /api/ticket/1');
             else fail('GET /api/ticket/1', `status ${api.status}`);
-
-            const modal = await get('/tickets/unassigned-ticket-modal/2', session.cookie, {
-                'X-Requested-With': 'XMLHttpRequest',
-            });
-            if (modal.status === 200 && modal.text.includes('ticketModal')) pass('modalGen fragment');
-            else fail('modalGen fragment', `status ${modal.status}`);
         }
 
         if (account.label === 'leader') {
-            const page = await get('/leader_viewtickets', session.cookie);
-            if (page.status === 200 && page.text.includes('escalated-tab')) pass('leader_viewtickets');
-            else fail('leader_viewtickets', `status ${page.status}`);
-
-            const modalL = await get('/tickets/leader-unassigned-ticket-modal/2', session.cookie, {
-                'X-Requested-With': 'XMLHttpRequest',
-            });
-            if (modalL.status === 200 && modalL.text.includes('ticketModal')) pass('modalLeader fragment');
-            else fail('modalLeader fragment', `status ${modalL.status}`);
-
-            const modalS = await get('/tickets/leader-view-ticket/ticket/1?modal=1', session.cookie, {
-                'X-Requested-With': 'XMLHttpRequest',
-            });
-            if (modalS.status === 200 && modalS.text.includes('ticketModal')) pass('modalSpec fragment');
-            else fail('modalSpec fragment', `status ${modalS.status}`);
+            const page = await get('/leader-viewtickets', session.cookie);
+            const hasLeader = page.text.includes('id="modal-template-leader"');
+            const hasEscalated = page.text.includes('id="modal-template-escalated"');
+            if (page.status === 200 && page.text.includes('escalated-tab') && hasLeader && hasEscalated) {
+                pass('leader-viewtickets', 'inline leader+escalated modal templates present');
+            } else {
+                fail(
+                    'leader-viewtickets',
+                    `status ${page.status}, leader=${hasLeader}, escalated=${hasEscalated}`
+                );
+            }
         }
 
         if (account.label === 'student') {
-            const page = await get('/user_viewtickets', session.cookie);
-            if (page.status === 200 && page.text.includes('my-tickets')) pass('user_viewtickets');
-            else fail('user_viewtickets', `status ${page.status}`);
+            const page = await get('/student-viewtickets', session.cookie);
+            if (page.status === 200 && page.text.includes('my-tickets')) pass('student-viewtickets');
+            else fail('student-viewtickets', `status ${page.status}`);
         }
     }
 
