@@ -1,12 +1,15 @@
 {{> auth-navbar}}
 
 <link rel="stylesheet" href="/css/pages/login.css">
-
+ 
 <main class="login-main">
-  <article class="login-card">
+
+  <article class="login-card" style="position: relative;">
     <div class="login-card__header">
       <h3>Συνδεθείτε στον λογαριασμό σας</h3>
     </div>
+
+   
 
     <form action="/api/login" method="POST" class="login-card__body">
       <div class="field-group">
@@ -18,8 +21,16 @@
         <label for="password">Password</label>
         <input id="password" type="password" name="password" placeholder="Password" autocomplete="current-password" required>
       </div>
-
+      
       <button type="submit" class="submit-btn login-btn">Σύνδεση</button>
+      
+      {{#if errorMessage}}
+        <div style="left: 50%; transform: translateX(-50%); text-align: center; width: 100%; position: absolute; top: 335px; color: red;">
+            {{errorMessage}}
+        </div>
+      {{/if}}
     </form>
+    
   </article>
+  
 </main>
