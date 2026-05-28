@@ -8,6 +8,9 @@ export const formatTicketRow = (row) => {
     const status = mapTicketStatus(row.status);
     const assignedName = formatUserDisplayName(row);
 
+    // if ticket is escalated we keep the original status label but add an escalated class
+    const escalatedClass = row.is_escalated ? ' status-escalated' : '';
+
     return {
         id: row.ticket_id,
         am: row.student_am,
@@ -16,7 +19,7 @@ export const formatTicketRow = (row) => {
         submittedAt: formatDateToGreek(row.created_at),
         completedAt: formatDateToGreek(row.resolved_at),
         status: status.label,
-        statusClass: status.className,
+        statusClass: status.className + escalatedClass,
         assignedSecretaryName: assignedName,
     };
 };

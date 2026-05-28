@@ -4,14 +4,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dbPool from './db.js';
+import { clearDuplicateFilesInDirectory } from '../utils/duplicateFilesCleanup.mjs';
 
 faker.seed(20260523);
 
 const TARGET_STUDENTS = 1200;
 const TARGET_TICKETS = 1000;
-
-// 8 rounds keeps seeding fast (~10s for ~1200 users) while staying compatible
-// with the 10-round hashes produced by the register controller 
 
 const BCRYPT_ROUNDS = 8;
 
@@ -108,7 +106,7 @@ function enrollmentYearFor(type) {
 }
 
 function studentEmail(am) {
-    return `up${am}@ac.upatras.gr`;
+    return `up${am}@uni.gr`;
 }
 async function resetDatabase() {
     await dbPool.query('SET FOREIGN_KEY_CHECKS = 0');
@@ -171,7 +169,7 @@ async function seedStaff() {
     credentials.students.push({
         firstName: 'Μάνος',
         lastName: 'Παπαπέτρου',
-        email: 'student1@uni.gr',
+        email: 'up1091234@uni.gr',
         password: demoStudentPass,
         studentAm: '1091234',
         type: 'undergrad',
@@ -187,8 +185,8 @@ async function seedStaff() {
     );
 
     const extraSecretaries = [
-        ['Ελένη', 'Γραμματεία', 'secretary2.seed@seeded.uni.gr'],
-        ['Άννα', 'Γραμματεία', 'secretary3.seed@seeded.uni.gr'],
+        ['Ελένη', 'Γραμματεία', 'secretary2@.uni.gr'],
+        ['Άννα', 'Γραμματεία', 'secretary3@.uni.gr'],
     ];
 
     const staff = [];
@@ -327,7 +325,7 @@ async function seedTickets(count, students, staff, categories) {
         const categoryId = pick(categoryIds);
         const createdAt = faker.date.between({ from: '2024-01-01', to: new Date() });
 
-        const status = pickWeighted([
+        let status = pickWeighted([
             { value: 'open', weight: 45 },
             { value: 'in_progress', weight: 20 },
             { value: 'pending', weight: 15 },
@@ -335,6 +333,7 @@ async function seedTickets(count, students, staff, categories) {
             { value: 'closed', weight: 5 },
             { value: 'escalated', weight: 5 },
         ]);
+
 
         // Only non-open tickets are assigned to a secretary
         const secretary = status === 'open' ? null : pick(nonLeaderSecretaries);
@@ -345,9 +344,9 @@ async function seedTickets(count, students, staff, categories) {
 
         // ticket creation 
         const [ticketResult] = await dbPool.query(
-            `INSERT INTO ticket (status, created_at, resolved_at, for_student_id, for_secretary_id, for_category_id)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [status, createdAt, resolvedAt, student.student_id, secretary?.secretary_id ?? null, categoryId]
+            `INSERT INTO ticket (status, is_escalated, created_at, resolved_at, for_student_id, for_secretary_id, for_category_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [status, isEscalated, createdAt, resolvedAt, student.student_id, secretary?.secretary_id ?? null, categoryId]
         );
         const ticketId = ticketResult.insertId;
 
@@ -395,7 +394,7 @@ async function seedTickets(count, students, staff, categories) {
         }
 
         // Escalated tickets get an additional internal note from the secretary
-        if (status === 'escalated' && secretary) {
+        if (isEscalated && secretary) {
             await insertMessageWithAttachment({
                 subject: 'Εσωτερικό σχόλιο',
                 description: faker.lorem.paragraph(),
@@ -420,7 +419,7 @@ async function printSummary() {
         'SELECT COUNT(*) AS n FROM ticket WHERE for_secretary_id IS NULL'
     );
     const [[escalated]] = await dbPool.query(
-        `SELECT COUNT(DISTINCT for_ticket_id) AS n FROM message WHERE is_internal = 1`
+        `SELECT COUNT(*) AS n FROM ticket WHERE is_escalated = 1`
     );
     const [[messages]] = await dbPool.query('SELECT COUNT(*) AS n FROM message');
     const [[attachments]] = await dbPool.query('SELECT COUNT(*) AS n FROM attachment	');
@@ -475,6 +474,11 @@ async function writeCredentialsFile() {
 
 async function main() {
     console.log('Αρχικοποίηση βάσης...\n');
+
+    const cleanup = await clearDuplicateFilesInDirectory(FILES_DIR);
+    console.log(
+        `Καθαρισμός διπλοτύπων αρχείων: scanned=${cleanup.scanned}, deleted=${cleanup.deleted}`
+    );
 
     await resetDatabase();
     fileBank = await loadFileBank();

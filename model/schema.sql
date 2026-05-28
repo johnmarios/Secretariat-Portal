@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `attachment	`, `message`, `ticket`, `student`, `secretary`, `user`, `category`;
+DROP TABLE IF EXISTS `attachment`, `message`, `ticket`, `student`, `secretary`, `user`, `category`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS `student` (
 
 CREATE TABLE IF NOT EXISTS `ticket` (
     `ticket_id` int AUTO_INCREMENT NOT NULL UNIQUE,
-    `status` enum('open', 'in_progress', 'pending', 'resolved', 'closed', 'escalated') NOT NULL DEFAULT 'open',
+        `status` enum('open', 'in_progress', 'pending', 'resolved', 'closed') NOT NULL DEFAULT 'open',
+        `is_escalated` boolean NOT NULL DEFAULT FALSE,
     `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
     `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `resolved_at` timestamp NULL DEFAULT NULL,
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `message` (
     CONSTRAINT `MESSAGE_fk_ticket` FOREIGN KEY (`for_ticket_id`) REFERENCES `ticket`(`ticket_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS `attachment	` (
+CREATE TABLE IF NOT EXISTS `attachment` (
     `file_id` int AUTO_INCREMENT NOT NULL UNIQUE,
     `file_name` varchar(255) NOT NULL,
     `file_path` varchar(255) NOT NULL, 

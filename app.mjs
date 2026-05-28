@@ -30,7 +30,7 @@ function createApp() {
     app.use(express.json()); 
     app.use(express.urlencoded({ extended: true })); 
     app.use(session({
-        secret: process.env.SESSION_SECRET,
+        secret: process.env.SESSION_SECRET || 'ενα_μυστικο_κλειδι_για_την_εργασια_μου',
         resave: false,
         saveUninitialized: false,
         cookie: { maxAge: 1000 * 60 * 60 * 24 }

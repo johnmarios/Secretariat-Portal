@@ -167,6 +167,7 @@ export const getTicketsByStudentId = `
         t.ticket_id,
         (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status,
+        t.is_escalated,
         t.created_at,
         t.resolved_at,
         c.category_name AS category,
@@ -183,6 +184,7 @@ export const getUnassignedTickets = `
         t.ticket_id, 
         (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
+        t.is_escalated,
         t.created_at, 
         t.resolved_at,
         c.category_name AS category,
@@ -199,6 +201,7 @@ export const getTicketsBySecretaryId = `
         t.ticket_id, 
         (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
+        t.is_escalated,
         t.created_at, 
         t.resolved_at,
         c.category_name AS category,
@@ -216,6 +219,7 @@ export const getEscalatedTickets = `
         DISTINCT t.ticket_id, 
         (SELECT message_subject FROM message WHERE for_ticket_id = t.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         t.status, 
+        t.is_escalated,
         t.created_at, 
         t.resolved_at,
         c.category_name AS category,
@@ -227,9 +231,7 @@ export const getEscalatedTickets = `
     JOIN student s ON t.for_student_id = s.student_id
     LEFT JOIN secretary sec ON t.for_secretary_id = sec.secretary_id
     LEFT JOIN user u ON sec.for_id = u.user_id
-    WHERE EXISTS (
-        SELECT 1 FROM message m WHERE m.for_ticket_id = t.ticket_id AND m.is_internal = 1
-    )
+    WHERE t.is_escalated = 1
     ORDER BY t.created_at DESC
 `;
 
@@ -255,6 +257,7 @@ export const getAllAssignedTicketsForLeader = `
         T.ticket_id, 
         (SELECT message_subject FROM message WHERE for_ticket_id = T.ticket_id ORDER BY message_id ASC LIMIT 1) AS subject,
         T.status, 
+        T.is_escalated,
         T.created_at, 
         T.resolved_at,
         C.category_name AS category,
@@ -311,6 +314,10 @@ export const updateTicketStatusWithSecretary = `
 
 export const updateTicketStatusById = `
     UPDATE ticket SET status = ? WHERE ticket_id = ?
+`;
+
+export const setTicketEscalatedFlag = `
+    UPDATE ticket SET is_escalated = ? WHERE ticket_id = ?
 `;
 
 export const closeStaleCompletedTickets = `

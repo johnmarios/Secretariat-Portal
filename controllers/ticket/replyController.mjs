@@ -86,9 +86,9 @@ export const submitSecretaryInternalMessage = async (req, res) => {
 
         if (req.body.escalate === '1') {
             try {
-                await dbPool.execute(queries.updateTicketStatusById, ['escalated', ticket_id]);
+                await dbPool.execute(queries.setTicketEscalatedFlag, [1, ticket_id]);
             } catch (err) {
-                console.error('Error setting escalated status:', err);
+                console.error('Error setting escalated flag:', err);
             }
         }
 

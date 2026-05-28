@@ -3,6 +3,7 @@ import path from 'node:path';
 import dbPool from '../../model/db.js';
 import * as queries from '../../model/queries.mjs';
 import { isLeaderUser } from './helpers.mjs';
+import { clearDuplicateFilesInDirectory } from '../../utils/duplicateFilesCleanup.mjs';
 
 const parseTicketId = (req, res) => {
     const ticket_id = Number(req.params.ticket_id);
@@ -40,6 +41,13 @@ const finalizeEscalation = async ({ ticketId, newStatus, logLabel, assignSecreta
             ]);
         } else {
             [updRes] = await conn.execute(queries.updateTicketStatusById, [newStatus, ticketId]);
+        }
+
+        // clear escalated flag when leader finalizes escalation (accept or reject)
+        try {
+            await conn.execute(queries.setTicketEscalatedFlag, [0, ticketId]);
+        } catch (e) {
+            console.warn('Failed to clear escalated flag:', e.message);
         }
 
         await conn.commit();
@@ -122,40 +130,11 @@ export const submitLeaderReject = async (req, res) => {
     }
 };
 
-const getFilesFromFolder = () => {
-    const directoryPath = path.join(process.cwd(), 'public', 'files');
-    if (!fs.existsSync(directoryPath)) return [];
-    return fs.readdirSync(directoryPath).map((fileName) => ({
-        fileName,
-        filePath: path.join(directoryPath, fileName),
-    }));
-};
-
 export const clearDuplicateFiles = async (req, res) => {
     try {
-        const files = getFilesFromFolder();
-        const seen = new Map();
-        const deletedFiles = [];
-
-        for (const file of files) {
-            const stats = fs.statSync(file.filePath);
-            const canonicalName = file.fileName.replace(/-\d+-\d+(\.[^.]+)$/, '$1');
-            const duplicateKey = `${canonicalName}-${stats.size}`;
-
-            if (seen.has(duplicateKey)) {
-                fs.unlinkSync(file.filePath);
-                deletedFiles.push(file.fileName);
-            } else {
-                seen.set(duplicateKey, true);
-            }
-        }
-
-        return res.json({
-            ok: true,
-            scanned: files.length,
-            deleted: deletedFiles.length,
-            deletedFiles,
-        });
+        const directoryPath = path.join(process.cwd(), 'public', 'files');
+        const result = await clearDuplicateFilesInDirectory(directoryPath);
+        return res.json(result);
     } catch (error) {
         console.error('Error clearing duplicate files:', error);
         return res.status(500).json({ ok: false, error: error.message });
