@@ -89,6 +89,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const activeTab = getActiveTabId();
 
+        // detect whether this client has leader templates available (i.e. current user is leader)
+        const isLeaderClient = Boolean(document.getElementById('modal-template-leader'));
+
+        const ticketUrlPrefix = isLeaderClient ? '/tickets/leader-view-ticket/ticket/' : '/tickets/secretary-view-ticket/ticket/';
+
         items.forEach(it => {
             // only include results that exist in the currently visible tab (if any)
             if (activeTab) {
@@ -100,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const li = document.createElement('li');
             li.className = 'tickets-search-item';
             const a = document.createElement('a');
-            a.href = `/tickets/secretary-view-ticket/ticket/${it.id}`;
+            a.href = `${ticketUrlPrefix}${it.id}`;
             a.textContent = `${it.am} — ${it.studentName} — ${it.subject}`;
 
             // If we're on the viewtickets page and the unassigned tab contains
@@ -120,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const modalType = activeRow.getAttribute('data-modal-type') || (document.getElementById('modal-template-leader') ? 'leader' : 'secretary');
                         window.openTicketModal(String(it.id), modalType).catch((err) => {
                             console.error('Failed to open modal from search:', err);
-                            window.location.href = `/tickets/secretary-view-ticket/ticket/${it.id}`;
+                            window.location.href = `${ticketUrlPrefix}${it.id}`;
                         });
                     });
                 }
