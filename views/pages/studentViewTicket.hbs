@@ -60,12 +60,12 @@
                     <div class="action-block">
                         <label for="replyText">Γράψτε την απάντησή σας</label>
                         <textarea id="replyText" rows="5" name="replyText"
-                            placeholder="Γράψτε την απάντησή σας..."></textarea>
+                            placeholder="Γράψτε την απάντησή σας..." {{#if isClosed}}disabled{{/if}}></textarea>
                     </div>
 
                     <div class="card attachments-card">
-                        {{>fileAttachment}}
-                        {{>submitWrap buttonType="submit" buttonText="Αποστολή Μηνύματος"}}
+                        {{>fileAttachment disabled=isClosed}}
+                        {{>submitWrap buttonType="submit" buttonText="Αποστολή Μηνύματος" disabled=isClosed}}
                     </div>
                 </form>
             </article>

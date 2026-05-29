@@ -1,5 +1,5 @@
 <div class="submit-wrap">
-    <button id="submitTicketBtn" type="{{#if buttonType}}{{buttonType}}{{else}}button{{/if}}" class="btn submit-btn">
+    <button id="submitTicketBtn" type="{{#if buttonType}}{{buttonType}}{{else}}button{{/if}}" class="btn submit-btn" {{#if disabled}}disabled{{/if}}>
         {{#if buttonText}}{{buttonText}}{{else}}Υποβολή{{/if}}
     </button>
 </div>

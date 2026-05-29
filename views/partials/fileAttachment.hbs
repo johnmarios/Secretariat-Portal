@@ -2,13 +2,13 @@
     <h3 class="file-attachment-title">Επισύναψη Αρχείων</h3>
     
     <!-- Drag & Drop Zone -->
-       <div class="file-upload-zone" id="fileUploadZone">
+    <div class="file-upload-zone{{#if disabled}} disabled{{/if}}" id="fileUploadZone">
             <img class="upload-icon" src="/images/upload-cloud-icon.svg" height="87" width="100" alt="">
             <p class="upload-text">Σύρετε αρχεία ή κάντε κλικ για επιλογή</p>
             <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
 
             <input type="file" id="fileInput" name="files" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                class="file-input">
+                class="file-input" {{#if disabled}}disabled{{/if}}>
         </div>
 
     <!-- File List -->

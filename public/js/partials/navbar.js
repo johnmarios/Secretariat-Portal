@@ -66,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
         resultsBox.classList.remove('open');
     }
 
-    function renderResults(items) {
+    function 
+    renderResults(items) {
         resultsBox.innerHTML = '';
         if (!items || items.length === 0) return clearResults();
         const ul = document.createElement('ul');

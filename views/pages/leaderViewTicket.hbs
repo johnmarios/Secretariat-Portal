@@ -59,12 +59,12 @@
                     <div class="action-block">
                         <label for="replyText">ΑΠΑΝΤΗΣΗ ΣΤΟΝ ΦΟΙΤΗΤΗ</label>
                         <textarea id="replyText" rows="5" name="replyText"
-                            placeholder="Γράψτε την απάντησή σας στον φοιτητή..."></textarea>
+                            placeholder="Γράψτε την απάντησή σας στον φοιτητή..." {{#if isClosed}}disabled{{/if}}></textarea>
                     </div>
 
                     <div class="action-block">
                         <label for="status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</label>
-                        <select id="status" name="status" class="form-control" data-current="{{ticketStatusRaw}}" data-allow-closed-edit="1">
+                        <select id="status" name="status" class="form-control" data-current="{{ticketStatusRaw}}" data-allow-closed-edit="1" {{#if isClosed}}disabled{{/if}}>
                             <option value="in_progress">Σε Εξέλιξη</option>
                             <option value="pending">Σε Αναμονή</option>
                             <option value="resolved">Ολοκληρωμένο</option>
@@ -81,7 +81,7 @@
                                     <small class="upload-hint">Υποστηρίζονται PDF, DOC, JPG, PNG (max 10MB)</small>
 
                                     <input type="file" id="fileInput" name="files" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                        class="file-input">
+                                        class="file-input" {{#if isClosed}}disabled{{/if}}>
                                 </div>
 
                             <!-- File List -->
@@ -89,7 +89,7 @@
 
                             <!-- Error Message -->
                             <div class="file-error-message hidden" id="fileError"></div>
-                        {{>submitWrap buttonType="submit" buttonText="Αποστολή Απάντησης / Αλλαγή Κατάστασης"}}
+                        {{>submitWrap buttonType="submit" buttonText="Αποστολή Απάντησης / Αλλαγή Κατάστασης" disabled=isClosed}}
                     </div>
                 </form>
 
@@ -97,14 +97,14 @@
                     <div class="action-block">
                         <h2>Ανάθεση του αιτήματος σε :</h2>
                         {{!-- <label for="leaderSecretarySelect">Ανάθεση του αιτήματος σε</label> --}}
-                        <select id="leaderSecretarySelect" name="secretary_id" class="form-control" required>
+                        <select id="leaderSecretarySelect" name="secretary_id" class="form-control" required {{#if isClosed}}disabled{{/if}}>
                             <option value="{{leaderSecretaryId}}" selected>{{leaderDisplayName}}</option>
                             {{#each secretaries}}
                                 <option value="{{this.secretary_id}}">{{this.displayName}}</option>
                             {{/each}}
                         </select>
                         <div class="card attachments-card">
-                        {{>submitWrap buttonType="submit" buttonText="Ανάθεση"}}
+                        {{>submitWrap buttonType="submit" buttonText="Ανάθεση" disabled=isClosed}}
                         </div>
                     </div>
 

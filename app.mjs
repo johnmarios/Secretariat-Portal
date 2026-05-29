@@ -3,13 +3,11 @@ import { engine } from 'express-handlebars';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// 1. Εξωτερικές Βιβλιοθήκες (Πλέον με native import αντί για require)
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
 import flash from 'connect-flash';
 
-// 2. Τοπικά Αρχεία (Προσέχουμε τις καταλήξεις!)
 import configurePassport from './config/passport.mjs';
 import pageRouter from './routes/pageRoutes.mjs';
 import authRouter from './routes/authRoutes.mjs';
