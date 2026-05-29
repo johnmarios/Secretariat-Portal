@@ -145,32 +145,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // OPEN FROM A CLICKED ROW 
 
     const openModalForRow = async (row) => {
-        if (!modalRoot) return; // check if the modal root element exists 
-
         const ticketId = row.getAttribute('data-ticket-id');
         const modalType = row.getAttribute('data-modal-type');
-        if (!ticketId || !modalType) return;
+        return window.openTicketModal(ticketId, modalType);
+    };
 
-        const fragment = cloneModalShell(modalType); // get a copy of the modal HTML structure 
+    // create a global helper 
+    window.openTicketModal = async (ticketId, modalType) => {
+        if (!modalRoot) return Promise.reject(new Error('No modal root on page'));
+        if (!ticketId || !modalType) return Promise.reject(new Error('Missing ticketId or modalType'));
+
+        const fragment = cloneModalShell(modalType); // get a copy of the modal html structure 
         if (!fragment) {
             console.error(`No <template id="modal-template-${modalType}"> in page`);
-            return;
+            return Promise.reject(new Error('No modal template'));
         }
 
-        modalRoot.replaceChildren(fragment); // inject the modal HTML into the page
-        document.body.style.overflow = 'hidden'; // lock background scroll when modal is open
+        modalRoot.replaceChildren(fragment); // inject the modal html into the page 
+        document.body.style.overflow = 'hidden';// lock background scroll when modal is open 
 
         const overlay = modalRoot.querySelector('#ticketModal');
         if (overlay) overlay.classList.add('open'); // trigger CSS animation 
 
-        bindModalEvents(modalRoot); // set up event listeners for closing the modal
+        bindModalEvents(modalRoot); // set up event listeners for closing the modal 
 
         try {
-            await loadTicketIntoModal(modalRoot, ticketId, modalType); // fetch ticket data from API and populate the modal fields
+            await loadTicketIntoModal(modalRoot, ticketId, modalType); // getch ticket data from API and populate the modal content
+            return Promise.resolve();
         } catch (error) {
             console.error('Failed to load ticket details into modal:', error);
             closeModal();
-            alert('Δεν ήταν δυνατή η φόρτωση του αιτήματος.');
+            return Promise.reject(error);
         }
     };
 

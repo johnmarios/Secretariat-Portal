@@ -40,6 +40,27 @@ document.addEventListener('DOMContentLoaded', function () {
     let timer = null;
     if (!input || !resultsBox) return;
 
+    // prevent browser autofill dropdowns from showing previous entries in many browsers
+    try {
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('spellcheck', 'false');
+
+        // Trick: keep input readonly until user focuses - this prevents some browsers
+        // from showing saved suggestions/autofill. Remove readonly on focus so typing works.
+        input.readOnly = true;
+        input.addEventListener('focus', () => {
+            input.readOnly = false;
+            // move cursor to end
+            const val = input.value;
+            input.value = '';
+            input.value = val;
+        }, { once: true });
+    } catch (e) {
+        // ignore
+    }
+
     function clearResults() {
         resultsBox.innerHTML = '';
         resultsBox.classList.remove('open');
@@ -56,6 +77,28 @@ document.addEventListener('DOMContentLoaded', function () {
             const a = document.createElement('a');
             a.href = `/tickets/secretary-view-ticket/ticket/${it.id}`;
             a.textContent = `${it.am} — ${it.studentName} — ${it.subject}`;
+
+            // If we're on the viewtickets page and the unassigned tab contains
+            // this ticket (meaning it's not yet assigned), we open the modal
+            // instead of navigating
+            try {
+                const unassignedRow = document.querySelector(`#unassigned tr[data-ticket-id="${it.id}"]`);
+                const modalRootExists = document.getElementById('modalRoot');
+                if (unassignedRow && modalRootExists && typeof window.openTicketModal === 'function') {
+                    a.addEventListener('click', (ev) => {
+                        ev.preventDefault();
+                        const modalType = document.getElementById('modal-template-leader') ? 'leader' : 'secretary';
+                        window.openTicketModal(String(it.id), modalType).catch((err) => {
+                            console.error('Failed to open modal from search:', err);
+                            // fallback to navigation if modal fails
+                            window.location.href = `/tickets/secretary-view-ticket/ticket/${it.id}`;
+                        });
+                    });
+                }
+            } catch (e) {
+                // ignore and keep anchor as normal link
+            }
+
             li.appendChild(a);
             ul.appendChild(li);
         });

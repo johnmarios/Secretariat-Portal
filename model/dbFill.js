@@ -9,7 +9,7 @@ import { clearDuplicateFilesInDirectory } from '../utils/duplicateFilesCleanup.m
 faker.seed(20260523);
 
 const TARGET_STUDENTS = 1200;
-const TARGET_TICKETS = 1000;
+const TARGET_TICKETS = 2000;
 
 const BCRYPT_ROUNDS = 8;
 
@@ -26,7 +26,7 @@ const FILES_DIR = path.join(__dirname, '..', 'public', 'files');
 
 const MAX_MESSAGES_PER_TICKET = 10;
 const INITIAL_ATTACHMENT_PROB = 0.4;
-const REPLY_ATTACHMENT_PROB = 0.2;
+const REPLY_ATTACHMENT_PROB = 0.4;
 
 // Filled in at startup from public/files
 let fileBank = [];
@@ -151,7 +151,7 @@ async function seedStaff() {
 
     const leaderId = await insertUser('Κώστας', 'Δημητρίου', 'leader1@uni.gr', leaderPass);
     const secretaryId = await insertUser('Μαρία', 'Αντωνίου', 'secretary1@uni.gr', secretaryPass);
-    const demoStudentUserId = await insertUser('Μάνος', 'Παπαπέτρου', 'student1@uni.gr', demoStudentPass);
+    const demoStudentUserId = await insertUser('Μάνος', 'Παπαπέτρου', studentEmail('1091234'), demoStudentPass);
     // inserted a student here for debugging reasons 
 
     credentials.leader = {
@@ -325,14 +325,22 @@ async function seedTickets(count, students, staff, categories) {
         const categoryId = pick(categoryIds);
         const createdAt = faker.date.between({ from: '2024-01-01', to: new Date() });
 
-        let status = pickWeighted([
+        const status = pickWeighted([
             { value: 'open', weight: 45 },
             { value: 'in_progress', weight: 20 },
             { value: 'pending', weight: 15 },
             { value: 'resolved', weight: 10 },
             { value: 'closed', weight: 5 },
-            { value: 'escalated', weight: 5 },
         ]);
+
+        
+        const isEscalated = Number(
+            status !== 'open' &&
+            pickWeighted([
+                { value: true, weight: 5 },
+                { value: false, weight: 95 },
+            ])
+        );
 
 
         // Only non-open tickets are assigned to a secretary
