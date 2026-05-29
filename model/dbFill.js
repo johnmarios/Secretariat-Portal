@@ -185,8 +185,8 @@ async function seedStaff() {
     );
 
     const extraSecretaries = [
-        ['Ελένη', 'Γραμματεία', 'secretary2@.uni.gr'],
-        ['Άννα', 'Γραμματεία', 'secretary3@.uni.gr'],
+        ['Ελένη', 'Γραμματεία', 'secretary2@uni.gr'],
+        ['Άννα', 'Γραμματεία', 'secretary3@uni.gr'],
     ];
 
     const staff = [];
