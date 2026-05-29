@@ -323,7 +323,7 @@ export const setTicketEscalatedFlag = `
 export const closeStaleCompletedTickets = `
     UPDATE ticket
     SET status = 'closed', resolved_at = NOW()
-    WHERE status = 'resolved' AND last_updated < DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+    WHERE status = 'resolved' AND last_updated < DATE_SUB(NOW(), INTERVAL 7 DAY)
 `;
 
 export const getSecretaryIdByForId = `

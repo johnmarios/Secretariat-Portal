@@ -16,7 +16,7 @@ export function startTicketCloseCron() {
     }
 
 
-    const schedule = process.env.TICKET_CLOSE_CRON_SCHEDULE || '3 0 * * *';
+    const schedule = process.env.TICKET_CLOSE_CRON_SCHEDULE || '0 3 * * *';
     // awakens every day at 3am server time to close stale completed tickets 
     cron.schedule(schedule, async () => {
         try {
